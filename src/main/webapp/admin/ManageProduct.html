@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Người Dùng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        .controls {
+            margin-bottom: 20px;
+        }
+        .controls button {
+            margin-right: 10px;
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Quản lý Người Dùng</h1>
+
+    <div class="controls">
+        <button onclick="showAddModal()">Thêm Người Dùng</button>
+    </div>
+
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th>Tên Người Dùng</th>
+                <th>Tuổi</th>
+                <th>Địa Chỉ</th>
+                <th>Ảnh</th>
+                <th>Email</th>
+                <th>SĐT</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody id="userBody">
+            <!-- Dữ liệu người dùng sẽ được thêm vào bằng JavaScript -->
+        </tbody>
+    </table>
+
+    <!-- Modal thêm/sửa người dùng -->
+    <div id="userModal" style="display:none; position:fixed; top:30%; left:30%; background:#fff; padding:20px; border:1px solid #ddd; box-shadow: 0px 4px 6px rgba(0,0,0,0.1);">
+        <h3 id="modalTitle">Thêm Người Dùng</h3>
+        <label>Tên người dùng:</label><br>
+        <input type="text" id="userName"><br><br>
+        <label>Tuổi:</label><br>
+        <input type="number" id="age"><br><br>
+        <label>Địa chỉ:</label><br>
+        <input type="text" id="address"><br><br>
+        <label>Ảnh (URL):</label><br>
+        <input type="text" id="imageURL"><br><br>
+        <label>Email:</label><br>
+        <input type="email" id="email"><br><br>
+        <label>SĐT:</label><br>
+        <input type="text" id="phone"><br><br>
+        <button onclick="saveUser()">Lưu</button>
+        <button onclick="hideModal()">Hủy</button>
+    </div>
+
+    <script src="js/manageUser.js"></script>
+</body>
+</html>

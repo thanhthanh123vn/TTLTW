@@ -1,0 +1,456 @@
+
+.synthetic {
+    display: flex;
+    margin-right: 70px;
+}
+.slection-product {
+    background-color: #F2F1F6;
+    height: 100%;
+    width: 100%;
+}
+
+#list-search-alpha {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #F2F1F6;
+    width: 100%;
+}
+#list-search-alpha a {
+    color: gray;
+}
+
+#list-search-alpha a:hover {
+    color: #d6936a;
+}
+
+
+.product-detail {
+    float: left;
+    display: flex;
+}
+#list-search-alpha ul {
+    display: flex;
+    list-style: none;
+}
+
+#list-search-alpha a {
+    text-decoration: none;
+}
+
+#list-search-alpha a:hover {
+    text-decoration: none;
+}
+
+
+.list-search-alpha ul li a:hover {
+    color: lightgoldenrodyellow;
+}
+/* Liên kết - Xóa gạch chân khi hover */
+a {
+    text-decoration: none;
+    color: black;
+}
+
+/* Vùng chi tiết sản phẩm */
+.product-detail {
+    margin-left: 45px;
+    margin-right: 45px;
+    padding: 10px;
+    padding-top: 20px;
+    background-color: white;
+}
+
+/* Tiêu đề sản phẩm */
+.product-title {
+    font-size: 19px;
+    color: black;
+}
+
+/* Thông tin sản phẩm */
+.infor-product {
+    list-style-type: none;
+    display: flex;
+    background-color: white;
+    font-size: 18px;
+}
+
+.infor-product li {
+    list-style: none;
+    font-size: 20px;
+}
+
+/* Mục đặc biệt trong thông tin sản phẩm */
+.infor-product li.special-item {
+    display: inline-block;
+    border: 1px solid lightgreen;
+    border-radius: 5px;
+    background-color: #E5FBF1;
+}
+
+/* Phong cách đặc biệt cho liên kết trong special-item */
+.special-item a {
+    font-size: 11px;
+}
+
+/* Cỡ chữ tùy chỉnh */
+li.custom-font-size {
+    font-size: 15px;
+}
+
+/* Giá sản phẩm */
+.price {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Văn bản VAT */
+.vat-text {
+    font-size: 17px;
+}
+
+/* Cỡ chữ cho tiêu đề */
+.title {
+    font-size: 11px;
+}
+
+/* Khoảng cách giữa tiêu đề và danh sách */
+.inline-list {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* Viền xanh cho các mục trong inline-list */
+.inline-list li {
+    border: 1px solid lightgreen;
+    padding: 5px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.inline-list li a {
+    font-size: 15px;
+}
+
+/* Bố cục hình ảnh và danh sách cuộn */
+.image-product {
+    display: flex;
+    position: relative;
+    margin-top: 0;
+}
+
+/* Hình ảnh sản phẩm chính */
+.selected-image img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Phần tử ảnh nhỏ */
+.image-item {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    border: 2px solid lightgreen;
+    border-radius: 5px;
+    padding: 2px;
+}
+
+.image-item img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+/* Vùng danh sách hình ảnh cuộn */
+.container-image {
+    height: 320px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.container-image::-webkit-scrollbar {
+    width: 4px;
+}
+
+.container-image::-webkit-scrollbar-thumb {
+    background-color: gainsboro;
+    border-radius: 10px;
+}
+
+/* Khu vực hiển thị combobox */
+#display-combobox {
+    width: 320px;
+    height: 342px;
+
+}
+
+/* Phong cách văn bản màu sắc */
+.color-orange {
+    color: orange;
+    font-size: 17px;
+}
+
+.green {
+    color: green;
+    font-size: 20px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.italic-bold {
+    font-weight: bold;
+    font-style: italic;
+    font-size: 20px;
+}
+.your-class-name {
+    padding-bottom: 15px; /* Khoảng cách 15px ở phía dưới */
+}
+.button-light-green {
+    margin-top: 10px;
+
+    background-color: lightgreen; /* Màu xanh lá nhạt */
+    color: black; /* Màu chữ */
+    border: none; /* Bỏ viền */
+    padding: 10px 20px; /* Đệm cho nút */
+    border-radius: 5px; /* Bo góc */
+    cursor: pointer; /* Con trỏ chuột khi hover */
+}
+
+.button-dark-green {
+    margin-top: 10px;
+    margin-left: 10px;
+    background-color: green; /* Màu xanh lá đậm */
+    color: white; /* Màu chữ trắng */
+    border: none; /* Bỏ viền */
+    padding: 10px 20px; /* Đệm cho nút */
+    border-radius: 5px; /* Bo góc */
+    cursor: pointer; /* Con trỏ chuột khi hover */
+}
+
+.button-orange {
+    margin-top: 10px;
+    background-color: orange; /* Màu cam */
+    color: black; /* Màu chữ */
+    border: none; /* Bỏ viền */
+    padding: 10px 20px; /* Đệm cho nút */
+    border-radius: 5px; /* Bo góc */
+    cursor: pointer; /* Con trỏ chuột khi hover */
+}
+
+/* Thêm hiệu ứng hover nếu cần */
+.button-light-green:hover,
+.button-dark-green:hover,
+.button-orange:hover {
+    opacity: 0.9; /* Giảm độ mờ khi hover */
+}
+.info-image {
+    width: 50px; /* Đặt chiều rộng cho ảnh */
+    height: auto; /* Giữ tỷ lệ cho ảnh */
+    margin-right: 10px; /* Khoảng cách giữa ảnh và văn bản */
+    vertical-align: middle; /* Căn giữa theo chiều dọc */
+}
+
+/* Đảm bảo văn bản trong danh sách có căn chỉnh tốt */
+.your-infor {
+
+    background-color: white;
+
+    .your-infor {
+        float: left;
+        padding-right: 40px;
+    }
+    /* Các tùy chỉnh khác nếu cần */
+}
+
+.your-infor ul {
+    list-style-type: none; /* Xóa dấu đầu dòng */
+    padding: 0; /* Bỏ khoảng cách bên trong */
+}
+
+.your-infor li {
+    align-items: center; /* Căn giữa theo chiều dọc */
+    margin-bottom: 10px; /* Khoảng cách giữa các mục */
+}
+.main-infor-detail {
+    margin-right: 490px;
+}
+
+.choose-detail {
+    height: 30px; /* Chiều cao có thể điều chỉnh nếu cần */
+    display: flex;
+    margin-top: 10px;
+    margin-right: 70px;
+    margin-left: 45px;
+    background-color: white;
+    align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+.choose-detail ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center; /* Căn giữa các mục theo chiều dọc */
+}
+
+.choose-detail li {
+    margin-right: 15px; /* Khoảng cách giữa các mục */
+    position: relative; /* Để có thể dùng border cho thẻ li */
+}
+
+.choose-detail li:not(:last-child)::after {
+    content: ''; /* Tạo một đường kẻ giữa các mục */
+    position: absolute;
+    right: 0;
+    top: 5px; /* Đặt vị trí đường kẻ */
+    width: 1px; /* Độ rộng của đường kẻ */
+    height: 20px; /* Độ cao của đường kẻ */
+    background-color: black; /* Màu của đường kẻ */
+}
+
+.choose-detail a {
+    text-decoration: none;
+    color: black; /* Đổi màu chữ nếu cần */
+    font-size: 20px; /* Cỡ chữ 20px */
+    padding: 5px 10px; /* Padding cho các mục */
+}
+
+
+.choose-detail a {
+    text-decoration: none;
+    color: black; /* Đổi màu chữ nếu cần */
+}
+#information {
+    margin-top: 10px;
+    margin-left: 45px; /* Căn trái */
+    margin-right: 70px; /* Căn phải */
+    background-color: white; /* Nền trắng */
+    padding: 15px; /* Khoảng cách bên trong */
+    border: 1px solid #ddd; /* Đường viền mỏng màu xám */
+}
+
+#information p {
+    font-size: 16px; /* Cỡ chữ cho đoạn văn */
+}
+
+#information img {
+    max-width: 100%; /* Giới hạn kích thước hình ảnh */
+    height: auto; /* Giữ tỉ lệ hình ảnh */
+}
+#parameter {
+    margin-top: 10px;
+    margin-left: 45px; /* Căn trái */
+    margin-right: 70px; /* Căn phải */
+    background-color: white; /* Nền trắng */
+    padding: 15px; /* Khoảng cách bên trong */
+    border: 1px solid #ddd; /* Đường viền mỏng màu xám */
+}
+
+#parameter h3 {
+    font-size: 20px; /* Cỡ chữ cho tiêu đề */
+}
+
+#parameter table {
+    width: 100%; /* Đặt chiều rộng bảng */
+    border-collapse: collapse; /* Kết hợp các đường viền */
+}
+
+#parameter td {
+    padding: 10px; /* Khoảng cách bên trong các ô */
+    border: 1px solid #ddd; /* Đường viền cho ô */
+}
+#ingredient {
+    margin-top: 10px;
+    margin-left: 45px; /* Căn trái */
+    margin-right: 70px; /* Căn phải */
+    background-color: white; /* Nền trắng */
+    padding: 15px; /* Khoảng cách bên trong */
+    border: 1px solid #ddd; /* Đường viền mỏng màu xám */
+}
+
+#ingredient h3,
+#ingredient h4 {
+    font-size: 20px; /* Cỡ chữ cho tiêu đề */
+    margin: 10px 0; /* Khoảng cách trên và dưới cho tiêu đề */
+}
+
+#ingredient strong {
+    display: block; /* Đưa phần tử strong xuống dòng mới */
+    margin-top: 10px; /* Khoảng cách phía trên */
+}
+
+#ingredient p {
+    margin: 5px 0; /* Khoảng cách giữa các đoạn văn */
+}
+#use {
+    margin-top: 10px;
+
+    background-color: white;
+    margin-left: 45px; /* Căn trái */
+    margin-right: 70px; /* Căn phải */
+}
+
+#use h3 {
+    font-size: 20px; /* Cỡ chữ cho tiêu đề */
+    margin: 10px 20px;
+    /* Khoảng cách trên và dưới cho tiêu đề */
+}
+
+#use p {
+    margin: 5px 20px; /* Khoảng cách giữa các đoạn văn */
+}
+#Evaluate {
+    margin-top: 10px; /* Khoảng cách trên */
+    background-color: white; /* Màu nền */
+    margin-left: 45px; /* Căn trái */
+    margin-right: 70px; /* Căn phải */
+    padding: 15px; /* Khoảng cách bên trong để nội dung không sát viền */
+    border-radius: 5px; /* Bo góc nếu muốn */
+}
+
+#Evaluate h3 {
+    font-size: 20px; /* Cỡ chữ cho tiêu đề */
+    margin: 10px 0; /* Khoảng cách trên và dưới cho tiêu đề */
+}
+
+#Evaluate p {
+    margin: 5px 0; /* Khoảng cách giữa các đoạn văn */
+}
+#Q&A {
+    margin-top: 10px; /* Khoảng cách trên */
+    background-color: white; /* Màu nền */
+    margin-left: 45px; /* Căn trái */
+    margin-right: 70px; /* Căn phải */
+    padding: 15px; /* Khoảng cách bên trong để nội dung không sát viền */
+    border-radius: 5px; /* Bo góc nếu muốn */
+}
+
+#Q&A h3 {
+    font-size: 20px; /* Cỡ chữ cho tiêu đề */
+    margin: 10px 0; /* Khoảng cách trên và dưới cho tiêu đề */
+    padding-left: 0; /* Bỏ padding bên trái nếu có */
+}
+
+#Q&A p {
+    margin: 5px 0; /* Khoảng cách giữa các đoạn văn */
+}
+
+.question, .answer {
+    border: 1px solid #ccc; /* Viền cho câu hỏi và câu trả lời */
+    padding: 10px; /* Khoảng cách bên trong cho câu hỏi và câu trả lời */
+    margin: 10px 0; /* Khoảng cách giữa câu hỏi và câu trả lời */
+    border-radius: 3px; /* Bo góc */
+    background-color: #f9f9f9; /* Màu nền cho câu hỏi và câu trả lời */
+}
+
+/* Nếu cần căn trái tiêu đề thêm 45px */
+#Q&A h3 {
+    padding-left: 45px; /* Căn trái cho tiêu đề */
+}

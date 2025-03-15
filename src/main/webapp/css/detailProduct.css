@@ -1,0 +1,736 @@
+
+
+a{
+    text-decoration: none;
+    cursor: pointer;
+    color: lightgreen;
+}
+
+.cart-count {
+    background-color: orange;
+    color: white;
+    border-radius: 50%;
+    padding: 3px 6px;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+}
+
+.header-list-product .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #e0f3e0;
+    padding: 10px 20px;
+    font-size: 14px;
+}
+
+.nav-menu,
+.nav-right {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+}
+
+.nav-menu li,
+.nav-right li {
+    margin-right: 20px;
+}
+
+.nav-menu a,
+.nav-right a {
+    text-decoration: none;
+    color: #2b4d2b;
+    font-weight: bold;
+}
+
+.nav-menu li a:hover,
+.nav-right li a:hover {
+    text-decoration: underline;
+    color: #ff0303;
+}
+
+#sub-menu-web {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    border: 1px solid #898989;
+}
+
+.col-menu-cap1 .sub-item-menu {
+    padding: 10px;
+    text-align: center;
+}
+
+.login-box {
+    display: none;
+    position: absolute;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 300px;
+}
+
+.login-box h3 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #333;
+}
+
+.login-box .social-login {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 15px;
+}
+
+.hasaki-login {
+    background-color: #2e5f45;
+    color: white;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.synthetic {
+    display: flex;
+    margin-right: 70px;
+}
+
+.slection-product {
+    background-color: #F2F1F6;
+    height: 100%;
+    width: 100%;
+}
+
+#list-search-alpha {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #F2F1F6;
+
+    width: 100%;
+}
+
+#list-search-alpha a {
+    color: gray;
+}
+
+#list-search-alpha a:hover {
+    color: #d6936a;
+}
+
+
+.product-detail {
+    float: left;
+    display: flex;
+    width: 1900px;
+
+}
+
+#list-search-alpha ul {
+    display: flex;
+    list-style: none;
+}
+
+#list-search-alpha a {
+    text-decoration: none;
+}
+
+#list-search-alpha a:hover {
+    text-decoration: none;
+}
+
+
+.list-search-alpha ul li a:hover {
+    color: lightgoldenrodyellow;
+}
+
+/* Liên kết - Xóa gạch chân khi hover */
+a {
+    text-decoration: none;
+    color: black;
+}
+
+/* Vùng chi tiết sản phẩm */
+.product-detail {
+    margin-left: 45px;
+    margin-right: 45px;
+    padding: 10px;
+    padding-top: 20px;
+    background-color: white;
+}
+
+/* Tiêu đề sản phẩm */
+.product-title {
+    font-size: 19px;
+    color: black;
+}
+
+/* Thông tin sản phẩm */
+.infor-product {
+    list-style-type: none;
+    display: flex;
+    background-color: white;
+    font-size: 18px;
+}
+
+.infor-product li {
+    list-style: none;
+    font-size: 20px;
+}
+
+/* Mục đặc biệt trong thông tin sản phẩm */
+.infor-product li.special-item {
+    display: inline-block;
+    border: 1px solid lightgreen;
+    border-radius: 5px;
+    background-color: #E5FBF1;
+}
+
+/* Phong cách đặc biệt cho liên kết trong special-item */
+.special-item a {
+    font-size: 11px;
+}
+
+/* Cỡ chữ tùy chỉnh */
+li.custom-font-size {
+    font-size: 15px;
+}
+
+/* Giá sản phẩm */
+.price {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Văn bản VAT */
+.vat-text {
+    font-size: 17px;
+}
+
+/* Cỡ chữ cho tiêu đề */
+.title {
+    font-size: 11px;
+}
+
+/* Khoảng cách giữa tiêu đề và danh sách */
+.inline-list {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* Viền xanh cho các mục trong inline-list */
+.inline-list li {
+    border: 1px solid #636d77;
+    padding: 5px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.inline-list li a {
+    font-size: 15px;
+}
+
+/* Bố cục hình ảnh và danh sách cuộn */
+.image-product {
+    display: flex;
+    position: relative;
+    margin-top: 0;
+}
+
+/* Hình ảnh sản phẩm chính */
+.selected-image img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Phần tử ảnh nhỏ */
+.image-item {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    border: 2px solid lightgreen;
+    border-radius: 5px;
+    padding: 2px;
+}
+
+.image-item img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+/* Vùng danh sách hình ảnh cuộn */
+.container-image {
+    height: 320px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.container-image::-webkit-scrollbar {
+    width: 4px;
+}
+
+.container-image::-webkit-scrollbar-thumb {
+    background-color: gainsboro;
+    border-radius: 10px;
+}
+
+/* Khu vực hiển thị combobox */
+#display-combobox {
+    width: 320px;
+    height: 342px;
+
+}
+
+/* Phong cách văn bản màu sắc */
+.color-orange {
+    color: orange;
+    font-size: 17px;
+}
+
+.green {
+    color: green;
+    font-size: 20px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.italic-bold {
+    font-weight: bold;
+    font-style: italic;
+    font-size: 20px;
+}
+
+.your-class-name {
+    padding-bottom: 15px; /* Khoảng cách 15px ở phía dưới */
+}
+
+.button-light-green {
+    margin-top: 10px;
+    padding: 7px 20px 6px 33px;
+    background-color: #cfeadd; /* Màu xanh lá nhạt */
+    color: black; /* Màu chữ */
+    border: none; /* Bỏ viền */
+
+    border-radius: 5px; /* Bo góc */
+    cursor: pointer; /* Con trỏ chuột khi hover */
+}
+
+.button-dark-green {
+    margin-top: 10px;
+    margin-left: 10px;
+    background-color: #326E52; /* Màu xanh lá đậm */
+    color: white; /* Màu chữ trắng */
+    border: none; /* Bỏ viền */
+    padding: 10px 20px; /* Đệm cho nút */
+    border-radius: 5px; /* Bo góc */
+    cursor: pointer; /* Con trỏ chuột khi hover */
+}
+
+.button-orange {
+    margin-top: 10px;
+    background-color: #ff6600; /* Màu cam */
+    color: black; /* Màu chữ */
+    border: none; /* Bỏ viền */
+    padding: 5px 10px;
+    border-radius: 5px; /* Bo góc */
+    cursor: pointer; /* Con trỏ chuột khi hover */
+}
+
+/* Thêm hiệu ứng hover nếu cần */
+.button-light-green:hover,
+.button-dark-green:hover,
+.button-orange:hover {
+    opacity: 0.9; /* Giảm độ mờ khi hover */
+}
+
+.info-image {
+    width: 50px; /* Đặt chiều rộng cho ảnh */
+    height: auto; /* Giữ tỷ lệ cho ảnh */
+    margin-right: 10px; /* Khoảng cách giữa ảnh và văn bản */
+    vertical-align: middle; /* Căn giữa theo chiều dọc */
+}
+
+.your-infor {
+    background-color: white;
+    float: left;
+    padding: 10px;
+}
+
+.your-infor ul {
+    list-style-type: none; /* Xóa dấu đầu dòng */
+    padding: 0; /* Bỏ khoảng cách bên trong */
+}
+
+.your-infor li {
+    align-items: center; /* Căn giữa theo chiều dọc */
+    margin-bottom: 10px; /* Khoảng cách giữa các mục */
+}
+
+.main-infor-detail {
+    margin-right: 490px;
+    width: 1115px;
+}
+.font-bold{
+    font-weight: bold;
+}
+
+.choose-detail {
+    height: 40px; /* Chiều cao có thể điều chỉnh nếu cần */
+    display: flex;
+    margin-top: 10px;
+    margin-right: 70px;
+    margin-left: 45px;
+    background-color: white;
+    align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+.choose-detail ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center; /* Căn giữa các mục theo chiều dọc */
+}
+
+.choose-detail li {
+    margin-right: 15px; /* Khoảng cách giữa các mục */
+}
+
+.choose-detail li:not(:last-child)::after {
+    content: ''; /* Tạo một đường kẻ giữa các mục */
+    position: absolute;
+    right: 0;
+    top: 5px; /* Đặt vị trí đường kẻ */
+    width: 1px; /* Độ rộng của đường kẻ */
+    height: 20px; /* Độ cao của đường kẻ */
+    background-color: black; /* Màu của đường kẻ */
+}
+
+.choose-detail a {
+    text-decoration: none;
+    color: black; /* Đổi màu chữ nếu cần */
+    font-size: 20px; /* Cỡ chữ 20px */
+    padding: 5px 10px; /* Padding cho các mục */
+}
+
+
+.choose-detail a {
+    text-decoration: none;
+    color: black; /* Đổi màu chữ nếu cần */
+}
+.choose-detail a:hover {
+    color: #90ee90; /* Màu xanh lá nhạt */
+}
+#information {
+    margin-top: 10px;
+    margin-left: 45px; /* Căn trái */
+    margin-right: 70px; /* Căn phải */
+    background-color: white; /* Nền trắng */
+    padding: 15px; /* Khoảng cách bên trong */
+    border: 1px solid #ddd; /* Đường viền mỏng màu xám */
+}
+
+#information p {
+    font-size: 16px; /* Cỡ chữ cho đoạn văn */
+}
+
+#information img {
+    max-width: 100%; /* Giới hạn kích thước hình ảnh */
+    height: auto; /* Giữ tỉ lệ hình ảnh */
+}
+
+#parameter {
+    margin-top: 10px;
+    margin-left: 45px; /* Căn trái */
+    margin-right: 70px; /* Căn phải */
+    background-color: white; /* Nền trắng */
+    padding: 15px; /* Khoảng cách bên trong */
+    border: 1px solid #ddd; /* Đường viền mỏng màu xám */
+}
+
+#parameter h3 {
+    font-size: 20px; /* Cỡ chữ cho tiêu đề */
+}
+
+#parameter table {
+    width: 100%; /* Đặt chiều rộng bảng */
+    border-collapse: collapse; /* Kết hợp các đường viền */
+}
+
+#parameter td {
+    padding: 10px; /* Khoảng cách bên trong các ô */
+    border: 1px solid #ddd; /* Đường viền cho ô */
+}
+#parameter td:first-child {
+    background-color: #f0f0f0; /* Màu nền xám nhạt */
+}
+
+#ingredient {
+    margin-top: 10px;
+    margin-left: 45px; /* Căn trái */
+    margin-right: 70px; /* Căn phải */
+    background-color: white; /* Nền trắng */
+    padding: 15px; /* Khoảng cách bên trong */
+    border: 1px solid #ddd; /* Đường viền mỏng màu xám */
+}
+
+#ingredient h3,
+#ingredient h4 {
+    font-size: 20px; /* Cỡ chữ cho tiêu đề */
+    margin: 10px 0; /* Khoảng cách trên và dưới cho tiêu đề */
+}
+
+#ingredient strong {
+    display: block; /* Đưa phần tử strong xuống dòng mới */
+    margin-top: 10px; /* Khoảng cách phía trên */
+}
+strong {
+    color: black;
+}
+
+#ingredient ul li {
+    margin: 5px 0; /* Khoảng cách giữa các dòng */
+    font-size: 13px !important; /* Cỡ chữ của nội dung */
+    line-height: 1.6; /* Độ cao dòng để dễ đọc */
+}
+#use {
+    margin-top: 10px;
+    padding-bottom: 10px;
+    background-color: white;
+    margin-left: 45px; /* Căn trái */
+    margin-right: 70px; /* Căn phải */
+}
+
+#use h3 {
+    font-size: 13px !important; /* Cỡ chữ cho tiêu đề */
+    margin: 10px 20px;
+    padding-top:10px ;
+    /* Khoảng cách trên và dưới cho tiêu đề */
+}
+
+#use p {
+    margin: 5px 20px; /* Khoảng cách giữa các đoạn văn */
+}
+#use ul li {
+    margin: 5px 0; /* Khoảng cách giữa các dòng */
+    font-size: 16px; /* Cỡ chữ cho nội dung */
+    line-height: 1.6; /* Độ cao dòng để dễ đọc */
+}
+#Evaluate {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    width: 86%;
+    margin: 20px 45px;
+}
+
+#Evaluate h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+#Evaluate p {
+    margin: 8px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+#Evaluate strong {
+    font-size: 48px;
+    color: #f48024;
+    font-weight: bold;
+}
+
+#Evaluate span.rating-bar {
+    display: inline-block;
+    height: 10px;
+    margin-right: 10px;
+    background-color: #f48024;
+    border-radius: 5px;
+}
+
+#Evaluate span.five-stars {
+    width: 80%;
+}
+
+#Evaluate span.four-stars {
+    width: 50%;
+    background-color: #f8c847;
+}
+
+#Evaluate span.three-stars {
+    width: 30%;
+    background-color: #ccc;
+}
+
+#Evaluate span.two-stars {
+    width: 15%;
+    background-color: #aaa;
+}
+
+#Evaluate span.one-star {
+    width: 5%;
+    background-color: #e74c3c;
+}
+
+#Evaluate p span:first-child {
+    font-size: 18px;
+    margin-right: 10px;
+    vertical-align: middle;
+    color: #f48024;
+}
+
+#Evaluate .submit-review {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #f48024;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#Evaluate .submit-review:hover {
+    background-color: #e56717;
+    cursor: pointer;
+}
+/* Container chính */
+#Q&A {
+
+    margin-left: 4%;
+    background-color: white; /* Nền màu trắng */
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+}.form-control {
+     display: block;
+     width: 92%;
+     height: 34px;
+     padding: 6px 12px;
+     font-size: 14px;
+     line-height: 1.42857143;
+     color: #555;
+     background-color: #fff;
+     background-image: none;
+     border: 1px solid #ccc;
+     border-radius: 4px;
+     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+     -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+ }
+textarea {
+      color: inherit;
+      font: inherit;
+      margin: 0;
+  }
+
+/* Tiêu đề */
+#Q&A h3 {
+    font-size: 20px; /* Cỡ chữ cho tiêu đề */
+    margin: 10px 0; /* Khoảng cách trên và dưới cho tiêu đề */
+}
+
+/* Câu hỏi và câu trả lời */
+.question, .answer {
+    width: 92%;
+    border: 1px solid #ccc; /* Viền cho câu hỏi và câu trả lời */
+    padding: 10px; /* Khoảng cách bên trong cho câu hỏi và câu trả lời */
+    border-radius: 3px; /* Bo góc */
+    background-color: #f9f9f9; /* Màu nền cho câu hỏi và câu trả lời */
+    margin-bottom: 10px; /* Khoảng cách giữa các câu hỏi và câu trả lời */
+}
+
+/* Câu hỏi và câu trả lời khi hover */
+.question:hover, .answer:hover {
+    background-color: #f1f1f1;
+}
+
+/* Input và button */
+#Q&A input[type="text"] {
+    width: 80%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+#Q&A button {
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#Q&A button:hover {
+    background-color: #45a049;
+}
+
+/* Câu hỏi và trả lời */
+.question, .answer {
+    margin-bottom: 20px;
+}
+
+.question p, .answer p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.question strong, .answer strong {
+    font-size: 14px;
+    color: #333;
+}
+
+/* Đường dẫn Trả lời */
+.question p a {
+    text-decoration: none;
+    color: #007bff;
+    font-size: 14px;
+}
+
+.question p a:hover {
+    text-decoration: underline;
+}
+
+/* Thích và Trả lời */
+.question p span, .answer p span {
+    font-size: 14px;
+    color: #28a745;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.containers {
+    margin: 0 auto;
+    width: 1500px;
+
+}
+.container {
+    margin: 0 auto;
+    width: 1400px;
+
+}
