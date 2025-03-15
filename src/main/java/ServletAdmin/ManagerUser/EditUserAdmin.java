@@ -1,8 +1,6 @@
 package ServletAdmin.ManagerUser;
 
 import com.google.gson.Gson;
-import dao.LogDAOImp;
-import dao.LogDao;
 import dao.UserInfDao;
 import gson.GsonUtil;
 import jakarta.servlet.ServletException;
@@ -10,8 +8,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import object.LogEntry;
-import object.Log_Level;
 import object.UserInf;
 
 import java.io.BufferedReader;
@@ -24,7 +20,6 @@ public class EditUserAdmin extends HttpServlet {
         BufferedReader reader = request.getReader();
         Gson gson = GsonUtil.getGson();
         UserInf user = gson.fromJson(reader, UserInf.class);
-        String status = "Cập nhập người dùng thành công";
 
         // Logic thêm người dùng vào cơ sở dữ liệu
         try {
