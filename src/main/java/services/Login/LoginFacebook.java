@@ -1,19 +1,16 @@
-package servlet.login;
+package services.Login;
 
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
 import object.User;
 import org.apache.hc.client5.http.ClientProtocolException;
 import org.apache.hc.client5.http.fluent.Form;
 import org.apache.hc.client5.http.fluent.Request;
 
-import services.Login.IConstant;
-
 import java.io.IOException;
 
-public class LoginFacebook  {
+public class LoginFacebook {
 
 
         // Đọc dữ liệu JSON từ request

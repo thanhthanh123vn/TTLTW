@@ -133,7 +133,11 @@
 				<img
 						src="https://img.icons8.com/ios-filled/50/000000/facebook-new.png"
 						alt="Facebook"></a>
-				<a>
+				<a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid
+&redirect_uri=http://localhost:8080/WebMyPham__/loginGoogle
+&response_type=code
+&client_id=834631603807-ep2tbokt3a5qt1tpgdttlqr6mdnldgk3.apps.googleusercontent.com
+&approval_prompt=force">
 				<img
 					src="https://img.icons8.com/ios-filled/50/000000/google-logo.png"
 					alt="Google"></a>
