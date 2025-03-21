@@ -74,7 +74,7 @@ public class OrderDetail {
     }
 
     public int getTotalQuantity() {
-        return totalQuantity;
+     return  totalQuantity;
     }
 
     public void setTotalQuantity(int totalQuantity) {

@@ -5,10 +5,8 @@ import object.OrderDetail;
 import object.Product;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Date;
+import java.util.*;
 
 public class OrderDao {
     private Utils utils;
@@ -25,7 +23,7 @@ public class OrderDao {
 //                "od.price ,p.*,from   usersarress ua jojn order o  on ua.userid = o.userid" +
 //                "join orderdetails od on od.orderid = o.orderid" +
 //                "join products p on p.id = od.productid" ;
-        String sql = "SELECT ua.userid, ua.fullName, ua.address, ua.phone, o.orderDate\n" +
+        String sql = "SELECT DISTINCT ua.userid, ua.fullName, ua.address, ua.phone, o.orderDate\n" +
                 "FROM usersarress ua\n" +
                 "JOIN orders o ON ua.userid = o.userid\n" +
                 "JOIN orderdetails od ON od.orderid = o.orderid\n" +
@@ -58,49 +56,43 @@ public class OrderDao {
 
 
     public List<OrderDetail> getOrderDetails(int index) {
-        Map<String, OrderDetail> orderDetailsMap = new HashMap<>();
+        List<OrderDetail> orderDetailsList = new ArrayList<>();
         String sql = "SELECT ua.fullName, ua.address, ua.phone, \n" +
-                "                od.quantity, od.price, p.* \n" +
+                "                od.quantity, od.price, p.id, p.name, p.price \n" +
                 "                FROM usersarress ua \n" +
                 "                JOIN orders o ON ua.userid = o.userid \n" +
                 "                JOIN orderdetails od ON od.orderid = o.orderid  \n" +
                 "                JOIN products p ON p.id = od.productid \n" +
                 "                WHERE ua.userid = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, index);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String fullName = rs.getString("fullName");
-                String address = rs.getString("address");
-                String phone = rs.getString("phone");
-                int quantity = rs.getInt("quantity");
-                double price = rs.getDouble("price");
-                Product product = new Product(rs.getInt("id"), rs.getString("name"), rs.getDouble("price"));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String fullName = rs.getString("fullName");
+                    String address = rs.getString("address");
+                    String phone = rs.getString("phone");
+                    int quantity = rs.getInt("quantity");
+                    double price = rs.getDouble("price");
+                    Product product = new Product(rs.getInt("id"), rs.getString("name"), rs.getDouble("price"));
 
-                if (!orderDetailsMap.containsKey(fullName)) {
-                    List<Product> productList = new ArrayList<>();
-                    productList.add(product);
+                    // Tạo OrderDetail cho từng sản phẩm
                     OrderDetail orderDetail = new OrderDetail();
                     orderDetail.setRecipientName(fullName);
                     orderDetail.setPhoneNumber(phone);
                     orderDetail.setAddress(address);
-                    orderDetail.setProductList(productList);
+                    orderDetail.setProductList(Collections.singletonList(product));
                     orderDetail.setTotalQuantity(quantity);
-                    orderDetail.setTotalPrice(price);
-                    orderDetailsMap.put(fullName, orderDetail);
-                } else {
-                    OrderDetail orderDetail = orderDetailsMap.get(fullName);
+                    orderDetail.setTotalPrice(quantity * price);
 
-                    orderDetail.setTotalQuantity(orderDetail.getTotalQuantity() + quantity);
-                    orderDetail.setTotalPrice(orderDetail.getTotalPrice() + price);
+                    orderDetailsList.add(orderDetail);
                 }
             }
         } catch (SQLException e) {
             System.err.println("SQL Exception: " + e.getMessage());
             e.printStackTrace();
         }
-        return new ArrayList<>(orderDetailsMap.values());
+        return orderDetailsList;
+
     }
     public boolean insertOrderWithDetails(Order order, OrderDetail orderDetail) {
 
@@ -208,7 +200,14 @@ public class OrderDao {
         }
         return false;
     }
+public int productCount(List<Product> list){
+        int count = 0;
+        for (Product product : list) {
+            count += product.getQuantity();
 
+        }
+        return count;
+}
     }
 
 

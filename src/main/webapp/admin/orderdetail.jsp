@@ -106,10 +106,11 @@
                 double totalPrice = 0;
                 for (Product product : productList) {
                     totalQuantity += od.getTotalQuantity();
-                    totalPrice += od.getTotalPrice() * od.getTotalQuantity();
+                    totalPrice += od.getTotalPrice() ;
             %>
             <tr>
                 <td><%= product.getName() %></td>
+
                 <td><%= od.getTotalQuantity() %></td>
                 <td><%= String.format("%.2f", product.getPrice()) %> đ</td>
             </tr>
