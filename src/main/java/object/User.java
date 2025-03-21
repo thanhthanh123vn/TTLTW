@@ -24,6 +24,13 @@ public class User {
         this.date = date;
         this.sdt = sdt;
     }
+
+    public User(String email, String fullName, int id) {
+        this.email = email;
+        this.fullName = fullName;
+        this.id = id;
+    }
+
     public User(int id, String fullName, String email, String password, String  role) {
         this.id = id;
         this.fullName = fullName;

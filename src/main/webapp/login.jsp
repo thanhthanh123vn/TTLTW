@@ -128,11 +128,15 @@
 			<a id="quenmk" href="index/forgot-pass.jsp">Quên mật khẩu</a>
 			<p>Hoặc đăng nhập bằng</p>
 			<div class="login-alt">
+
+				<a  href="https://www.facebook.com/v19.0/dialog/oauth?fields=id,name,email&client_id=1486223125654432&redirect_uri=http://localhost:8080/WebMyPham__/login">
 				<img
 						src="https://img.icons8.com/ios-filled/50/000000/facebook-new.png"
-						alt="Facebook"> <img
+						alt="Facebook"></a>
+				<a>
+				<img
 					src="https://img.icons8.com/ios-filled/50/000000/google-logo.png"
-					alt="Google">
+					alt="Google"></a>
 			</div>
 			<p class="sign-up">
 				Bạn chưa có tài khoản? <a href="signUp.jsp">Đăng ký</a>
@@ -178,6 +182,26 @@
 			};
 		}
 	};
+</script>
+<script>
+	window.fbAsyncInit = function() {
+		FB.init({
+			appId      : 'YOUR_APP_ID', // Thay YOUR_APP_ID bằng App ID của bạn
+			cookie     : true,
+			xfbml      : true,
+			version    : 'v18.0' // Phiên bản API mới nhất
+		});
+
+		FB.AppEvents.logPageView();
+	};
+
+	(function(d, s, id){
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) {return;}
+		js = d.createElement(s); js.id = id;
+		js.src = "https://connect.facebook.net/en_US/sdk.js";
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
 </script>
 </body>
 

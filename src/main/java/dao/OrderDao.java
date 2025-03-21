@@ -103,7 +103,9 @@ public class OrderDao {
         return new ArrayList<>(orderDetailsMap.values());
     }
     public boolean insertOrderWithDetails(Order order, OrderDetail orderDetail) {
+
         String insertOrderSQL = "INSERT INTO orders (UserID, OrderDate, Status) VALUES (?, ?, ?)";
+
         String insertOrderDetailSQL = "INSERT INTO orderdetails (OrderID, ProductID, UserId, Quantity, Price) VALUES (?, ?, ?, ?, ?)";
 
         try {
@@ -159,6 +161,24 @@ public class OrderDao {
         return false;
     }
 
+    public boolean checkUserID(int userID){
+
+        String sql =  "select id from users";
+        try{
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                if(userID == rs.getInt("id")){
+                    return true;
+
+                }
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
 
 
     public boolean removerOrder(int id){
