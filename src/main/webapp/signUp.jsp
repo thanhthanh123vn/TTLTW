@@ -192,10 +192,10 @@ a.txt_color_1:hover {
 
 		<div class="form-group ">
 					<div class="relative parent_code_register">
-					
+
 						<input autocomplete="off" placeholder="Nhập mã xác thực 6 số"
-							type="text" name="code" title="Code"
-							class="codeRegister input-text">
+							   type="text" name="code" title="Code"
+							   class="codeRegister input-text" onblur="verifyCode()" id="codeInput">
 
 						<button type="button" id="verifyUserName"
 							data-error=".showRegisterMessage">lấy mã</button>
@@ -415,7 +415,7 @@ a.txt_color_1:hover {
 		</div>
 
 	</div>
-<script src="${pageContext.request.contextPath}/js/validatorSignUp.js"></script>
+
 	<script>
 		document
 				.getElementById("verifyUserName")
@@ -452,6 +452,8 @@ a.txt_color_1:hover {
 			document.getElementById("warningAlert").style.display = "block";
 		}
 
+
+
 		// Kiểm tra nếu có biến `showAlert` được truyền vào
 	<%String showAlert = (String) session.getAttribute("errorMessage");
 if (showAlert != null && "true".equals(showAlert)) {%>
@@ -460,6 +462,7 @@ if (showAlert != null && "true".equals(showAlert)) {%>
 	<%}%>
 		
 	</script>
+	<script src="${pageContext.request.contextPath}/js/validatorSignUp.js"></script>
 
 	<%
 	session.removeAttribute("errorMessage");
