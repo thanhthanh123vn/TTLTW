@@ -94,7 +94,7 @@
 	<div class="form-sign">
 
 		<form action="LoginHandle" method="POST" class="form"
-			  id="register-form" onsubmit="return validateForm()">
+			  id="register-form">
 
 
 			<h3 class="heading">Đăng Nhập❤️</h3>
@@ -124,7 +124,7 @@
 
 
 
-			<button  type="submit" class="form-submit">Đăng Nhập</button>
+			<button  type="submit" class="form-submit" >Đăng Nhập</button>
 			<a id="quenmk" href="index/forgot-pass.jsp">Quên mật khẩu</a>
 			<p>Hoặc đăng nhập bằng</p>
 			<div class="login-alt">
@@ -187,26 +187,9 @@
 		}
 	};
 </script>
-<script>
-	window.fbAsyncInit = function() {
-		FB.init({
-			appId      : 'YOUR_APP_ID', // Thay YOUR_APP_ID bằng App ID của bạn
-			cookie     : true,
-			xfbml      : true,
-			version    : 'v18.0' // Phiên bản API mới nhất
-		});
 
-		FB.AppEvents.logPageView();
-	};
 
-	(function(d, s, id){
-		var js, fjs = d.getElementsByTagName(s)[0];
-		if (d.getElementById(id)) {return;}
-		js = d.createElement(s); js.id = id;
-		js.src = "https://connect.facebook.net/en_US/sdk.js";
-		fjs.parentNode.insertBefore(js, fjs);
-	}(document, 'script', 'facebook-jssdk'));
-</script>
+
 </body>
 
 </html>

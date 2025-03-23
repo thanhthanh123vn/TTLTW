@@ -1,8 +1,11 @@
 package services;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.Date;
 
 import dao.IndexAdminDao;
 import jakarta.servlet.ServletException;
@@ -18,77 +21,81 @@ import object.User;
 public class LoginUser extends HttpServlet {
 	private InforUser user;
 
+
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		user = new InforUser();
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
 
-		User userCus = user.checkUser(username, password); // Sử dụng mật khẩu đã băm
+		// Kiểm tra thông tin đăng nhập
+		User userCus = user.checkUser(username, password);
 
-		if (userCus != null) { // Nếu tài khoản tồn tại
+		if (userCus != null) { // Đăng nhập thành công
+			System.out.println("User login success: " + userCus.getFullName());
+
 			HttpSession session = req.getSession();
-			session.setAttribute("user", userCus); // Lưu thông tin người dùng vào session
+			session.setAttribute("user", userCus);
 
-			// Lưu cookie nếu muốn ghi nhớ thông tin đăng nhập
+			// Lưu cookie
 			Cookie userCookie = new Cookie("userC", username);
-//          Cookie passCookie = new Cookie("passC", password);
-			userCookie.setMaxAge(60 * 60 * 24); // Cookie tồn tại trong 1 ngày
-//          passCookie.setMaxAge(60 * 60 * 24);
+			userCookie.setMaxAge(60 * 60 * 24);
 			resp.addCookie(userCookie);
-//          resp.addCookie(passCookie);
 
+			//  Ghi log đăng nhập (CHỈ khi xác thực thành công)
+			logLogin(userCus);
+
+			// Điều hướng sau khi đăng nhập
 			if ("user".equalsIgnoreCase(userCus.getRole())) {
 				req.getRequestDispatcher("products").forward(req, resp);
 			} else if ("admin".equalsIgnoreCase(userCus.getRole())) {
 				IndexAdminDao dao = new IndexAdminDao();
 				LocalDate date = LocalDate.now();
 				int year = date.getYear();
-				System.out.println(year);
-
 				int month = date.getMonthValue();
-				System.out.println(month);
 
 				double TurnoverYear = dao.TurnoverInYear(year);
 				double TurnoverMonth = dao.TurnoverInMonth(month, year);
-				System.out.println("Doanh Thu Nam"+TurnoverYear);
-				if (TurnoverYear > 0 && TurnoverMonth > 0) {
-					req.setAttribute("TurnoverYear", TurnoverYear);
-					req.setAttribute("TurnoverMonth", TurnoverMonth);
-					req.getRequestDispatcher("admin/index.jsp").forward(req, resp);
-					return;
-				}
-				req.setAttribute("error", "Không thể tải Doanh thu Nam va Thang");
+
+				req.setAttribute("TurnoverYear", TurnoverYear);
+				req.setAttribute("TurnoverMonth", TurnoverMonth);
+
 				req.getRequestDispatcher("admin/index.jsp").forward(req, resp);
 			}
-		} else {
+		} else { // Đăng nhập thất bại
+			System.out.println("User login failed: Invalid username or password.");
 			req.setAttribute("errorMessage", "Tên người dùng hoặc mật khẩu không đúng!");
 			req.getRequestDispatcher("login.jsp").forward(req, resp);
 		}
 	}
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		Cookie[] cookies = req.getCookies();
-		String username = null;
-		String password = null;
 
-		// Lấy thông tin từ cookie nếu có
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals("userC")) {
-					username = cookie.getValue();
-				}
-				if (cookie.getName().equals("passC")) {
-					password = cookie.getValue();
-				}
+	// Ghi log đăng nhập
+	synchronized public  void logLogin(User user) {
+		System.out.println("log Info user");
+		try {
+			URL url = new URL("http://localhost:8080/WebMyPham__/log");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setDoOutput(true);
+
+			String jsonInput = String.format(
+					"{\"level\": \"INFO\", \"message\":\"User Login\", \"userId\": %d, \"username\": \"%s\"}",
+					user.getId(), user.getFullName()
+			);
+
+			System.out.println("Sending log: " + jsonInput);
+
+			try (OutputStream os = conn.getOutputStream()) {
+				byte[] input = jsonInput.getBytes(StandardCharsets.UTF_8);
+				os.write(input, 0, input.length);
 			}
-		}
 
-		if (username != null && password != null) {
-			req.setAttribute("username", username);
-			req.setAttribute("password", password);
+			int responseCode = conn.getResponseCode();
+			System.out.println("Log response: " + responseCode);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		doPost(req, resp); // Gọi doPost để xử lý logic đăng nhập
 	}
 }

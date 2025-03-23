@@ -56,7 +56,7 @@ async function verifyCode() {
 function getCode() {
     alert("Mã xác thực đã được gửi!");
 }
-function validateForm() {
+async function validateForm() {
     const email = document.getElementById("email");
     const code = document.querySelector(".codeRegister");
     const password = document.getElementById("password");
@@ -102,8 +102,10 @@ function validateForm() {
         clearError(username);
     }
 
+
     return isValid;
 }
+
 
 function displayError(element, message) {
     const errorElement = element.parentElement.querySelector(".form-message");
@@ -113,6 +115,7 @@ function displayError(element, message) {
         element.classList.add("is-invalid"); // Thêm class cho input để báo lỗi
     }
 }
+
 
 function clearError(element) {
     const errorElement = element.parentElement.querySelector(".form-message");
