@@ -5,7 +5,10 @@ public  class LogEntry {
     public String level;
     public String message;
     public int userId;
-    private String username;
+    private String preData;
+    private String afterData;
+
+
     // 🔥 Constructor mặc định (Jackson cần)
     public LogEntry() {}
 
@@ -17,20 +20,29 @@ public  class LogEntry {
         this.userId = userId;
     }
 
-    public LogEntry(String timestamp, String level, String message, int userId, String username) {
+    public LogEntry(String timestamp, String level, String message, int userId, String preData, String afterData) {
         this.timestamp = timestamp;
         this.level = level;
         this.message = message;
         this.userId = userId;
-        this.username = username;
+        this.preData = preData;
+        this.afterData = afterData;
     }
 
-    public String getUsername() {
-        return username;
+    public String getPreData() {
+        return preData;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setPreData(String preData) {
+        this.preData = preData;
+    }
+
+    public String getAfterData() {
+        return afterData;
+    }
+
+    public void setAfterData(String afterData) {
+        this.afterData = afterData;
     }
 
     public String getTimestamp() {

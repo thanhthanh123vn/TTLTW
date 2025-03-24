@@ -23,10 +23,17 @@ public class LoginUser extends HttpServlet {
 
 
 	@Override
+
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		user = new InforUser();
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
+
+		HttpSession session = req.getSession();
+		Integer failedAttempts = (Integer) session.getAttribute("failedAttempts");
+		if (failedAttempts == null) {
+			failedAttempts = 0;
+		}
 
 		// Kiểm tra thông tin đăng nhập
 		User userCus = user.checkUser(username, password);
@@ -34,16 +41,16 @@ public class LoginUser extends HttpServlet {
 		if (userCus != null) { // Đăng nhập thành công
 			System.out.println("User login success: " + userCus.getFullName());
 
-			HttpSession session = req.getSession();
 			session.setAttribute("user", userCus);
+			session.removeAttribute("failedAttempts"); // Reset bộ đếm
 
 			// Lưu cookie
 			Cookie userCookie = new Cookie("userC", username);
 			userCookie.setMaxAge(60 * 60 * 24);
 			resp.addCookie(userCookie);
 
-			//  Ghi log đăng nhập (CHỈ khi xác thực thành công)
-			logLogin(userCus);
+			// Ghi log đăng nhập thành công
+			logLogin(userCus, "INFO", "User Login");
 
 			// Điều hướng sau khi đăng nhập
 			if ("user".equalsIgnoreCase(userCus.getRole())) {
@@ -63,16 +70,27 @@ public class LoginUser extends HttpServlet {
 				req.getRequestDispatcher("admin/index.jsp").forward(req, resp);
 			}
 		} else { // Đăng nhập thất bại
-			System.out.println("User login failed: Invalid username or password.");
+			failedAttempts++;
+			if(failedAttempts >= 5) {
+				failedAttempts = 0;
+				logLogin(userCus, "WARN", "User Login Failed 5 times");
+			}
+			session.setAttribute("failedAttempts", failedAttempts);
+
+
+
+			if (failedAttempts >= 5) {
+				logLogin(null, "WARN", "User " + username + " nhập sai mật khẩu 5 lần!");
+			}
+
 			req.setAttribute("errorMessage", "Tên người dùng hoặc mật khẩu không đúng!");
 			req.getRequestDispatcher("login.jsp").forward(req, resp);
 		}
 	}
 
-
-	// Ghi log đăng nhập
-	synchronized public  void logLogin(User user) {
-		System.out.println("log Info user");
+	// Ghi log đăng nhập hoặc cảnh báo
+	synchronized public void logLogin(User user, String level, String message) {
+		System.out.println("Log Info user");
 		try {
 			URL url = new URL("http://localhost:8080/WebMyPham__/log");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -81,8 +99,11 @@ public class LoginUser extends HttpServlet {
 			conn.setDoOutput(true);
 
 			String jsonInput = String.format(
-					"{\"level\": \"INFO\", \"message\":\"User Login\", \"userId\": %d, \"username\": \"%s\"}",
-					user.getId(), user.getFullName()
+					"{\"level\": \"%s\", \"message\":\"%s\", \"userId\": %s}",
+					level,
+					message,
+					(user != null ? user.getId() : "null")
+
 			);
 
 			System.out.println("Sending log: " + jsonInput);
@@ -98,4 +119,5 @@ public class LoginUser extends HttpServlet {
 			e.printStackTrace();
 		}
 	}
+
 }
