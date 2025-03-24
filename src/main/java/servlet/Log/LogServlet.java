@@ -48,6 +48,9 @@ public class LogServlet extends HttpServlet {
                 case "DEBUG":
                     log.writeLog(logEntry);
                     break;
+                case "DANGER":
+                    log.writeDanger(logEntry);
+                    break;
                 default:
                     resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     out.print("{\"status\":\"error\", \"message\":\"Invalid log level\"}");
