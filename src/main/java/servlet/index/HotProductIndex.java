@@ -20,7 +20,7 @@ public class HotProductIndex extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         List<Product> products = dao.getHotProduct();
-        System.out.println(products.size());
+        System.out.println(products.size()+" hot product");
         String json = new GsonUtil().getGson().toJson(products);
 
         resp.getWriter().write(json);

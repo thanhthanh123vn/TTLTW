@@ -102,7 +102,7 @@ function saveUser() {
     const user = { userName, role,password, address, imageURL, email, phone };
     const index = document.getElementById("userModal").dataset.index;
     const isEdit = index !== undefined && index !== '';
-    const url = isEdit ? "http://localhost:8080/WebMyPham__/EditUser" : "http://localhost:8080/WebMyPham__/AddUser";
+    const url = isEdit ? "http://localhost:8080/WebMyPham__/EditUser?action" : "http://localhost:8080/WebMyPham__/AddUser";
 
     fetch(url, {
         method: "POST",

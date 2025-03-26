@@ -173,14 +173,7 @@
                     </div>
                     <div id="productContainer">
                      <c:if test="${sessionScope.cart !=null}">
-                         <button class="btn" style="  color: white;
-                                 background-color: #055617;
-                                 border: none;
-                                 padding: 15px;
-                                 border-radius: 5px;
-                                 margin-top: 10px;
-                                 cursor: pointer;
-                                 text-decoration: none;">Tổng cộng: ${sessionScope.cart.totalCart}</button>
+
                      </c:if>
                         <c:if test="${sessionScope.payProduct !=null}">
                             <button class="btn" style="  color: white;
@@ -195,12 +188,10 @@
 
 
 
-
-
                     </div>
 
                     <div style="display: flex; justify-content: center; margin-top: 30px;">
-                        <a href="http://localhost:8080/WebMyPham__/index.jsp" class="btn" style="  color: white;
+                        <a href="http://localhost:8080/WebMyPham__/products" class="btn" style="  color: white;
             background-color: #055617;
             border: none;
             padding: 15px;

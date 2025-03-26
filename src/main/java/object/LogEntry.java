@@ -1,89 +1,84 @@
 package object;
-// Lớp hỗ trợ để tạo JSON
-public  class LogEntry {
-    public String timestamp;
-    public String level;
-    public String message;
-    public int userId;
-    private String preData;
-    private String afterData;
 
 
-    // 🔥 Constructor mặc định (Jackson cần)
-    public LogEntry() {}
+import java.sql.Timestamp;
 
+public class LogEntry {
+    private int id;
+    private Log_Level logLevel;
+    private String address;
+    private String ip;
+    private String beforeValue;
+    private String afterValue;
+    private Timestamp createAt;
 
-    public LogEntry(String timestamp, String level, String message, int userId) {
-        this.timestamp = timestamp;
-        this.level = level;
-        this.message = message;
-        this.userId = userId;
+    public LogEntry() {
+
     }
 
-    public LogEntry(String timestamp, String level, String message, int userId, String preData, String afterData) {
-        this.timestamp = timestamp;
-        this.level = level;
-        this.message = message;
-        this.userId = userId;
-        this.preData = preData;
-        this.afterData = afterData;
+    public LogEntry(int id, Log_Level logLevel, String address, String ip, String beforeValue, String afterValue, Timestamp createAt) {
+        this.id = id;
+        this.logLevel = logLevel;
+        this.address = address;
+        this.ip = ip;
+        this.beforeValue = beforeValue;
+        this.afterValue = afterValue;
+        this.createAt = createAt;
     }
 
-    public String getPreData() {
-        return preData;
+    public int getId() {
+        return id;
     }
 
-    public void setPreData(String preData) {
-        this.preData = preData;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getAfterData() {
-        return afterData;
+    public Log_Level getLogLevel() {
+        return logLevel;
     }
 
-    public void setAfterData(String afterData) {
-        this.afterData = afterData;
+    public void setLogLevel(Log_Level logLevel) {
+        this.logLevel = logLevel;
     }
 
-    public String getTimestamp() {
-        return timestamp;
+    public String getAddress() {
+        return address;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public String getLevel() {
-        return level;
+    public String getIp() {
+        return ip;
     }
 
-    public void setLevel(String level) {
-        this.level = level;
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
-    public String getMessage() {
-        return message;
+    public String getBeforeValue() {
+        return beforeValue;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setBeforeValue(String beforeValue) {
+        this.beforeValue = beforeValue;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getAfterValue() {
+        return afterValue;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setAfterValue(String afterValue) {
+        this.afterValue = afterValue;
     }
 
-    @Override
-    public String toString() {
-        return "LogEntry{" +
-                "timestamp='" + timestamp + '\'' +
-                ", level='" + level + '\'' +
-                ", message='" + message + '\'' +
-                ", userId=" + userId +
-                '}';
+    public Timestamp getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Timestamp createAt) {
+        this.createAt = createAt;
     }
 }

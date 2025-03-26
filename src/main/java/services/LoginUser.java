@@ -8,6 +8,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
 import dao.IndexAdminDao;
+import dao.LogDAOImp;
+import dao.LogDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
@@ -15,13 +17,15 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import object.LogEntry;
+import object.Log_Level;
 import object.User;
 
 @WebServlet("/LoginHandle")
 public class LoginUser extends HttpServlet {
 	private InforUser user;
 
-
+LogDao logDao = new LogDAOImp();
 	@Override
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -48,9 +52,16 @@ public class LoginUser extends HttpServlet {
 			Cookie userCookie = new Cookie("userC", username);
 			userCookie.setMaxAge(60 * 60 * 24);
 			resp.addCookie(userCookie);
+			String status ="Đăng Nhập thành công";
+			var log = new LogEntry();
+			log.setIp(req.getRemoteAddr());
+			log.setAddress("user");
+			log.setLogLevel(Log_Level.INFO);
+			log.setBeforeValue("EMPTY");
+			log.setAfterValue(user.toString());
+			logDao.add(log);
+			req.setAttribute("status", status);
 
-			// Ghi log đăng nhập thành công
-			logLogin(userCus, "INFO", "User Login");
 
 			// Điều hướng sau khi đăng nhập
 			if ("user".equalsIgnoreCase(userCus.getRole())) {
