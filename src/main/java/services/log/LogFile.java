@@ -3,7 +3,12 @@ package services.log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dao.Utils;
 import object.LogEntry;
+import object.UserInf;
 
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -84,6 +89,35 @@ public void logUpdateData(LogEntry entry){
     }
     public void writeDanger(LogEntry msg) {
         logDeletData(msg);
+    }
+    public  static void logDeleteUser(UserInf user, String level, String message) {
+        try {
+            URL url = new URL("http://localhost:8080/WebMyPham__/log");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+
+            String jsonInput = String.format(
+                    "{\"level\": \"%s\", \"message\":\"%s\", \"userId\": %s, \"preData\": \"%s\"}",
+                    level,
+                    message,
+                    (user != null ? user.getId() : "null"),
+                    (user != null ? user.toString() : "unknown")
+            );
+
+            System.out.println("Sending log: " + jsonInput);
+
+            try (OutputStream os = conn.getOutputStream()) {
+                byte[] input = jsonInput.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+            }
+
+            int responseCode = conn.getResponseCode();
+            System.out.println("Log response: " + responseCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
