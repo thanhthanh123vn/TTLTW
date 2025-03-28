@@ -41,6 +41,7 @@ LogDao logDao = new LogDAOImp();
 
 		// Kiểm tra thông tin đăng nhập
 		User userCus = user.checkUser(username, password);
+		System.out.println(userCus.toString());
 
 		if (userCus != null) { // Đăng nhập thành công
 			System.out.println("User login success: " + userCus.getFullName());

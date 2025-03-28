@@ -108,6 +108,24 @@ public List<User> getList(){
 		}
 			return false;
 	}
+	public boolean UpdateToken(String  email ,String token) {
+		String sql = "UPDATE users SET token = ? WHERE  email = ? ";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, token);
+			ps.setString(2, email);
+
+
+
+			int row = ps.executeUpdate();
+			return row > 0;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	public boolean UpdatePassWord(String  password  ,String email) {
 		String sql = "UPDATE users SET password = ? WHERE email = ?";
 		try {

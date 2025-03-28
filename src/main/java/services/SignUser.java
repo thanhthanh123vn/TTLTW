@@ -8,6 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
@@ -57,6 +60,19 @@ public class SignUser extends HttpServlet {
 		inforUser = new InforUser();
 
 		String email = request.getParameter("email");
+		String gender = request.getParameter("gender");
+		String day = request.getParameter("popup-date");
+		String month = request.getParameter("popup-month");
+		String year = request.getParameter("popup-year");
+		String dob = year + "-" + month + "-" + day;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date dateOfBirth = null;
+        try {
+            dateOfBirth = sdf.parse(dob);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        java.sql.Date sqlDate = new java.sql.Date(dateOfBirth.getTime());
 
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
@@ -68,7 +84,7 @@ public class SignUser extends HttpServlet {
 
 		if (!checkInfoUser && codeAth.equals(codeFromSession)) {
 			System.out.println("SignUp");
-			inforUser.insertUser(username, email, password);
+			inforUser.insertUser(username, email, password,gender,sqlDate);
 			session.setAttribute("username", username);
 			request.setAttribute("showAlert", "true");
 			request.getRequestDispatcher("index.jsp").forward(request, response);

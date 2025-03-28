@@ -48,7 +48,7 @@
 </head>
 <body>
 <div class="container">
-    <form id="forgot-password-form" action="http://localhost:8080/WebMyPham__/RestPassword" method="POST">
+    <form id="forgot-password-form" action="http://localhost:8080/WebMyPham__/sendEmailActivity" method="POST">
 
         <h3 class="heading">Quên mật khẩu?</h3>
         <div class="spacer"></div>
