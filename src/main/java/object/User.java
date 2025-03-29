@@ -1,6 +1,8 @@
 package object;
 
 
+import dao.UserInfDao;
+
 import java.util.Date;
 
 public class User {
@@ -12,6 +14,7 @@ public class User {
     private String role;
     private String malle;
     private String sdt;
+    private String avatar;
 
     // Constructors
     public User(int id, String fullName, String email, String password, String role , String malle, Date date,String sdt) {
@@ -23,6 +26,7 @@ public class User {
         this.malle = malle;
         this.date = date;
         this.sdt = sdt;
+        this.avatar = avatar;
     }
 
     public User(String email, String fullName, int id) {
@@ -70,7 +74,7 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
-    } 
+    }
 
     public String getFullName() {
         return fullName;
@@ -106,10 +110,13 @@ public class User {
     public void setRole(String role){
         this.role = role;
     }
-    public String getRole(){
-        return role;
+    public String getRole(){return role;}
+    public String getAvatar() {return avatar;}
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+        UserInfDao userDao = new UserInfDao();
+        userDao.updateAvatar(this.id, avatar);
     }
-
     // toString method
     @Override
     public String toString() {
@@ -119,6 +126,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", date=" + date +
+                ", avatar='" + avatar + '\'' +
                 '}';
     }
 }

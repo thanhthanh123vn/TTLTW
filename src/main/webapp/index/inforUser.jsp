@@ -68,16 +68,17 @@
         <div class="account-section">
           <form action="http://localhost:8080/WebMyPham__/updateInforUser" method="post" class="form" id="register-form">
           <h2>Thông tin tài khoản</h2>
-          <div class="profile-picture">
-            <div class="profile-picture-left">
-              <img src="https://hasaki.vn/images/graphics/account-full.svg" alt="Tài ảnh của bạn">
-              <a>Tải ảnh của bạn</a>
+            <div class="profile-picture">
+              <div class="profile-picture-left">
+                <img id="avatar-preview" src="${sessionScope.user.avatar != null ? sessionScope.user.avatar : 'https://hasaki.vn/images/graphics/account-full.svg'}" alt="Ảnh đại diện của bạn">
+                <input type="file" id="avatar-upload" name="avatar" accept="image/*">
+              </div>
+              <div class="profile-picture-right">
+                <input type="email" name="email" value="${sessionScope.user.email}" readonly>
+                <input type="text" name="name" value="${sessionScope.user.fullName}">
+              </div>
             </div>
-            <div class="profile-picture-right">
-              <input type="email" name="email" value="${sessionScope.user.email}" readonly>
-              <input type="text" name="name" value="${sessionScope.user.fullName}">
-            </div>
-          </div>
+            <button type="button" onclick="uploadAvatar()">Cập nhật ảnh đại diện</button>
 
 
           <div class="gender-selection">
@@ -140,7 +141,7 @@
     <script src="../js/updateUserMain.js"></script>
     <script src="../js/main.js"></script>
 
-
+    <script src="../js/uploadAvatar.js"></script>
 
 
 

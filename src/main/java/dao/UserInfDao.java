@@ -257,6 +257,21 @@ public boolean insertAddressUser(UserInf userInf){
             }
         }
     }
+// Up load ảnh đại diện
+public boolean updateAvatar(int userID, String imageUrl) {
+    String sql = "UPDATE UserArress SET imageURL = ? WHERE userID = ?";
+    try {
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, imageUrl);
+        ps.setInt(2, userID);
+
+        int row = ps.executeUpdate();
+        return row > 0; // Trả về true nếu cập nhật thành công
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false; // Trả về false nếu có lỗi
+}
 
     public static void main(String[] args) {
         String name  ="%le%";
