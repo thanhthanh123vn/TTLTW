@@ -5,13 +5,14 @@
 
 let attemptCount = 0;
 const maxAttempts = 5;
-const lockTime = 60000; // 1 phút
-document.addEventListener("DOMContentLoaded", function () {
-    let codeInput = document.getElementById("codeInput");
-    if (codeInput) {
-        codeInput.addEventListener("blur", verifyCode);
-    }
-});
+var lockTime = 60000; // 1 phút
+// document.addEventListener("DOMContentLoaded", function () {
+//     let codeInput = document.getElementById("codeInput");
+//     if (codeInput) {
+//         codeInput.addEventListener("blur", verifyCode);
+//
+//     }
+// });
 async function verifyCode() {
     console.log("Sự kiện onblur đã chạy!");
     let codeInput = document.getElementById("codeInput");
@@ -24,7 +25,7 @@ async function verifyCode() {
     }
 
     try {
-        let response = await fetch("http://localhost:8080/WebMyPham__/verycode?code=" + codeInput.value);
+        let response = await fetch("http://localhost:8080/WebMyPham__/very?code=" + codeInput.value);
         let result = await response.json();
 
         if (result.status === "success") {
@@ -38,12 +39,38 @@ async function verifyCode() {
                 button.disabled = true;
                 message.innerText = "Bạn đã nhập quá số lần cho phép! Vui lòng thử lại sau 1 phút.";
 
-                setTimeout(() => {
-                    attemptCount = 0;
-                    codeInput.disabled = false;
-                    button.disabled = false;
-                    message.innerText = "";
-                }, lockTime);
+                switch (attemptCount) {
+                    case 5:
+                        lockTime = 60000;
+                        setTimeout(() => {
+
+                            codeInput.disabled = false;
+                            button.disabled = false;
+                            message.innerText = "";
+                        }, lockTime);
+                        break;
+                    case 10:
+                        lockTime = 300000;
+                        setTimeout(() => {
+
+                            codeInput.disabled = false;
+                            button.disabled = false;
+                            message.innerText = "";
+                        }, lockTime);
+                        break;
+                    case  15:
+                        lockTime = 3600000;
+                        setTimeout(() => {
+
+                            codeInput.disabled = false;
+                            button.disabled = false;
+                            message.innerText = "";
+                        }, lockTime);
+                        break;
+
+                }
+
+
             }
         }
     } catch (error) {

@@ -153,41 +153,91 @@
 
 
 <%
-	String errorMessage = (String) session.getAttribute("errorMessage");
-	if (errorMessage == null) {
-		errorMessage = ""; // Hoặc một giá trị mặc định nếu chưa đăng nhập
+	String errorMessage = (request.getAttribute("errorMessage") !=null ) ? request.getAttribute("errorMessage").toString() : "";
+
+	int failedAttempts = 0; // Mặc định là 0 nếu chưa có trong session
+	if (session.getAttribute("failedAttempts") != null) {
+		try {
+			failedAttempts = Integer.parseInt(session.getAttribute("failedAttempts").toString());
+		} catch (NumberFormatException e) {
+			failedAttempts = 0; // Nếu có lỗi chuyển đổi, giữ giá trị mặc định
+		}
 	}
 %>
 
+
+
 <script>
 	window.onload = function() {
-		// Lấy phần tử alert-warning và button cảnh báo
+		var lockTime = 0;
 		const alertDiv = document.querySelector('.alert-warning');
 		const alertButton = document.getElementById('alertButton');
-		const errorMessage = "${errorMessage}";
-		console.log(errorMessage);
+		const errorMessage = "<%= errorMessage %>";
+		var failedAttempts = parseInt("<%= failedAttempts %>", 10) || 0;
+		const password = document.getElementById("password");
+		const username = document.getElementById("fullname");
 
-		// Kiểm tra nếu có thông báo lỗi, hiển thị cảnh báo
-		if (errorMessage!=="" && alertDiv) {
-			alertDiv.style.display = "block"; // Hiển thị cảnh báo
-			alertButton.textContent = errorMessage; // Đặt nội dung lỗi vào nút button
+		console.log("Số lần nhập sai:", failedAttempts);
 
-			// Sau 5 giây, ẩn cảnh báo đi
-			setTimeout(function() {
-				alertDiv.style.display = "none";
-			}, 5000); // 5000ms = 5 giây
+		// Xác định thời gian khóa dựa vào số lần nhập sai
+		if (failedAttempts >= 5 && failedAttempts < 10) {
+			lockTime = 60000; // 1 phút
+		} else if (failedAttempts >= 10 && failedAttempts < 15) {
+			lockTime = 300000; // 5 phút
+		} else if (failedAttempts >= 15) {
+			lockTime = 3600000; // 1 giờ
 		}
 
-		// Điều hướng đến trang 'forgot-passwxord.html' khi người dùng bấm vào 'quenmk'
+		// Nếu số lần nhập sai vượt ngưỡng, khóa input ngay lập tức
+		if (lockTime > 0) {
+			console.log("Tài khoản bị khóa trong:", lockTime / 1000, "giây");
+
+			// Khóa input ngay lập tức
+			password.disabled = true;
+			username.disabled = true;
+
+			// Hiển thị cảnh báo ngay lập tức
+			alertDiv.style.display = "block";
+			alertButton.innerText = `Tài khoản bị khóa do nhập sai ${failedAttempts} lần. Vui lòng thử lại sau!`+lockTime/60000;
+
+			// Mở khóa sau lockTime
+			setTimeout(() => {
+				password.disabled = false;
+				username.disabled = false;
+				alertButton.innerText = "Bạn có thể thử lại ngay bây giờ!";
+			}, lockTime);
+		} else {
+			// Hiển thị thông báo lỗi nếu có
+			if (errorMessage !== "" && alertDiv) {
+				alertDiv.style.display = "block";
+				alertButton.textContent = errorMessage;
+
+				setTimeout(() => {
+					alertDiv.style.display = "none";
+				}, 5000); // 5 giây
+			}
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+	// Điều hướng đến trang 'forgot-passwxord.html' khi người dùng bấm vào 'quenmk'
 		const quenMk = document.getElementById('quenmk');
 		if (quenMk) {
-			quenMk.onclick = function() {
+			quenMk.onclick = function () {
 				window.location.href = '../startbootstrap-sb-admin-2-gh-pages/forgot-password.html';
 			};
 		}
 	};
 </script>
-
 
 
 </body>

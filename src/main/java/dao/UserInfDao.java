@@ -272,6 +272,31 @@ public boolean updateAvatar(int userID, String imageUrl) {
     }
     return false; // Trả về false nếu có lỗi
 }
+public UserInf getUser(int userID) {
+    UserInf userInf = null;
+    String sql = "select ua.userID, u.userName,u.role, ua.email, u.password, ua.address, ua.imageURL, ua.phone from Users u join UsersArress ua on u.ID = ua.userID where u.ID = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                 userInf = new UserInf(
+                        rs.getInt("userID"),
+                        rs.getString("userName"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("address"),
+                        rs.getString("imageURL"),
+                        rs.getString("phone"),
+                        rs.getString("role")
+                );
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return userInf;
+    }
 
     public static void main(String[] args) {
         String name  ="%le%";

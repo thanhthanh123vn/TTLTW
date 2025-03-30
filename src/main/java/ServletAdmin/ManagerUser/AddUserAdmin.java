@@ -19,15 +19,28 @@ import java.io.IOException;
 
 @WebServlet("/AddUser")
 public class AddUserAdmin extends HttpServlet {
+    UserInfDao userDAO = new UserInfDao();
+    LogDao logDAO = new LogDAOImp();
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         BufferedReader reader = request.getReader();
         Gson gson = GsonUtil.getGson();
         UserInf user = gson.fromJson(reader, UserInf.class);
         System.out.println(user.toString());
+        String status = "Thêm người dùng thành công";
         // Logic thêm người dùng vào cơ sở dữ liệu
         try {
             UserInfDao userDAO = new UserInfDao();
             userDAO.insertUserAndAddress(user);
+            var log = new LogEntry();
+
+            log.setIp(request.getRemoteAddr());
+            log.setAddress("user");
+            log.setLogLevel(Log_Level.INFO);
+            log.setBeforeValue("EMPTY");
+            log.setAfterValue(user.toString());
+            logDAO.add(log);
+            request.setAttribute("status", status);
+
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
             e.printStackTrace();

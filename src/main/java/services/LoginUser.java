@@ -26,6 +26,9 @@ public class LoginUser extends HttpServlet {
 	private InforUser user;
 
 LogDao logDao = new LogDAOImp();
+
+
+
 	@Override
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -41,7 +44,7 @@ LogDao logDao = new LogDAOImp();
 
 		// Kiểm tra thông tin đăng nhập
 		User userCus = user.checkUser(username, password);
-		System.out.println(userCus.toString());
+
 
 		if (userCus != null) { // Đăng nhập thành công
 			System.out.println("User login success: " + userCus.getFullName());
@@ -84,16 +87,23 @@ LogDao logDao = new LogDAOImp();
 		} else { // Đăng nhập thất bại
 			failedAttempts++;
 			if(failedAttempts >= 5) {
-				failedAttempts = 0;
-				logLogin(userCus, "WARN", "User Login Failed 5 times");
+
+
+				var log = new LogEntry();
+				log.setIp(req.getRemoteAddr());
+				log.setAddress("user");
+				log.setLogLevel(Log_Level.WARNING);
+				log.setBeforeValue("EMPTY");
+				log.setAfterValue(user.toString());
+				logDao.add(log);
+
 			}
+			req.setAttribute("status", "fail");
 			session.setAttribute("failedAttempts", failedAttempts);
 
 
 
-			if (failedAttempts >= 5) {
-				logLogin(null, "WARN", "User " + username + " nhập sai mật khẩu 5 lần!");
-			}
+
 
 			req.setAttribute("errorMessage", "Tên người dùng hoặc mật khẩu không đúng!");
 			req.getRequestDispatcher("login.jsp").forward(req, resp);

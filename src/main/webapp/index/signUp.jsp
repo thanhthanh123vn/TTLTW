@@ -1,5 +1,6 @@
+<%@ page import="utils.SessionUtil" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+		 pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="f" uri="http://java.sun.com/jsp/jstl/functions"%>
 
@@ -195,7 +196,7 @@ a.txt_color_1:hover {
 					
 						<input autocomplete="off" placeholder="Nhập mã xác thực 6 số"
 							type="text" name="code" title="Code"
-							class="codeRegister input-text">
+							class="codeRegister input-text"  id="codeInput" onblur="verifyCode()">
 
 						<button type="button" id="verifyUserName"
 							data-error=".showRegisterMessage">lấy mã</button>
@@ -394,7 +395,7 @@ a.txt_color_1:hover {
 						</label>
 					</div>
 					<div class="clearfix"></div>
-					<button class="btn btn_site_1" id="btnRegister">Đăng ký</button>
+					<button class="btn btn_site_1" id="btnRegister" type="submit" >Đăng ký</button>
 				</div>
 			</div>
 		</form>
@@ -416,6 +417,7 @@ a.txt_color_1:hover {
 
 	</div>
 <script src="../js/validatorSignUp.js"></script>
+
 	<script>
 		document
 				.getElementById("verifyUserName")

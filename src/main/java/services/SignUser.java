@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import utils.SessionUtil;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -33,19 +34,19 @@ public class SignUser extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		String email = request.getParameter("email");
-
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		String codeAth = request.getParameter("code");
-		String regexPattern = "^(.+)@(\\S+)$";
-
-		
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
+//	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+//			throws ServletException, IOException {
+//		// TODO Auto-generated method stub
+//		String email = request.getParameter("email");
+//
+//		String username = request.getParameter("username");
+//		String password = request.getParameter("password");
+//		String codeAth = request.getParameter("code");
+//		String regexPattern = "^(.+)@(\\S+)$";
+//
+//
+//		response.getWriter().append("Served at: ").append(request.getContextPath());
+//	}
 	public static boolean patternMatches(String emailAddress, String regexPattern) {
 	    return Pattern.compile(regexPattern)
 	      .matcher(emailAddress)
@@ -78,21 +79,28 @@ public class SignUser extends HttpServlet {
 		String password = request.getParameter("password");
 		String codeAth = request.getParameter("code");
 		HttpSession session = request.getSession();
+		Integer count = 0;
 		String codeFromSession = (String) session.getAttribute("verificationCode");
-
+//		SessionUtil.getInstance().putValue(request,"count_singup",count);
 		boolean checkInfoUser = inforUser.checkInfoUser(username, email);
 
 		if (!checkInfoUser && codeAth.equals(codeFromSession)) {
-			System.out.println("SignUp");
+			session.removeAttribute("verificationCode");
+			//SessionUtil.removeValue(request,"count_singup");
+
+
 			inforUser.insertUser(username, email, password,gender,sqlDate);
 			session.setAttribute("username", username);
 			request.setAttribute("showAlert", "true");
-			request.getRequestDispatcher("index.jsp").forward(request, response);
+			request.getRequestDispatcher("products").forward(request, response);
 
 		} else {
+			count++;
+//			int count_sesion = Integer.parseInt( SessionUtil.getValue(request,"count_singup").toString()) ;
+//			SessionUtil.getInstance().putValue(request,"count_singup",count);
 			System.out.println(codeAth);
-			request.setAttribute("errorMessage", "true");
-			response.sendRedirect("index/signUp.jsp");
+			request.setAttribute("errorMessage", "Đăng Ký thất bại");
+			response.sendRedirect(request.getContextPath()+"/index/signUp.jsp");
 		}
 
 	}

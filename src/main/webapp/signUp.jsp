@@ -1,5 +1,6 @@
+<%@ page import="utils.SessionUtil" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+		 pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="f" uri="http://java.sun.com/jsp/jstl/functions"%>
 
@@ -415,7 +416,40 @@ a.txt_color_1:hover {
 		</div>
 
 	</div>
+	<%
+		// Lấy giá trị count từ session (đảm bảo SessionUtil.getValue trả về giá trị hợp lệ)
+		int count = Integer.parseInt(SessionUtil.getValue(request, "count_signup").toString());
+		int timeOut = 0;
+		// Xác định thời gian khóa dựa trên count
+		if (count == 5) {
+			timeOut = 60000; // 1 phút
+		} else if (count == 10) {
+			timeOut = 300000; // 5 phút
+		} else if (count == 15) {
+			timeOut = 3600000; // 1 giờ
+		}
+	%>
+	<script>
 
+
+
+
+			var count = <%= count %>;
+			var timeOut = <%= timeOut %>;
+			var codeInput = document.getElementById("codeInput");
+
+
+			if(timeOut > 0){
+			codeInput.disabled = true;
+			alert("Bạn đã nhập sai quá nhiều lần. Hãy thử lại sau " + (timeOut/60000) + " phút.");
+
+			setTimeout(function(){
+			codeInput.disabled = false;
+		}, timeOut);
+		}
+
+
+	</script>
 	<script>
 		document
 				.getElementById("verifyUserName")
