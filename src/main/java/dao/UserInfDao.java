@@ -243,6 +243,7 @@ public boolean insertAddressUser(UserInf userInf){
 
         } catch (SQLException e) {
             e.printStackTrace();
+
             try {
                 // Rollback if there is an error
                 conn.rollback();
