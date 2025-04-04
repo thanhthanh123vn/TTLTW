@@ -382,55 +382,6 @@
 </script>
 
 
-<!-- Chatbot box -->
-<div id="chatBox" class="chatbox" style="display: none;">
-    <div class="chat-header">
-        <span>Chat with us</span>
-        <button onclick="toggleChat()">X</button>
-    </div>
-    <div class="chat-body">
-        <div id="chatMessages" class="chat-messages"></div>
-    </div>
-    <input type="text" id="chatInput" placeholder="Type your message..." onkeydown="sendMessage(event)">
-</div>
-<!-- Chatbot toggle button -->
-<button class="chat-toggle-btn" onclick="toggleChat()">Chat</button>
-
-<script>
-    function toggleChat() {
-        var chatBox = document.getElementById("chatBox");
-        if (chatBox.style.display === "none") {
-            chatBox.style.display = "block";
-        } else {
-            chatBox.style.display = "none";
-        }
-    }
-    function sendMessage(event) {
-        if (event.key === 'Enter') {
-            var userMessage = document.getElementById("chatInput").value;
-            var chatMessages = document.getElementById("chatMessages");
-
-            // Hiển thị câu hỏi của người dùng
-            chatMessages.innerHTML += "<p><strong>Người dùng:</strong> " + userMessage + "</p>";
-
-            // Gửi câu hỏi đến servlet để lấy câu trả lời
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "chatbot", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    var chatbotResponse = xhr.responseText;
-                    chatMessages.innerHTML += "<p><strong>Bot:</strong> " + chatbotResponse + "</p>";
-                }
-            };
-            xhr.send("userMessage=" + encodeURIComponent(userMessage));
-
-            // Reset input field
-            document.getElementById("chatInput").value = '';
-        }
-    }
-
-</script>
 
 
 </body>
