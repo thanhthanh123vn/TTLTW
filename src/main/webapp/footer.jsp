@@ -17,19 +17,19 @@
 <div id="session-footer">
     <div class="container">
         <footer>
+
             <div id="chat-icon">
-                <div class="chat-box-icon" id="chat-box-icon" >
+                <div class="chat-box-icon" id="chat-box-icon">
                     <img src="https://wsc.hasaki.vn/assets/customer_icons/appIcon.svg"
-                         style="width: 60px;"
-                         alt="Chat Icon" onclick="toggleChat()">
+                         style="width: 60px;" alt="Chat Icon" onclick="toggleChat()">
                 </div>
-                <div class="chat-box" id="chatBox" style="display: none;">
+                <div class="chat-box" id="chatBox">
                     <div class="chat-content">
-                        <button class="close-chat" onclick="toggleChat()" >X</button>
+                        <button class="close-chat" onclick="toggleChat()">X</button>
                         <p>Xin chào! Bạn cần hỗ trợ gì?</p>
-                        <!-- Add more chat messages here if needed -->
+                        <div id="chatMessages"></div>
                     </div>
-                    <input type="text" class="chat-input" placeholder="Nhập tin nhắn...">
+                    <input type="text" id="chatInput" class="chat-input" placeholder="Nhập tin nhắn..." onkeypress="sendMessage(event)">
                 </div>
             </div>
 
@@ -313,6 +313,47 @@
                     </div>
                 </div>
             </div>
+
+            <script>
+                function toggleChat() {
+                    const chatBox = document.getElementById('chatBox');
+                    chatBox.style.display = chatBox.style.display === 'none' ? 'block' : 'none';
+                }
+
+                function sendMessage(event) {
+                    if (event.key === "Enter") {
+                        const input = document.getElementById("chatInput");
+                        const message = input.value.trim();
+                        if (message === "") return;
+
+                        const chatMessages = document.getElementById("chatMessages");
+                        const userMsg = document.createElement("p");
+                        userMsg.innerHTML = "<strong>Bạn:</strong> " + message;
+                        chatMessages.appendChild(userMsg);
+                        input.value = "";
+
+                        fetch("chatbot", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                            body: "userMessage=" + encodeURIComponent(message)
+                        })
+                            .then(response => response.text())
+                            .then(chatbotResponse => {
+                                const botMsg = document.createElement("p");
+                                botMsg.innerHTML = "<strong>Bot:</strong> " + chatbotResponse;
+                                chatMessages.appendChild(botMsg);
+                                chatMessages.scrollTop = chatMessages.scrollHeight;
+                            })
+                            .catch(error => {
+                                const errorMsg = document.createElement("p");
+                                errorMsg.innerHTML = "<strong>Bot:</strong> Lỗi khi gửi tin nhắn.";
+                                chatMessages.appendChild(errorMsg);
+                            });
+                    }
+                }
+            </script>
         </footer>
     </div>
 </div>
