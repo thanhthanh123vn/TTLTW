@@ -129,15 +129,11 @@
 			<p>Hoặc đăng nhập bằng</p>
 			<div class="login-alt">
 
-				<a  href="https://www.facebook.com/v19.0/dialog/oauth?fields=id,name,email&client_id=1486223125654432&redirect_uri=http://localhost:8080/WebMyPham__/login">
+				<a  href="http://localhost:8080/WebMyPham__/login-facebook">
 				<img
 						src="https://img.icons8.com/ios-filled/50/000000/facebook-new.png"
 						alt="Facebook"></a>
-				<a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid
-&redirect_uri=http://localhost:8080/WebMyPham__/loginGoogle
-&response_type=code
-&client_id=834631603807-ep2tbokt3a5qt1tpgdttlqr6mdnldgk3.apps.googleusercontent.com
-&approval_prompt=force">
+				<a  href="http://localhost:8080/WebMyPham__/loginGoogle">
 				<img
 					src="https://img.icons8.com/ios-filled/50/000000/google-logo.png"
 					alt="Google"></a>

@@ -314,6 +314,7 @@
     // Lấy username từ session
     User user = (User) session.getAttribute("user");
 
+
     String username = user.getFullName();
 
 
