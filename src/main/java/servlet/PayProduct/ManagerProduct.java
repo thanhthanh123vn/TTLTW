@@ -3,6 +3,7 @@ package servlet.PayProduct;
 import com.google.gson.Gson;
 import dao.OrderDao;
 import dao.ProductsDao;
+import dao.UserInfDao;
 import gson.GsonUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,10 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import object.Order;
-import object.OrderDetail;
-import object.Product;
-import object.User;
+import object.*;
 import object.cart.Cart;
 import object.cart.ProductCart;
 
@@ -28,31 +26,61 @@ public class ManagerProduct extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         OrderDao dao = new OrderDao();
+        UserInfDao userInfDao = new UserInfDao();
         HttpSession session = req.getSession();
+        String action = null;
+
         Date date = new Date(System.currentTimeMillis());
         User user = (User) req.getSession().getAttribute("user");
-        int id = user.getId();
+        UserInf userAddress = (UserInf) session.getAttribute("UserAddress");
+        int id  ;
+
+
+        if(!user.getProvider().equals("")){
+            id =  userInfDao.findAddressUser(user.getAuthId());
+
+            System.out.println(id+"Auth");
+
+        }else{
+
+         id = user.getId();
+        }
         Order order = new Order();
 
         order.setUserId(id);
+        System.out.println(order.getUserId()+"Nguoi dung order");
         order.setCreate_date(date);
         Product product = (Product) session.getAttribute("payProduct");
 
 
         Cart cart = (Cart) session.getAttribute("cart");
+        OrderDetail orderDetail = new OrderDetail();
         if (product != null) {
 
-        OrderDetail orderDetail = new OrderDetail();
         orderDetail.setProductId(product.getId());
+        orderDetail.setAddress(userAddress.getAddress());
+        orderDetail.setDate(new Date(System.currentTimeMillis()));
+        orderDetail.setMethodPay("COD");
+
 
         orderDetail.setTotalQuantity(product.getQuantity());
         orderDetail.setTotalPrice(product.getPrice());
 
+
             boolean isSuccess = dao.insertOrderWithDetails(order, orderDetail);
 
 
+
             if (isSuccess) {
+                action = "success";
+                session.setAttribute("action",action);
+                session.setAttribute("order",order);
+                Date date1 = new Date(System.currentTimeMillis());
+
+                orderDetail.setDate(date1);
+                session.setAttribute("orderDetail",orderDetail);
                 session.setAttribute("productQL", product);
+                session.removeAttribute("payProduct");
                 req.getRequestDispatcher("index/qldonhang.jsp").forward(req, resp);
             } else {
 //                System.out.println("Mua ngay đó nha"+product.toString());
@@ -63,7 +91,7 @@ public class ManagerProduct extends HttpServlet {
 
 
         }
-        if (cart != null) {
+        if (cart != null ){
 
             List<ProductCart> productCarts = cart.getList();
             List<Product> products = getProducts(productCarts);
@@ -74,14 +102,26 @@ public class ManagerProduct extends HttpServlet {
                     order2.setUserId(id);
                     order2.setCreate_date(date);
                     OrderDetail orderDetail2 = new OrderDetail();
+                    orderDetail2.setAddress(userAddress.getAddress());
+                    orderDetail2.setDate(new Date(System.currentTimeMillis()));
+                    orderDetail2.setMethodPay("COD");
                     orderDetail2.setProductId(cproduct.getId());
                     orderDetail2.setTotalQuantity(cproduct.getQuantity());
                     orderDetail2.setTotalPrice(cproduct.getPrice());
 
                     boolean isSuccess = dao.insertOrderWithDetails(order2, orderDetail2);
                     if (isSuccess) {
+                        action = "success";
+                        Date date1 = new Date(System.currentTimeMillis());
+
+                        orderDetail.setDate(date1);
+                        session.setAttribute("order",order2);
+
+                        session.setAttribute("orderDetail",orderDetail2);
+                        session.setAttribute("action",action);
                         session.setAttribute("cartQL", cart);
                         req.setAttribute("cart", cart);
+                        session.removeAttribute("cart");
                         req.getRequestDispatcher("index/qldonhang.jsp").forward(req, resp);
                     } else {
 

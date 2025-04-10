@@ -12,7 +12,8 @@ public class UserInf {
     private String phone;
     private Date create_date;
     private String role;
-
+    private String authId;
+    private String provider;
     // Constructor không đối số
     public UserInf() {}
 
@@ -51,6 +52,22 @@ public class UserInf {
         this.address = address;
         this.imageURL = imageURL;
         this.email = email;
+    }
+
+    public String getAuthId() {
+        return authId;
+    }
+
+    public void setAuthId(String authId) {
+        this.authId = authId;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
 
     public String getRole() {
@@ -121,12 +138,17 @@ public class UserInf {
     @Override
     public String toString() {
         return "UserInf{" +
-                "userName='" + userName + '\'' +
-                ", age=" + password +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
                 ", address='" + address + '\'' +
                 ", imageURL='" + imageURL + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
+                ", create_date=" + create_date +
+                ", role='" + role + '\'' +
+                ", authId='" + authId + '\'' +
+                ", provider='" + provider + '\'' +
                 '}';
     }
 }

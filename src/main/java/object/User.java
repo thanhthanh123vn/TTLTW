@@ -15,6 +15,8 @@ public class User {
     private String malle;
     private String sdt;
     private String avatar;
+    private String authId;
+    private String provider;
 
     // Constructors
     public User(int id, String fullName, String email, String password, String role , String malle, Date date,String sdt) {
@@ -46,6 +48,22 @@ public class User {
     public User(String fullName, String email) {
         this.fullName = fullName;
         this.email = email;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
+    public String getAuthId() {
+        return authId;
+    }
+
+    public void setAuthId(String authId) {
+        this.authId = authId;
     }
 
     public String getMalle() {

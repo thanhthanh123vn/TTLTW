@@ -1,5 +1,6 @@
 package object;
 
+import java.sql.Date;
 import java.util.List;
 
 public class OrderDetail {
@@ -8,9 +9,11 @@ public class OrderDetail {
     private String phoneNumber;
     private String address;
     private int productID;
+    private Date date;
     private int totalQuantity;
     private double totalPrice;
     private List<Product> productList;
+    private String methodPay;
     // Constructor
     public OrderDetail(int orderId , String recipientName, String phoneNumber, String address, int productList, int totalQuantity, double totalPrice) {
         this.recipientName = recipientName;
@@ -33,6 +36,23 @@ public class OrderDetail {
     }
 
     // Getters and Setters
+
+    public String getMethodPay() {
+        return methodPay;
+    }
+
+    public void setMethodPay(String methodPay) {
+        this.methodPay = methodPay;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     public String getRecipientName() {
         return recipientName;
     }

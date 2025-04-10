@@ -188,24 +188,124 @@ private Utils utils;
         }
     }
 
-public boolean insertAddressUser(UserInf userInf){
-        String sql = "update usersarress set address = ?, phone = ? , fullName = ? where phone = ?";
+
+    public int findAddressUser(String authID) {
+        String sql = "SELECT id FROM usersarress WHERE authid = ?";
+
         try {
-            PreparedStatement stm = conn.prepareStatement(sql);
-            stm.setString(1, userInf.getAddress());
-            stm.setString(2, userInf.getPhone());
-            stm.setString(3,userInf.getUserName());
-            stm.setString(4, userInf.getPhone());
+            Connection connection = utils.getConnection();
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, authID);
 
-            int row = stm.executeUpdate();
-            return row>0;
-
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
 
         } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi tìm địa chỉ user: " + e.getMessage(), e);
+        }
+
+        return 0; // Trả về 0 nếu không tìm thấy
+    }
+    public boolean insertAddressUser(UserInf userInf) {
+        // Kiểm tra dựa trên provider
+        boolean checkAddress;
+        if ("FACEBOOK".equalsIgnoreCase(userInf.getProvider()) || "GOOGLE".equalsIgnoreCase(userInf.getProvider())) {
+            checkAddress = checkIdAddressUser(0, userInf.getAuthId());
+        } else {
+            checkAddress = checkIdAddressUser(userInf.getId(), null);
+        }
+        System.out.println(checkAddress);
+
+        if (checkAddress) {
+            String sql = "UPDATE usersarress SET address = ?, phone = ?, fullName = ?, userid = ?, authid = ?, provider = ? WHERE userid = ? OR authid = ?";
+            try {
+
+                PreparedStatement stm = conn.prepareStatement(sql);
+                if (userInf.getId() > 0) {
+                    stm.setInt(4, userInf.getId());
+                } else {
+                    stm.setObject(4, null); // dùng setObject để gán null
+                }
+                stm.setString(1, userInf.getAddress());
+                stm.setString(2, userInf.getPhone());
+                stm.setString(3, userInf.getUserName());
+                if (userInf.getId() > 0) {
+                    stm.setInt(4, userInf.getId());
+                } else {
+                    stm.setObject(4, null); // dùng setObject để gán null
+                }
+                stm.setString(5, userInf.getAuthId());
+                stm.setString(6, userInf.getProvider());
+
+                if (userInf.getId() > 0) {
+                    stm.setInt(7, userInf.getId());
+                } else {
+                    stm.setObject(7, null); // dùng setObject để gán null
+                }
+                stm.setString(8, userInf.getAuthId());
+
+                int row = stm.executeUpdate();
+                System.out.println("Inserted user address successfully update" + row);
+                return row > 0;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+
+
+            String insertUserAddressSQL = "INSERT INTO usersarress (userid, address, phone, fullName, authid, provider) VALUES (?, ?, ?, ?, ?, ?)";
+           try{
+                PreparedStatement stm = conn.prepareStatement(insertUserAddressSQL);
+
+               // Gán giá trị cho userid (chấp nhận null nếu cần)
+               if (userInf.getId() > 0) {
+                   stm.setInt(1, userInf.getId());
+               } else {
+                   stm.setObject(1, null); // dùng setObject để gán null
+               }
+
+                stm.setString(2, userInf.getAddress());
+                stm.setString(3, userInf.getPhone());
+                stm.setString(4, userInf.getUserName());
+                stm.setString(5, userInf.getAuthId());
+                stm.setString(6, userInf.getProvider());
+
+                int row = stm.executeUpdate();
+                System.out.println("Inserted user address successfully" + row);
+                return row > 0;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Lỗi khi chèn dữ liệu: " + e.getMessage(), e);
+            }
+        }
+        return false;
+    }
+
+    private boolean checkIdAddressUser(int id, String authId) {
+        try {
+            String sql;
+            PreparedStatement stm;
+            if (authId != null) {
+                sql = "SELECT COUNT(*) FROM usersarress WHERE authid = ?";
+                stm = conn.prepareStatement(sql);
+                stm.setString(1, authId);
+            } else {
+                sql = "SELECT COUNT(*) FROM usersarress WHERE userid = ?";
+                stm = conn.prepareStatement(sql);
+                stm.setInt(1, id);
+            }
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-            return false;
-}
+        return false;
+    }
 
     // Phương thức xóa dữ liệu từ bảng Users và UserArress
     public void deleteUserAndAddress(int userID) {

@@ -5,7 +5,9 @@
 <%@ page import="java.util.List" %>
 <%@ page import="object.cart.ProductCart" %>
 <%@ page import="object.User" %>
-<%@ page import="java.util.ArrayList" %><%--
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="object.OrderDetail" %>
+<%@ page import="com.google.gson.Gson" %><%--
   Created by IntelliJ IDEA.
   User: nguye
   Date: 1/8/2025
@@ -26,189 +28,136 @@
 
     <style>
 
-        .cart-item {
 
+
+
+        h2 {
+            text-align: center;
+            color: #0f172a;
+        }
+
+        .order-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .order-card {
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: 0.3s ease;
+            position: relative;
+        }
+
+        .order-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            background-color: #ffffff;
             margin-bottom: 10px;
-            border: 2px solid black;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .product-info {
-            display: flex;
-            align-items: center;
-
+        .order-code {
+            font-weight: bold;
+            color: #1e293b;
         }
 
-        .product-info img {
-            width: 80px;
-            height: 80px;
+        .order-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .status-delivered { background: #dcfce7; color: #16a34a; }
+        .status-shipping { background: #e0f2fe; color: #0284c7; }
+        .status-pending { background: #fef9c3; color: #ca8a04; }
+
+        .order-info {
+            margin-bottom: 10px;
+        }
+
+        .order-info span {
+            display: inline-block;
             margin-right: 15px;
         }
 
-        .product-details {
-            display: flex;
-            flex-direction: column;
+        .btn-toggle, .btn-like, .btn-cancel {
+            border: none;
+            border-radius: 8px;
+            padding: 8px 14px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-weight: 500;
         }
 
-        .product-details h3 {
-            margin: 0;
-            font-size: 18px;
+        .btn-toggle {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-toggle:hover {
+            background: #1e40af;
+        }
+
+        .btn-like {
+            background: #f472b6;
+            color: white;
+        }
+
+        .btn-like.liked {
+            background: #be185d;
+        }
+
+        .btn-cancel {
+            background: #f87171;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #b91c1c;
+        }
+
+        .order-details {
+            display: none;
+            background: #f8fafc;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .total-amount {
             font-weight: bold;
-            color: #333333;
+            color: #0f172a;
+            margin-top: 5px;
         }
 
-        .product-details p {
-            margin: 5px 0;
-            font-size: 18px;
-        }
-
-        .product-details span {
-            font-size: 16px;
-            color: #ff0000;
-        }
-
-        .product-details del {
-            margin-left: 10px;
-            color: #999999;
-        }
-
-        .actions {
+        .btn-group {
             margin-top: 10px;
         }
-
-        .actions a {
-            text-decoration: none;
-            color: #007bff;
-            font-weight: bold;
-        }
-
-        .actions a:hover {
-            color: #0056b3;
-        }
-
-        .promotion {
-            margin-top: 5px;
-            font-size: 14px;
-            color: #ff5722;
-        }
-
-        .txt .btn {
-            color: white;
-            background-color: #055617;
-            border: none;
-            padding: 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
     </style>
+
+
 </head>
 
 <body>
 <div id="web-service">
     <jsp:include page="../header.jsp"/>
-    <div id="session-body">
-        <div class="container">
-            <div class="breadcrumb">
-                <a href="main.html">Trang chủ ></a>
-                <a href="#" id="infor">Đơn hàng của tôi</a>
-            </div>
-            <div class="body-left">
-                <div class="content-left">
-                    <div class="content-icon">
-                        <div class="avt">
-                            <img src="https://hasaki.vn/images/graphics/account-full.svg">
-                        </div>
-                        <div class="name">
-                            <strong>Chào bạn</strong>
 
-                            <a href="https://hasaki.vn/customer/account/edit/">Chỉnh sửa tài khoản</a>
-                        </div>
-                    </div>
-                    <div class="menu_profile">
-                        <a href="qliUser.html" class="item_menu_profile ">Quản lý tài
-                            khoản</a>
-                        <a href="accumulationOfP.html" class="item_menu_profile ">TTT tích
-                            điểm</a>
-                        <a href="${pageContext.request.contextPath}/index/inforUser.jsp" class="item_menu_profile ">Thông tin tài
-                            khoản</a>
-                        <a href="http://localhost:8080/WebMyPham__/index/qldonhang.jsp" class="item_menu_profile active">Đơn hàng
-                            của tôi</a>
-                        <a href="http://localhost:8080/WebMyPham__/index/qldonhang.jsp" class="item_menu_profile ">Booking của tôi</a>
-                        <a href="#" class="item_menu_profile ">Sổ địa chỉ
-                            nhận hàng</a>
-                        <a href="http://localhost:8080/WebMyPham__/index/Wishlist.jsp"  class="item_menu_profile ">Danh sách yêu thích</a>
-                        <a href="redeemProduct.html" class="item_menu_profile ">Mua lại</a>
-                        <a href="q&a.html" class="item_menu_profile ">Hỏi đáp</a>
-                    </div>
-                </div>
-            </div>
-            <div class="body-right">
-                <div class="content-right">
-                    <div class="content-box">
-                        <div class="title">
-                            <a href="/sales/order/history/" title="Mua online" class="item_donhang ">Mua online</a>
-                            <a href="/sales/order/history/?type=offline" title="Mua tại cửa hàng"
-                               class="item_donhang1">Mua tại cửa hàng</a>
-                        </div>
+    <h2>Đơn hàng của bạn</h2>
+    <div id="productContainer" class="order-container"></div>
 
-                        <div class="menu-day">
-                            <select id="view" required>
-                                <option value="">Hiển thị tất cả</option>
-                                <option value="1day">Trong 1 ngày</option>
-                                <option value="1tuan">Trong 1 tuần</option>
-                                <option value="1thang">Trong 1 tháng</option>
-                                <option value="3thang">Trong 3 tháng</option>
-                                <option value="6thang">Trong 6 tháng</option>
-                                <option value="1nam">Trong 1 năm</option>
-
-                            </select>
-                        </div>
-                    </div>
-                    <div id="productContainer">
-                     <c:if test="${sessionScope.cart !=null}">
-
-                     </c:if>
-                        <c:if test="${sessionScope.payProduct !=null}">
-                            <button class="btn" style="  color: white;
-                                 background-color: #055617;
-                                 border: none;
-                                 padding: 15px;
-                                 border-radius: 5px;
-                                 margin-top: 10px;
-                                 cursor: pointer;
-                                 text-decoration: none;">Tổng cộng: ${sessionScope.payProduct.price}</button>
-                        </c:if>
-
-
-
-                    </div>
-
-                    <div style="display: flex; justify-content: center; margin-top: 30px;">
-                        <a href="http://localhost:8080/WebMyPham__/products" class="btn" style="  color: white;
-            background-color: #055617;
-            border: none;
-            padding: 15px;
-            border-radius: 5px;
-            margin-top: 10px;
-            cursor: pointer;
-            text-decoration: none;">Tiếp tục mua sắm</a>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
     <jsp:include page="../footer.jsp"/>
 
 
+<script src="${pageContext.request.contextPath}/js/loadQldh.js"></script>
+<script src="${pageContext.request.contextPath}/js/updateUserMain.js"></script>
+<script src="${pageContext.request.contextPath}/js/main.js"></script>
+<script src="${pageContext.request.contextPath}/js/searchProduct.js"></script>
 <%
     // Lấy thông tin từ session
     User user = (User) session.getAttribute("user");
@@ -217,47 +166,44 @@
     Cart cartData = (Cart) session.getAttribute("cartQL");
     List<ProductCart> productCarts = (cartData != null) ? cartData.getList() : new ArrayList<>();
     Product payProduct = (Product) session.getAttribute("productQL");
+    String action = (session.getAttribute("action") != null) ? (String) session.getAttribute("action") : "";
 
-    // Convert dữ liệu sang JSON sử dụng Gson
+    OrderDetail orderDetail = ((OrderDetail)session.getAttribute("orderDetail")==null)?null:(OrderDetail)session.getAttribute("orderDetail");
+
+    String orderDetailJson =(orderDetail != null) ? new GsonUtil().getGson().toJson(orderDetail) : "null";
+    System.out.println(orderDetailJson);
     String cartJson = (cartData != null) ? new GsonUtil().getGson().toJson(productCarts) : "null";
     String payProductJson = (payProduct != null) ? new GsonUtil().getGson().toJson(payProduct) : "null";
 %>
 
 <script>
+
     document.addEventListener("DOMContentLoaded", function () {
         const productContainer = document.getElementById("productContainer");
 
-        // Dữ liệu giỏ hàng và sản phẩm thanh toán
         const cartData = <%= cartJson %>;
         const payProductData = <%= payProductJson %>;
+        const action = "<%= action %>";
+        const orderDetail = <%= orderDetailJson %>;
 
-        // Hiển thị sản phẩm từ giỏ hàng
-        if (cartData && cartData.length > 0) {
+        if (cartData && cartData.length > 0 && action === "success") {
             cartData.forEach(product => {
-                productContainer.innerHTML += createProductHTML(product);
+                productContainer.innerHTML += createOrderHTML(product,orderDetail);
             });
-        }
-        // Hiển thị sản phẩm thanh toán
-        else if (payProductData !== "null") {
-
-            productContainer.innerHTML += createProductHTML(payProductData, true);
-        }
-
-        // Nếu không có sản phẩm nào
-        else {
-            productContainer.innerHTML = "<p>Không có sản phẩm nào trong giỏ hàng hoặc thanh toán.</p>";
+        } else if (payProductData !== null) {
+            productContainer.innerHTML += createOrderHTML(payProductData, orderDetail,true);
+        } else {
+            productContainer.innerHTML = "<p>Không có đơn hàng nào được tìm thấy.</p>";
         }
     });
 
-</script>
-
-
 
 </script>
-<script src="${pageContext.request.contextPath}/js/loadQldh.js"></script>
-        <script src="${pageContext.request.contextPath}/js/updateUserMain.js"></script>
-<script src="${pageContext.request.contextPath}/js/main.js"></script>
-<script src="${pageContext.request.contextPath}js/searchProduct.js"></script>
+
+
+
+
+
 
 
 <script>
@@ -310,7 +256,7 @@
     }
 </script>
 
-<script src="js/searchProduct.js"></script>
+
 
 
 

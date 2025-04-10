@@ -79,6 +79,10 @@ public class LoginServlet extends HttpServlet {
 
             saveUserToDatabase(id, name, email, provider);
             User user = new User();
+            
+
+            user.setAuthId(id);
+            user.setProvider(provider);
             user.setFullName(name);
             user.setEmail(email);
             session.setAttribute("user", user);
