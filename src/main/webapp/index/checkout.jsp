@@ -51,12 +51,23 @@
         <div class="card">
             <div class="card-header">Hình thức thanh toán</div>
             <div class="card-content">
-          <span class="radio">
-            <input type="radio" checked />
-            <span>💵 Thanh toán khi nhận hàng (COD)</span>
-          </span>
+                <form id="payment-form">
+                    <div class="radio">
+                        <input type="radio" name="paymentMethod" id="cod" value="cod" checked />
+                        <label for="cod">💵 Thanh toán khi nhận hàng (COD)</label>
+                    </div>
+                    <div class="radio">
+                        <input type="radio" name="paymentMethod" id="card" value="card" />
+                        <label for="card">💳 Thanh toán qua thẻ</label>
+                    </div>
+                    <div class="radio">
+                        <input type="radio" name="paymentMethod" id="wallet" value="wallet" />
+                        <label for="wallet">📱 Thanh toán qua ví điện tử</label>
+                    </div>
+                </form>
             </div>
         </div>
+
         <!-- Phiếu mua hàng -->
         <div class="card">
             <div class="card-header">Phiếu mua hàng</div>
@@ -177,9 +188,26 @@
 
 
 <script>
-    function  CompleteProduct(){
-        window.open("${pageContext.request.contextPath}/ManagerProduct");
+
+
+        function CompleteProduct() {
+        const method = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+        // Tùy chọn xử lý theo phương thức thanh toán
+        if (method === 'cod') {
+
+            window.open("${pageContext.request.contextPath}/ManagerProduct");
+    } else if (method === 'card') {
+
+            window.open("${pageContext.request.contextPath}/payment?");
+    } else if (method === 'wallet') {
+        alert("Bạn đã chọn thanh toán qua ví điện tử.");
     }
+
+
+    }
+
+
 </script>
 
 

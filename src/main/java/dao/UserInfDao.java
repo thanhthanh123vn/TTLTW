@@ -16,6 +16,21 @@ private Utils utils;
         this.conn = utils.getConnection();
     }
 
+    public  int findbyAuthId(String authId) {
+        String sql = "select id from usersarress where auth_id=?";
+        try{
+            Connection conn = utils.getConnection();
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, authId);
+            ResultSet rs = statement.executeQuery();
+
+            return rs.getInt(1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
     // Phương thức cập nhật dữ liệu trong cả hai bảng
     public void updateUserAndAddress(UserInf userInf) {
         String updateUserSQL = "UPDATE Users SET userName = ?, email = ? WHERE userID = ?";

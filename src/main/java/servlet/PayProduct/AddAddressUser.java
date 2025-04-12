@@ -29,6 +29,7 @@ public class AddAddressUser extends HttpServlet {
          User user = (User) session.getAttribute("user");
          userAddress.setEmail(user.getEmail());
 
+
         userAddress.setId(user.getId());
         userAddress.setAuthId(user.getAuthId());
         userAddress.setProvider(user.getProvider());
