@@ -6,7 +6,7 @@ function createOrderHTML(product , orderDetail , isPayProduct = false) {
         <div>Mã đơn: <strong># ${orderDetail.productID || "DHXXX"}</strong></div>
         <div class="order-status status-shipping">Đang xử lý</div>
       </div>
-      <div class="order-item">🖼️ <img src="${product.image}" alt="${product.name}" style="height:50px;vertical-align:middle;"> <strong>${product.name}</strong></div>
+      <div class="order-item"><img src="${product.image}" alt="${product.name}" style="height:80px;vertical-align:middle;"> <strong>${product.name}</strong></div>
       <div class="order-item">📄 Mô tả: ${product.detail || "Không có mô tả"}</div>
       <div class="order-item">🛒 Số lượng: ${isPayProduct ? (product.count || "N/A") : product.count}</div>
       <div class="order-item">💵 Giá: ${product.price ? product.price + "đ" : "N/A"}</div>
@@ -17,9 +17,9 @@ function createOrderHTML(product , orderDetail , isPayProduct = false) {
       </div>
       <div class="order-details">
       
-        Ngày đặt: ${orderDetail.date || "10/04/2025"}<br>
-        Phương thức thanh toán: "COD"<br>
-        Địa chỉ: ${orderDetail.address || "Chưa có địa chỉ"}
+        📅 Ngày đặt: ${orderDetail.date || "10/04/2025"}<br>
+        💳 Phương thức thanh toán: "COD"<br>
+       📍  Địa chỉ: ${orderDetail.address || "Chưa có địa chỉ"}
       </div>
     </div>`;
 }

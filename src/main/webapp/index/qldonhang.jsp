@@ -138,6 +138,124 @@
         .btn-group {
             margin-top: 10px;
         }
+
+
+        .order-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            font-family: 'Segoe UI', sans-serif;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .order-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .status-shipping {
+            background-color: #e0f0ff;
+            color: #007bff;
+        }
+
+        .order-item {
+            margin: 6px 0;
+            font-size: 15px;
+        }
+
+        .order-item img {
+            margin-right: 8px;
+            border-radius: 6px;
+        }
+
+        .btn-group {
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-group button {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-toggle {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .btn-like {
+            background-color: #ff69b4;
+            color: white;
+        }
+
+        .btn-cancel {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .btn-group button:hover {
+            opacity: 0.9;
+        }
+
+        .order-details {
+            display: none;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .order-desc {
+            margin: 8px 0;
+            font-size: 15px;
+            color: #334155;
+        }
+
+        .order-info p {
+            margin: 4px 0;
+            font-size: 15px;
+        }
+
+        .order-details p {
+            margin: 4px 0;
+            line-height: 1.5;
+        }
+
+        .order-header span {
+            font-size: 16px;
+        }
+
+        .order-status {
+            min-width: 100px;
+            text-align: center;
+        }
+
+
     </style>
 
 
