@@ -3,6 +3,7 @@ package servlet.PayProduct;
 import java.io.BufferedReader;
 import java.io.IOException;
 import com.google.gson.Gson;
+import dao.InforUser;
 import dao.UserInfDao;
 import gson.GsonUtil;
 import jakarta.servlet.ServletException;
@@ -30,14 +31,16 @@ public class AddAddressUser extends HttpServlet {
          userAddress.setEmail(user.getEmail());
 
 
-        userAddress.setId(user.getId());
-        userAddress.setAuthId(user.getAuthId());
+
+
         userAddress.setProvider(user.getProvider());
 
 
         System.out.println(userAddress.toString());
 
-        boolean isSuccess = dao.insertAddressUser(userAddress);
+        InforUser userDao = new InforUser();
+        userAddress.setId(userDao.findIdByEmail(user.getEmail()));
+        boolean isSuccess = dao.upsertAddressUser(userAddress);
 
 
 

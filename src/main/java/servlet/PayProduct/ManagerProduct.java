@@ -36,15 +36,9 @@ public class ManagerProduct extends HttpServlet {
         int id  ;
 
 
-        if(!user.getProvider().equals("")){
-            id =  userInfDao.findAddressUser(user.getAuthId());
 
-            System.out.println(id+"Auth");
-
-        }else{
 
          id = user.getId();
-        }
         Order order = new Order();
 
         order.setUserId(id);
@@ -67,11 +61,11 @@ public class ManagerProduct extends HttpServlet {
         orderDetail.setTotalPrice(product.getPrice());
 
 
-            boolean isSuccess = dao.insertOrderWithDetails(order, orderDetail);
+            int isSuccess = dao.insertOrderWithDetails(order, orderDetail);
 
+            System.out.println(isSuccess+"Order");
 
-
-            if (isSuccess) {
+            if (isSuccess>0) {
                 action = "success";
                 session.setAttribute("action",action);
                 session.setAttribute("order",order);
@@ -109,8 +103,8 @@ public class ManagerProduct extends HttpServlet {
                     orderDetail2.setTotalQuantity(cproduct.getQuantity());
                     orderDetail2.setTotalPrice(cproduct.getPrice());
 
-                    boolean isSuccess = dao.insertOrderWithDetails(order2, orderDetail2);
-                    if (isSuccess) {
+                    int isSuccess = dao.insertOrderWithDetails(order2, orderDetail2);
+                    if (isSuccess>0) {
                         action = "success";
                         Date date1 = new Date(System.currentTimeMillis());
 

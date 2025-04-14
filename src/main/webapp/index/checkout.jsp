@@ -1,5 +1,7 @@
 <%@ page import="object.Product" %>
-<%@ page import="gson.GsonUtil" %><%--
+<%@ page import="gson.GsonUtil" %>
+<%@ page import="object.cart.Cart" %>
+<%@ page import="object.User" %><%--
   Created by IntelliJ IDEA.
   User: nguye
   Date: 1/8/2025
@@ -186,23 +188,63 @@
 </div>
 
 
+<% Cart  cart = (Cart)session.getAttribute("cart");
+Product product = (Product) session.getAttribute("payProduct");
+double totalAmount = 0;
+if(cart!=null){
+    totalAmount = cart.getTotalCart();
+
+
+}else{
+    totalAmount = product.getPrice()*product.getQuantity();
+}
+%>
 
 <script>
 
 
-        function CompleteProduct() {
+    function CompleteProduct() {
+        const totalAmount = <%= totalAmount %>;
         const method = document.querySelector('input[name="paymentMethod"]:checked').value;
 
         // Tùy chọn xử lý theo phương thức thanh toán
         if (method === 'cod') {
 
             window.open("${pageContext.request.contextPath}/ManagerProduct");
-    } else if (method === 'card') {
+        }else if (method === 'card') {
+            fetch('${pageContext.request.contextPath}/payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    // Các dữ liệu cần gửi lên server
+                    amount: totalAmount
 
-            window.open("${pageContext.request.contextPath}/payment?");
-    } else if (method === 'wallet') {
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Xử lý kết quả từ server
+                    
+                    console.log('Payment success:', data);
+                    alert('Thanh toán bằng thẻ thành công!');
+                })
+                .catch(error => {
+                    console.error('Error during card payment:', error);
+                    alert('Có lỗi xảy ra khi thanh toán bằng thẻ.');
+                });
+        }
+
+
+
+
+
+        else
+    if (method === 'wallet') {
         alert("Bạn đã chọn thanh toán qua ví điện tử.");
     }
+
 
 
     }

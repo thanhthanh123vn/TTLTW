@@ -223,80 +223,33 @@ private Utils utils;
 
         return 0; // Trả về 0 nếu không tìm thấy
     }
-    public boolean insertAddressUser(UserInf userInf) {
-        // Kiểm tra dựa trên provider
-        boolean checkAddress;
-        if ("FACEBOOK".equalsIgnoreCase(userInf.getProvider()) || "GOOGLE".equalsIgnoreCase(userInf.getProvider())) {
-            checkAddress = checkIdAddressUser(0, userInf.getAuthId());
-        } else {
-            checkAddress = checkIdAddressUser(userInf.getId(), null);
-        }
-        System.out.println(checkAddress);
+    public boolean upsertAddressUser(UserInf userInf) {
+        String sql = """
+        INSERT INTO usersarress (address, phone, fullName, userid, provider)
+        VALUES (?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+            address = VALUES(address),
+            phone = VALUES(phone),
+            fullName = VALUES(fullName),
+            provider = VALUES(provider)
+        """;
+        try (PreparedStatement stm = conn.prepareStatement(sql)) {
+            stm.setString(1, userInf.getAddress());
+            stm.setString(2, userInf.getPhone());
+            stm.setString(3, userInf.getUserName());
+            stm.setInt(4, userInf.getId());
+            stm.setString(5, userInf.getProvider());
 
-        if (checkAddress) {
-            String sql = "UPDATE usersarress SET address = ?, phone = ?, fullName = ?, userid = ?, authid = ?, provider = ? WHERE userid = ? OR authid = ?";
-            try {
+            int row = stm.executeUpdate();
+            System.out.println("Upsert user address successfully: " + row);
+            return row > 0;
 
-                PreparedStatement stm = conn.prepareStatement(sql);
-                if (userInf.getId() > 0) {
-                    stm.setInt(4, userInf.getId());
-                } else {
-                    stm.setObject(4, null); // dùng setObject để gán null
-                }
-                stm.setString(1, userInf.getAddress());
-                stm.setString(2, userInf.getPhone());
-                stm.setString(3, userInf.getUserName());
-                if (userInf.getId() > 0) {
-                    stm.setInt(4, userInf.getId());
-                } else {
-                    stm.setObject(4, null); // dùng setObject để gán null
-                }
-                stm.setString(5, userInf.getAuthId());
-                stm.setString(6, userInf.getProvider());
-
-                if (userInf.getId() > 0) {
-                    stm.setInt(7, userInf.getId());
-                } else {
-                    stm.setObject(7, null); // dùng setObject để gán null
-                }
-                stm.setString(8, userInf.getAuthId());
-
-                int row = stm.executeUpdate();
-                System.out.println("Inserted user address successfully update" + row);
-                return row > 0;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-
-
-            String insertUserAddressSQL = "INSERT INTO usersarress (userid, address, phone, fullName, authid, provider) VALUES (?, ?, ?, ?, ?, ?)";
-           try{
-                PreparedStatement stm = conn.prepareStatement(insertUserAddressSQL);
-
-               // Gán giá trị cho userid (chấp nhận null nếu cần)
-               if (userInf.getId() > 0) {
-                   stm.setInt(1, userInf.getId());
-               } else {
-                   stm.setObject(1, null); // dùng setObject để gán null
-               }
-
-                stm.setString(2, userInf.getAddress());
-                stm.setString(3, userInf.getPhone());
-                stm.setString(4, userInf.getUserName());
-                stm.setString(5, userInf.getAuthId());
-                stm.setString(6, userInf.getProvider());
-
-                int row = stm.executeUpdate();
-                System.out.println("Inserted user address successfully" + row);
-                return row > 0;
-            } catch (SQLException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Lỗi khi chèn dữ liệu: " + e.getMessage(), e);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
     }
+
 
     private boolean checkIdAddressUser(int id, String authId) {
         try {

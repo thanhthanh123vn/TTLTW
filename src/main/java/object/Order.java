@@ -9,7 +9,7 @@ public class Order {
     private String userName;
 
     private String address;
-
+    private String status;
     private String phone;
     private Date create_date;
 
@@ -23,6 +23,14 @@ public class Order {
         this.userId = userId;
         this.phone = phone;
         this.create_date = create_date;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public int getUserId() {

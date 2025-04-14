@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import dao.InforUser;
 import dao.Utils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -47,6 +48,8 @@ public class LoginServlet extends HttpServlet {
         String path = request.getServletPath();
         String code = request.getParameter("code");
 
+
+
         if (code == null) {
             if (path.equals("/login-facebook")) {
                 String authURL = FB_AUTH_URL + "?client_id=" + FB_APP_ID + "&redirect_uri=" + FB_REDIRECT_URI + "&scope=public_profile,email";
@@ -64,6 +67,8 @@ public class LoginServlet extends HttpServlet {
                 String accessToken = getAccessToken(tokenURL);
                 userInfo = getUserInfo(FB_USER_URL + "&access_token=" + accessToken);
                 provider = "FACEBOOK";
+
+
             } else {
                 String tokenURL = GOOGLE_TOKEN_URL + "?client_id=" + GOOGLE_CLIENT_ID + "&client_secret=" + GOOGLE_CLIENT_SECRET +
                         "&redirect_uri=" + GOOGLE_REDIRECT_URI + "&code=" + code + "&grant_type=authorization_code";
@@ -79,12 +84,15 @@ public class LoginServlet extends HttpServlet {
 
             saveUserToDatabase(id, name, email, provider);
             User user = new User();
-            
 
-            user.setAuthId(id);
+
+
+            InforUser userDao = new InforUser();
+
             user.setProvider(provider);
             user.setFullName(name);
             user.setEmail(email);
+            user.setId(userDao.findIdByEmail(email));
             session.setAttribute("user", user);
             response.sendRedirect("products");
 
@@ -137,25 +145,31 @@ public class LoginServlet extends HttpServlet {
     }
 
     private void saveUserToDatabase(String id, String name, String email, String provider) {
-        String sql = provider.equals("FACEBOOK")
-                ? "INSERT INTO authUsers (facebook_id, name, email, provider) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE name = ?, email = ?"
-                : "INSERT INTO authUsers (google_id, name, email, provider) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE name = ?, email = ?";
 
-        try {
-            utils = new Utils();
 
-            Connection conn = utils.getConnection();
+        if (!id.equals("")) {
 
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, id);
-            pstmt.setString(2, name);
-            pstmt.setString(3, email);
-            pstmt.setString(4, provider);
-            pstmt.setString(5, name);
-            pstmt.setString(6, email);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+            String sql = "INSERT INTO users (username ,  email,provider) values (?,?,?)";
+
+
+            try {
+                utils = new Utils();
+
+                Connection conn = utils.getConnection();
+
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, name);
+                pstmt.setString(2, email);
+                pstmt.setString(3, provider);
+
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }else{
+            System.out.println("id is empty");
         }
     }
+
 }

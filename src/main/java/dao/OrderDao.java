@@ -16,7 +16,20 @@ public class OrderDao {
         utils = new Utils();
         conn = utils.getConnection();
     }
-
+    public boolean updateOrderStatus(Order order) {
+        String sql = "UPDATE [dbo].[Orders]\n"
+                + "   SET [Status] = ?\n"
+                + " WHERE Id = ?";
+        try {
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1, order.getStatus());
+            st.setInt(2, order.getId());
+            return st.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return false;
+    }
     public List<Order> getUserOrder() {
         List<Order> userOrder = new ArrayList<Order>();
 //        String sql = "select o.orderid , ua.fullName, ua.address , ua.phone, o.orderDate ,od.quantity" +
@@ -94,7 +107,7 @@ public class OrderDao {
         return orderDetailsList;
 
     }
-    public boolean insertOrderWithDetails(Order order, OrderDetail orderDetail) {
+    public int insertOrderWithDetails(Order order, OrderDetail orderDetail) {
 
         String insertOrderSQL = "INSERT INTO orders (UserID, OrderDate, Status) VALUES (?, ?, ?)";
 
@@ -130,7 +143,7 @@ public class OrderDao {
                     // Kiểm tra bản ghi được thêm thành công
                     if (detailRows > 0) {
                         conn.commit(); // Cam kết giao dịch
-                        return true;
+                        return orderId;
                     }
                 }
             }
@@ -150,7 +163,7 @@ public class OrderDao {
                 ex.printStackTrace();
             }
         }
-        return false;
+        return 0;
     }
 
     public boolean checkUserID(int userID){
