@@ -57,6 +57,8 @@ public class VnpayReturn extends HttpServlet {
             String signValue = Config.hashAllFields(fields);
             if (signValue.equals(vnp_SecureHash)) {
                 String paymentCode = request.getParameter("vnp_TransactionNo");
+                String transactionnStatus = request.getParameter("vnp_TransactionStatus");
+                System.out.println(transactionnStatus+"Trang Thai don hang");
 
                 String orderId = request.getParameter("vnp_TxnRef");
 
@@ -64,9 +66,11 @@ public class VnpayReturn extends HttpServlet {
                 order.setId(Integer.parseInt(orderId));
 
                 boolean transSuccess = false;
+
                 if ("00".equals(request.getParameter("vnp_TransactionStatus"))) {
                     //update banking system
                     order.setStatus("Completed");
+
                     transSuccess = true;
                 } else {
                     order.setStatus("Failed");

@@ -77,7 +77,7 @@
             url: submitUrl,
             data: postData,
             dataType: 'JSON',
-            success: function (x) {
+            success: function (x) {z
                 if (x.code === '00') {
                     if (window.vnpay) {
                         vnpay.open({width: 768, height: 600, url: x.data});

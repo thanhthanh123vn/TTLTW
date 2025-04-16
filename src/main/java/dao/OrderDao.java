@@ -17,9 +17,9 @@ public class OrderDao {
         conn = utils.getConnection();
     }
     public boolean updateOrderStatus(Order order) {
-        String sql = "UPDATE [dbo].[Orders]\n"
-                + "   SET [Status] = ?\n"
-                + " WHERE Id = ?";
+        String sql = "UPDATE Orders\n"
+                + "   SET Status = ?\n"
+                + " WHERE orderID = ?";
         try {
             PreparedStatement st = conn.prepareStatement(sql);
             st.setString(1, order.getStatus());
@@ -142,6 +142,7 @@ public class OrderDao {
 
                     // Kiểm tra bản ghi được thêm thành công
                     if (detailRows > 0) {
+                        System.out.println("Them Order VNPAY Thanh Cong");
                         conn.commit(); // Cam kết giao dịch
                         return orderId;
                     }
