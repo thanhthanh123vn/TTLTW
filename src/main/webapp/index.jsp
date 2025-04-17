@@ -110,8 +110,8 @@
                 <div class="directPage">
                     <button class="prevCategory prev" style="     border: 2px;
     border-radius: 2px;padding: 10px 12px; cursor: pointer; background-color:gray ; border: 2px; border-radius: 2px;"
-                               onclick="prevFlashSaleSlide()">&#10094;
-                </button>
+                            onclick="prevFlashSaleSlide()">&#10094;
+                    </button>
                     <button class="nextCategory next" style="border: 2px;
                             border-radius: 2px;padding: 10px 12px; cursor: pointer; background-color:gray ; border: 2px; border-radius: 2px;"
                             onclick="nextFlashSaleSlide()">&#10095;
@@ -186,12 +186,12 @@
                 <div class="top-search-list">
                     <c:forEach var="topP" items="${topProduct}">
                         <div class="top-search-item" onclick="redirectToDetails('${topP.name}')">
-                        <img src="${topP.image}" alt="${topP.name}">
-                        <div class="item-info">
-                            <p class="item-title">${topP.name}</p>
-                            <p class="item-count">${topP.quantity} sản phẩm</p>
+                            <img src="${topP.image}" alt="${topP.name}">
+                            <div class="item-info">
+                                <p class="item-title">${topP.name}</p>
+                                <p class="item-count">${topP.quantity} sản phẩm</p>
+                            </div>
                         </div>
-                    </div>
                     </c:forEach>
                 </div>
             </div>
@@ -217,99 +217,127 @@
 
                 </c:forEach>
             </div>
+
+
+
+            <div class="view-product" style="width: 1200px; margin: 15px 0 0 0; margin-left: auto; margin-right: auto;">
+                <div class="view-product-header" style="margin-top: 15px; margin-bottom: 15px;">
+                    <span>Sản phẩm đã xem</span>
+                </div>
+                <div class="view-product-list">
+                    <c:if test="${not empty sessionScope.viewedList}">
+
+                        <c:forEach var="product" items="${sessionScope.viewedList}">
+                            <div class="item-view-products" onclick="redirectToProductDetails('${product.id}')">
+                                <img class="logo" src="${product.image}" alt="${product.name}">
+
+                                </img>
+
+                                <p class="item-name">${product.name}</p>
+
+                            </div>
+
+                        </c:forEach>
+                    </c:if>
+
+
+                </div>
+                <%--            <div class="directPage">--%>
+                <%--                <button class="prevViewProduct prev" style=" padding: 10px 12px;     border: 2px;--%>
+                <%--    border-radius: 2px; cursor: pointer; background-color:gray ; border: 2px; border-radius: 2px;"--%>
+                <%--                        onclick="prevBrandSlide()">&#10094;--%>
+                <%--                </button>--%>
+                <%--                <button class="nextViewProduct next" style="     border: 2px;--%>
+                <%--    border-radius: 2px;padding: 10px 12px; cursor: pointer; background-color:gray ; border: 2px; border-radius: 2px;"--%>
+                <%--                        onclick="nextBrandSlide()">&#10095;--%>
+                <%--                </button>--%>
+                <%--            </div>--%>
+            </div>
         </div>
+        <jsp:include page="footer.jsp"/>
     </div>
 
-    <jsp:include page="footer.jsp"/>
-</div>
+
+    <%--<script>--%>
+    <%--    function  categorySearch(){--%>
+
+    <%--        const searchInput = document.getElementById("searchInput").value;--%>
+    <%--        console.log(searchInput)--%>
+    <%--     window.location.href =`danh-muc?name=`+searchInput;--%>
 
 
-<%
+    <%--    }--%>
+
+    <%--</script>--%>
+
+    <script>
+        function categorySearch() {
+
+            const searchInput = document.getElementById("searchInput").value;
+            console.log(searchInput)
+            window.location.href = `danh-muc?name=` + searchInput;
 
 
-%>
-
-<%--<script>--%>
-<%--    function  categorySearch(){--%>
-
-<%--        const searchInput = document.getElementById("searchInput").value;--%>
-<%--        console.log(searchInput)--%>
-<%--     window.location.href =`danh-muc?name=`+searchInput;--%>
-
-
-<%--    }--%>
-
-<%--</script>--%>
-
-<script>
-    function categorySearch() {
-
-        const searchInput = document.getElementById("searchInput").value;
-        console.log(searchInput)
-        window.location.href = `danh-muc?name=` + searchInput;
-
-
-    }
-
-</script>
-
-
-
-<script>
-    // Lấy phần tử hiển thị thời gian
-    var timerDay = document.querySelector('.timer-day');
-
-    // Thời gian kết thúc khuyến mãi (1 ngày từ thời điểm hiện tại)
-    var endTime = new Date();
-    endTime.setDate(endTime.getDate() + 1); // Thêm 1 ngày
-
-    function updateTimer() {
-        var now = new Date();
-        var remainingTime = endTime - now;
-
-        if (remainingTime <= 0) {
-            timerDay.innerHTML = "Khuyến mãi đã kết thúc!";
-            clearInterval(timerInterval); // Dừng cập nhật
-            return;
         }
 
-        var hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
-
-        timerDay.innerHTML = hours + ":" + minutes + ":" + seconds;
-    }
-
-    // Cập nhật thời gian mỗi giây
-    var timerInterval = setInterval(updateTimer, 1000);
-
-    // Hiển thị lần đầu
-    updateTimer();
-
-</script>
-
-<script src="js/main.js"></script>
-<script src="js/searchProduct.js"></script>
-<script src="js/updateUserMain.js"></script>
-<script src="js/displayAllProduct.js"></script>
-
-<script>
-    function redirectToDetails(name) {
-        // Chuyển hướng đến Servlet với ID sản phẩm
-
-        window.location.href = `danh-muc?name=` + name
-    }
-    function redirectToProductDetails(id) {
-        // Chuyển hướng đến Servlet với ID sản phẩm
-
-        window.location.href = `productDetail?id=` + id
-    }
+    </script>
 
 
+    <script>
+        // Lấy phần tử hiển thị thời gian
+        var timerDay = document.querySelector('.timer-day');
 
-</script>
+        // Thời gian kết thúc khuyến mãi (1 ngày từ thời điểm hiện tại)
+        var endTime = new Date();
+        endTime.setDate(endTime.getDate() + 1); // Thêm 1 ngày
 
-<%
+        function updateTimer() {
+            var now = new Date();
+            var remainingTime = endTime - now;
+
+            if (remainingTime <= 0) {
+                timerDay.innerHTML = "Khuyến mãi đã kết thúc!";
+                clearInterval(timerInterval); // Dừng cập nhật
+                return;
+            }
+
+            var hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+            timerDay.innerHTML = hours + ":" + minutes + ":" + seconds;
+        }
+
+        // Cập nhật thời gian mỗi giây
+        var timerInterval = setInterval(updateTimer, 1000);
+
+        // Hiển thị lần đầu
+        updateTimer();
+
+    </script>
+
+    <script src="js/main.js"></script>
+    <script src="js/searchProduct.js"></script>
+    <script src="js/updateUserMain.js"></script>
+    <script src="js/displayAllProduct.js"></script>
+
+    <script>
+        function redirectToDetails(name) {
+            // Chuyển hướng đến Servlet với ID sản phẩm
+
+            window.location.href = `danh-muc?name=` + name
+        }
+
+        function redirectToProductDetails(id) {
+            // Chuyển hướng đến Servlet với ID sản phẩm
+
+            window.location.href = `productDetail?id=` + id
+        }
+
+
+    </script>
+
+        <%
 
     // Lấy username từ session
     User user = (User) session.getAttribute("user");
@@ -324,67 +352,64 @@
     }
 %>
 
-<script>
-    // Gán username từ server vào biến JavaScript
-    const username = "<%= username %>";
-    console.log(username);
+    <script>
+        // Gán username từ server vào biến JavaScript
+        const username = "<%= username %>";
+        console.log(username);
 
-    // Kiểm tra trạng thái đăng nhập và gọi hàm loginUser nếu đã đăng nhập
-    if (username && username.trim() !== "") {
-        loginUser();
-    }
+        // Kiểm tra trạng thái đăng nhập và gọi hàm loginUser nếu đã đăng nhập
+        if (username && username.trim() !== "") {
+            loginUser();
+        }
 
-    // Đảm bảo xử lý nút đăng xuất
-    document.addEventListener("DOMContentLoaded", () => {
-        const logoutButtons = document.querySelectorAll(".logout-account");
-        logoutButtons.forEach(button => {
-            button.addEventListener("click", () => {
-                logoutUser();
+        // Đảm bảo xử lý nút đăng xuất
+        document.addEventListener("DOMContentLoaded", () => {
+            const logoutButtons = document.querySelectorAll(".logout-account");
+            logoutButtons.forEach(button => {
+                button.addEventListener("click", () => {
+                    logoutUser();
+                });
             });
         });
-    });
 
-    // Hàm xử lý đăng xuất
-    function logoutUser() {
-        console.log("Đăng xuất...");
+        // Hàm xử lý đăng xuất
+        function logoutUser() {
+            console.log("Đăng xuất...");
 
-        // Gửi yêu cầu đến server để xóa session
-        fetch("LogoutServlet", {
-            method: "POST"
-        })
-            .then(response => {
-                if (response.ok) {
-                    console.log("Đăng xuất thành công");
-                    // Chuyển hướng người dùng về trang đăng nhập hoặc trang chủ
-                    window.location.href = "products";
-                } else {
-                    console.error("Lỗi khi đăng xuất");
-                }
+            // Gửi yêu cầu đến server để xóa session
+            fetch("LogoutServlet", {
+                method: "POST"
             })
-            .catch(error => console.error("Lỗi kết nối:", error));
-    }
-    function toggleChat() {
-        var chatBox = document.getElementById("chatBox");
-        if (chatBox.style.display === "none" || chatBox.style.display === "") {
-            chatBox.style.display = "flex";
-        } else {
-            chatBox.style.display = "none";
+                .then(response => {
+                    if (response.ok) {
+                        console.log("Đăng xuất thành công");
+                        // Chuyển hướng người dùng về trang đăng nhập hoặc trang chủ
+                        window.location.href = "products";
+                    } else {
+                        console.error("Lỗi khi đăng xuất");
+                    }
+                })
+                .catch(error => console.error("Lỗi kết nối:", error));
         }
-    }
-</script>
+
+        function toggleChat() {
+            var chatBox = document.getElementById("chatBox");
+            if (chatBox.style.display === "none" || chatBox.style.display === "") {
+                chatBox.style.display = "flex";
+            } else {
+                chatBox.style.display = "none";
+            }
+        }
+    </script>
 
 
-<% String searchProducts = (String) request.getAttribute("products");
+        <% String searchProducts = (String) request.getAttribute("products");
 %>
 
-<script>
+    <script>
 
-    const searchProducts = "<%= searchProducts %>";
-</script>
-
-
-
-
+        const searchProducts = "<%= searchProducts %>";
+    </script>
 
 
 </body>

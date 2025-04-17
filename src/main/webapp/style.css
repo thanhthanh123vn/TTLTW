@@ -224,6 +224,7 @@ body {
 
 /* Product Listing Styling */
 .product-listing {
+
     width: 100%;
     float: right;
     display: grid
@@ -815,7 +816,7 @@ strong {
     background-color: #f8f8ff; /* Màu nền cho sản phẩm thứ mười ba */
 }
 /**/
-.brand-section {
+.brand-section{
     margin-bottom: 20px;
     padding: 10px;
     background-color: white;
@@ -907,6 +908,59 @@ strong {
     font-size: 14px;
     font-weight: bold;
     color: #333;
+}
+.view-product {
+    display: block;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 16px;
+    margin: 20px 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.view-product-header {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 16px;
+}
+
+.view-product-list {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 12px;
+}
+
+.item-view-products {
+    min-width: 130px;
+    flex-shrink: 0;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.item-view-products:hover {
+    transform: scale(1.05);
+}
+
+.item-view-products img.logo {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    object-fit: contain;
+}
+
+.item-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin: 0;
 }
 
 

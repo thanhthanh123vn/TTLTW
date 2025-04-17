@@ -212,6 +212,38 @@
                 </c:if>
             </div>
         </div>
+        <div class="view-product">
+            <div class="view-product-header">
+                <span>Sản phẩm đã xem</span>
+            </div>
+            <div class="view-product-list">
+                <c:if test="${not empty sessionScope.viewedList} ">
+                    <c:forEach var="product" items="${sessionScope.viewedList}">
+                        <div class="item-view-products" onclick="redirectToDetails('${product.id}')">
+                            <img class="logo" src="${product.image}" alt="${product.name}">
+
+                            </img>
+
+                            <p class="item-name">${product.name}</p>
+
+                        </div>
+
+                    </c:forEach>
+                </c:if>
+
+
+            </div>
+            <div class="directPage">
+                <button class="prevViewProduct prev" style=" padding: 10px 12px;     border: 2px;
+    border-radius: 2px; cursor: pointer; background-color:gray ; border: 2px; border-radius: 2px;"
+                        onclick="prevBrandSlide()">&#10094;
+                </button>
+                <button class="nextViewProduct next" style="     border: 2px;
+    border-radius: 2px;padding: 10px 12px; cursor: pointer; background-color:gray ; border: 2px; border-radius: 2px;"
+                        onclick="nextBrandSlide()">&#10095;
+                </button>
+            </div>
+        </div>
     </div>
 
         <jsp:include page="footer.jsp" />
