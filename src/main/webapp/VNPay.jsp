@@ -1,83 +1,97 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.*, java.net.URLEncoder, java.nio.charset.StandardCharsets" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Tạo mới đơn hàng</title>
+    <!-- Bootstrap core CSS -->
+    <link href="/vnpay_jsp/assets/bootstrap.min.css" rel="stylesheet"/>
+    <!-- Custom styles for this template -->
+    <link href="/vnpay_jsp/assets/jumbotron-narrow.css" rel="stylesheet">
+    <script src="/vnpay_jsp/assets/jquery-1.11.3.min.js"></script>
+</head>
 
-<%!
-    public String hmacSHA512(String key, String data) throws Exception {
-        javax.crypto.Mac hmac512 = javax.crypto.Mac.getInstance("HmacSHA512");
-        javax.crypto.spec.SecretKeySpec secretKey = new javax.crypto.spec.SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
-        hmac512.init(secretKey);
-        byte[] bytes = hmac512.doFinal(data.getBytes(StandardCharsets.UTF_8));
-        StringBuilder result = new StringBuilder();
-        for (byte b : bytes) {
-            result.append(String.format("%02x", b));
-        }
-        return result.toString();
-    }
-%>
+<body>
 
-<%
-    try {
-        String vnp_TmnCode = "2QXUI4J4";
-        String vnp_HashSecret = "SECRETKEYCHO2QXUI4J4"; // Kiểm tra lại khóa này
-        String vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        String vnp_Returnurl = "http://localhost:8080/WebMyPham__/vnpay_return.jsp";
+<div class="container">
+    <div class="header clearfix">
 
-        String orderType = "other";
-        long amount = 100000 * 100; // 100,000 VND * 100
-        String vnp_TxnRef = String.valueOf(System.currentTimeMillis());
-        String vnp_IpAddr = request.getRemoteAddr();
-        String vnp_CreateDate = new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        <h3 class="text-muted">VNPAY DEMO</h3>
+    </div>
+    <h3>Tạo mới đơn hàng</h3>
+    <div class="table-responsive">
+        <form action="vnpayajax" id="frmCreateOrder" method="post">
+            <div class="form-group">
+                <label for="amount">Số tiền</label>
+                <input class="form-control" data-val="true" data-val-number="The field Amount must be a number." data-val-required="The Amount field is required." id="amount" max="100000000" min="1" name="amount" type="number" value="10000" />
+            </div>
+            <h4>Chọn phương thức thanh toán</h4>
+            <div class="form-group">
+                <h5>Cách 1: Chuyển hướng sang Cổng VNPAY chọn phương thức thanh toán</h5>
+                <input type="radio" Checked="True" id="bankCode" name="bankCode" value="">
+                <label for="bankCode">Cổng thanh toán VNPAYQR</label><br>
 
-        Map<String, String> vnp_Params = new HashMap<>();
-        vnp_Params.put("vnp_Version", "2.1.0");
-        vnp_Params.put("vnp_Command", "pay");
-        vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
-        vnp_Params.put("vnp_Amount", String.valueOf(amount));
-        vnp_Params.put("vnp_CurrCode", "VND");
-        vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-        vnp_Params.put("vnp_OrderInfo", "Thanh toán đơn hàng: " + vnp_TxnRef);
-        vnp_Params.put("vnp_OrderType", orderType);
-        vnp_Params.put("vnp_Locale", "vn");
-        vnp_Params.put("vnp_ReturnUrl", vnp_Returnurl);
-        vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
-        vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
-        // Bỏ vnp_BankCode để thử nghiệm
-        // vnp_Params.put("vnp_BankCode", "NCB");
+                <h5>Cách 2: Tách phương thức tại site của đơn vị kết nối</h5>
+                <input type="radio" id="bankCode" name="bankCode" value="VNPAYQR">
+                <label for="bankCode">Thanh toán bằng ứng dụng hỗ trợ VNPAYQR</label><br>
 
-        // Sắp xếp tham số
-        List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
-        Collections.sort(fieldNames);
+                <input type="radio" id="bankCode" name="bankCode" value="VNBANK">
+                <label for="bankCode">Thanh toán qua thẻ ATM/Tài khoản nội địa</label><br>
 
-        StringBuilder hashData = new StringBuilder();
-        StringBuilder query = new StringBuilder();
+                <input type="radio" id="bankCode" name="bankCode" value="INTCARD">
+                <label for="bankCode">Thanh toán qua thẻ quốc tế</label><br>
 
-        for (String name : fieldNames) {
-            String value = vnp_Params.get(name);
-            if (value != null && !value.isEmpty()) {
-                if (hashData.length() > 0) {
-                    hashData.append("&");
-                    query.append("&");
+            </div>
+            <div class="form-group">
+                <h5>Chọn ngôn ngữ giao diện thanh toán:</h5>
+                <input type="radio" id="language" Checked="True" name="language" value="vn">
+                <label for="language">Tiếng việt</label><br>
+                <input type="radio" id="language" name="language" value="en">
+                <label for="language">Tiếng anh</label><br>
+
+            </div>
+            <button type="submit" class="btn btn-default" href>Thanh toán</button>
+        </form>
+    </div>
+    <p>
+        &nbsp;
+    </p>
+    <footer class="footer">
+        <p>&copy; VNPAY 2020</p>
+    </footer>
+</div>
+
+<link href="https://pay.vnpay.vn/lib/vnpay/vnpay.css" rel="stylesheet" />
+<script src="https://pay.vnpay.vn/lib/vnpay/vnpay.min.js"></script>
+<script type="text/javascript">
+    $("#frmCreateOrder").submit(function () {
+        var postData = $("#frmCreateOrder").serialize();
+        var submitUrl = $("#frmCreateOrder").attr("action");
+        $.ajax({
+            type: "POST",
+            url: submitUrl,
+            data: postData,
+            dataType: 'JSON',
+            success: function (x) {z
+                if (x.code === '00') {
+                    if (window.vnpay) {
+                        vnpay.open({width: 768, height: 600, url: x.data});
+                    } else {
+                        location.href = x.data;
+                    }
+                    return false;
+                } else {
+                    alert(x.Message);
                 }
-                hashData.append(name).append("=").append(value);
-                query.append(name).append("=").append(URLEncoder.encode(value, StandardCharsets.UTF_8.toString()));
             }
-        }
-
-        // Tạo chữ ký
-        String secureHash = hmacSHA512(vnp_HashSecret, hashData.toString());
-
-        // Thêm chữ ký vào chuỗi truy vấn
-        query.append("&vnp_SecureHash=").append(secureHash);
-        String paymentUrl = vnp_Url + "?" + query.toString();
-
-        // Gỡ lỗi
-        System.out.println("hashData: " + hashData.toString());
-        System.out.println("secureHash: " + secureHash);
-        System.out.println("paymentUrl: " + paymentUrl);
-
-        response.sendRedirect(paymentUrl);
-    } catch (Exception e) {
-        e.printStackTrace();
-        System.out.println("Lỗi: " + e.getMessage());
-    }
-%>
+        });
+        return false;
+    });
+</script>
+</body>
+</html>

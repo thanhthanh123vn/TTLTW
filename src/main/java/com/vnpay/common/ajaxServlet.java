@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.vnpay.common;
 
 import com.google.gson.Gson;
@@ -15,14 +11,15 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import object.Order;
-import object.OrderDetail;
-import object.Product;
-import object.UserInf;
+import object.*;
 import object.cart.Cart;
 import object.cart.ProductCart;
+import org.json.JSONObject;
 
-import java.io.IOException;import java.net.URLEncoder;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -39,36 +36,54 @@ import java.util.TimeZone;
  *
  * @author CTT VNPAY
  */
-@WebServlet("/payment")
+
 public class ajaxServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserInf userAddress = new UserInf();
-        String vnp_Version = "2.1.0";
-        String vnp_Command = "pay";
-        String orderType = "other";
-        long amount = Integer.parseInt(req.getParameter("amount"))*100;
+
+
+        double amount = 0;
+        // Đọc body JSON từ request
+        StringBuilder sb = new StringBuilder();
+        BufferedReader reader = req.getReader();
+        String line;
+        while((line = reader.readLine()) != null) {
+            sb.append(line);
+        }
+
+        try {
+            // Parse JSON
+            JSONObject jsonRequest = new JSONObject(sb.toString());
+             amount = jsonRequest.getLong("amount");
+
+            // (Tùy bạn xử lý thêm ở đây)
+            System.out.println("Received payment amount: " + amount);
+
+
+        } catch (Exception e) {
+        e.printStackTrace();
+        }
         String bankCode = req.getParameter("bankCode");
         HttpSession session = req.getSession();
         Date date = new Date(System.currentTimeMillis());
-        UserInf userInfo = (UserInf) session.getAttribute("UserAddress");
-        int id;
+        User user = (User) session.getAttribute("user");
+
 
         UserInfDao dao_user = new UserInfDao();
         OrderDao dao = new OrderDao();
-        int total;
-        if(userInfo.getId()>0){
-            id = userInfo.getId();
+        int isSuccess  = 0 ;
 
-        }else{
-            id = dao_user.findbyAuthId(userInfo.getAuthId());
+         int   id = user.getId();
 
-        }
+
         Order order = new Order();
         String action = "";
 
         order.setUserId(id);
+
+
         System.out.println(order.getUserId()+"Nguoi dung order");
         order.setCreate_date(date);
         Product product = (Product) session.getAttribute("payProduct");
@@ -79,20 +94,22 @@ public class ajaxServlet extends HttpServlet {
         if (product != null) {
 
             orderDetail.setProductId(product.getId());
+            orderDetail.setTotalPrice(amount);
             orderDetail.setAddress(userAddress.getAddress());
             orderDetail.setDate(new Date(System.currentTimeMillis()));
-            orderDetail.setMethodPay("COD");
+            orderDetail.setMethodPay("VNPAY");
 
 
             orderDetail.setTotalQuantity(product.getQuantity());
             orderDetail.setTotalPrice(product.getPrice());
 
 
-            boolean isSuccess = dao.insertOrderWithDetails(order, orderDetail);
+             isSuccess = dao.insertOrderWithDetails(order, orderDetail);
 
 
 
-            if (isSuccess) {
+
+            if (isSuccess>0) {
                 action = "success";
                 session.setAttribute("action",action);
                 session.setAttribute("order",order);
@@ -102,12 +119,12 @@ public class ajaxServlet extends HttpServlet {
                 session.setAttribute("orderDetail",orderDetail);
                 session.setAttribute("productQL", product);
                 session.removeAttribute("payProduct");
-                req.getRequestDispatcher("index/qldonhang.jsp").forward(req, resp);
+
             } else {
 //                System.out.println("Mua ngay đó nha"+product.toString());
 //                req.setAttribute("product", product);
                 req.setAttribute("errorMessage", "Khong the chen Order");
-                req.getRequestDispatcher("index/qldonhang.jsp").forward(req, resp);
+
             }
 
 
@@ -125,13 +142,14 @@ public class ajaxServlet extends HttpServlet {
                     OrderDetail orderDetail2 = new OrderDetail();
                     orderDetail2.setAddress(userAddress.getAddress());
                     orderDetail2.setDate(new Date(System.currentTimeMillis()));
-                    orderDetail2.setMethodPay("COD");
+                    orderDetail2.setMethodPay("VNPAY");
+
                     orderDetail2.setProductId(cproduct.getId());
                     orderDetail2.setTotalQuantity(cproduct.getQuantity());
                     orderDetail2.setTotalPrice(cproduct.getPrice());
 
-                    boolean isSuccess = dao.insertOrderWithDetails(order2, orderDetail2);
-                    if (isSuccess) {
+                    isSuccess = dao.insertOrderWithDetails(order2, orderDetail2);
+                    if (isSuccess>0) {
                         action = "success";
                         Date date1 = new Date(System.currentTimeMillis());
 
@@ -143,12 +161,12 @@ public class ajaxServlet extends HttpServlet {
                         session.setAttribute("cartQL", cart);
                         req.setAttribute("cart", cart);
                         session.removeAttribute("cart");
-                        req.getRequestDispatcher("index/qldonhang.jsp").forward(req, resp);
+
                     } else {
 
 //                session.setAttribute("cartQL", cart);
                         req.setAttribute("errorMessage", "Khong the chen Order");
-                        req.getRequestDispatcher("index/qldonhang.jsp").forward(req, resp);
+
                     }
 
                 }
@@ -160,19 +178,21 @@ public class ajaxServlet extends HttpServlet {
 
 
 
-
+        String vnp_Version = "2.1.0";
+        String vnp_Command = "pay";
+        String orderType = "other";
 
         
-        String vnp_TxnRef = Config.getRandomNumber(8);
+        String vnp_TxnRef = isSuccess+"";
         String vnp_IpAddr = Config.getIpAddress(req);
 
         String vnp_TmnCode = Config.vnp_TmnCode;
-        
+        long Totalamount = (long) (amount * 100);
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", vnp_Version);
         vnp_Params.put("vnp_Command", vnp_Command);
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
-        vnp_Params.put("vnp_Amount", String.valueOf(amount));
+        vnp_Params.put("vnp_Amount", String.valueOf(Totalamount));
         vnp_Params.put("vnp_CurrCode", "VND");
         
         if (bankCode != null && !bankCode.isEmpty()) {
@@ -227,12 +247,9 @@ public class ajaxServlet extends HttpServlet {
         String vnp_SecureHash = Config.hmacSHA512(Config.secretKey, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
         String paymentUrl = Config.vnp_PayUrl + "?" + queryUrl;
-        JsonObject job = new JsonObject();
-        job.addProperty("code", "00");
-        job.addProperty("message", "success");
-        job.addProperty("data", paymentUrl);
-        Gson gson = new Gson();
-        resp.getWriter().write(gson.toJson(job));
+        System.out.println(paymentUrl);
+        resp.sendRedirect(paymentUrl);
+
     }
     public List<Product> getProducts(List<ProductCart> list) {
 

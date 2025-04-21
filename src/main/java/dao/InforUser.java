@@ -34,6 +34,24 @@ public class InforUser {
         }
         return false;
     }
+	public int findIdByEmail(String email) {
+		String sql = "SELECT id FROM users WHERE email = ?";
+		try {
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setString(1, email);
+			ResultSet resultSet = statement.executeQuery();
+
+			if (resultSet.next()) {
+				return resultSet.getInt("id");
+			} else {
+				return 0; // Không tìm thấy
+			}
+
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	   public boolean insertUser(String username, String password, String email) {
 	        String sql = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
 	        

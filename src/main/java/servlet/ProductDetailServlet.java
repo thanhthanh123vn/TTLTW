@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import object.Product;
 import object.ProductDetail;
 
@@ -44,9 +45,30 @@ public class ProductDetailServlet extends HttpServlet {
             }
 
             // Đặt thông tin sản phẩm vào request scope
+
             request.setAttribute("product", productDetail);
             request.setAttribute("listImage", listImage);
             request.setAttribute("products", product);
+            HttpSession session = request.getSession();
+
+            List<Product> viewedList = (List<Product>) session.getAttribute("viewedList");
+
+            if (viewedList == null) {
+                viewedList = new ArrayList<>();
+            }
+
+            // Kiểm tra nếu chưa có thì thêm vào
+            boolean exists = viewedList.stream().anyMatch(p -> p.getId()==(product.getId()));
+            if (!exists && viewedList.size()<5) {
+                viewedList.add(product);
+            }
+
+            // Lưu lại vào session
+            session.setAttribute("viewedList", viewedList);
+            System.out.println(viewedList.size()+" viewedList");
+
+            // Forward đến trang chi tiết
+
 
             // Chuyển tiếp đến trang chi tiết sản phẩm (JSP)
             request.getRequestDispatcher("detailsProduct.jsp").forward(request, response);
