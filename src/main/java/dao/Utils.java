@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Utils {
-    private final String url = "jdbc:mysql://localhost:3306/webmypham";
+    private final String url = "jdbc:mysql://192.168.247.100:3306/webmypham";
     private final String user = "root"; 
-    private final String password = "";
+    private final String password = "12345";
     
     public Connection getConnection() {
         Connection c = null;
