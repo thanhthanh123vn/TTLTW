@@ -11,7 +11,6 @@ function createOrderHTML(product , orderDetail , isPayProduct = false) {
       <div class="order-item">🛒 Số lượng: ${isPayProduct ? (product.count || "N/A") : product.count}</div>
       <div class="order-item">💵 Giá: ${product.price ? product.price + "đ" : "N/A"}</div>
       <div class="btn-group">
-        <button class="btn-like" onclick="wishlist(this)">❤️ Yêu thích</button>
        <button class="btn-cancel" onclick="removeOrderProduct('${orderDetail.productID}', event)">❌ Hủy đơn</button>
         <button class="btn-toggle" onclick="toggleDetails(this)">Xem chi tiết</button>
       </div>
@@ -26,30 +25,7 @@ function createOrderHTML(product , orderDetail , isPayProduct = false) {
 
 function removeOrderProduct(productId, event) {
     event.preventDefault(); // Ngừng hành động mặc định (reload trang)
-    fetch(  "cancelOrder?id="+productId)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.text(); // hoặc .json() nếu trả về JSON
-        })
-        .then(data => {
-            console.log("Dữ liệu từ servlet:", data);
-            // xử lý dữ liệu hoặc hiển thị
-        })
-        .catch(error => {
-            console.error("Lỗi khi fetch servlet:", error);
-        });
-
-
-}
-function wishlist(productID, event) {
-    event.preventDefault();
-    var btn = event.target;
-    btn.classList.toggle("liked");
-    btn.textContent = btn.classList.contains("liked") ? "💖 Đã yêu thích" : "❤️ Yêu thích";
-
-    fetch("wishlist?id=" + productID, {
+    fetch("cancelWishList?id=" + productID, {
         method: "POST"
     })
         .then(response => {
@@ -62,8 +38,9 @@ function wishlist(productID, event) {
         .catch(error => {
             console.log("Lỗi mạng:", error);
         });
-}
 
+
+}
 function toggleDetails(button) {
     const details = button.closest('.order-card').querySelector('.order-details');
     const isVisible = details.style.display === "block";

@@ -349,7 +349,7 @@
         console.log("Đăng xuất...");
 
         // Gửi yêu cầu đến server để xóa session
-        fetch("LogoutServlet", {
+        fetch("${pageContext.request.contextPath}/LogoutServlet", {
             method: "POST"
         })
             .then(response => {

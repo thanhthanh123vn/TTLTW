@@ -129,11 +129,11 @@
 			<p>Hoặc đăng nhập bằng</p>
 			<div class="login-alt">
 
-				<a  href="http://localhost:8080/WebMyPham__/login-facebook">
+				<a  href="login-facebook">
 				<img
 						src="https://img.icons8.com/ios-filled/50/000000/facebook-new.png"
 						alt="Facebook"></a>
-				<a  href="http://localhost:8080/WebMyPham__/loginGoogle">
+				<a  href="loginGoogle">
 				<img
 					src="https://img.icons8.com/ios-filled/50/000000/google-logo.png"
 					alt="Google"></a>

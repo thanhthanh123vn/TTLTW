@@ -6,7 +6,7 @@ function  UpdateUser(){
         username:username,
         email:email
     }
-    fetch(`http://localhost:8080/UpdateInfoUser?user=${encodeURIComponent(user)}`, {
+    fetch(`UpdateInfoUser?user=${encodeURIComponent(user)}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

@@ -1,5 +1,6 @@
 package servlet.PayProduct;
 
+import dao.FavoriteProductDao;
 import dao.ProductsDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -7,64 +8,87 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import object.FavoriteProducts;
 import object.Product;
+import object.User;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet("/wishlist")
+@WebServlet(urlPatterns = {"/wishlist", "/cancelWishlist"})
 public class WishList extends HttpServlet {
-    private List<Product> products;
 
     @Override
-    public void init() throws ServletException {
-        products = new ArrayList<>();
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            resp.sendRedirect("login.jsp");
+            return;
+        }
+
+        FavoriteProductDao dao = new FavoriteProductDao();
+        List<Product> wishlist = dao.getFavoriteListByUserId(user.getId());
+
+        session.setAttribute("Wishlistproduct", wishlist);
+        req.setAttribute("wishlist", wishlist);
+        req.getRequestDispatcher("/wishlist.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // Lấy tham số productID từ request (id trong URL)
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+        HttpSession session = req.getSession();
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Chưa đăng nhập.");
+            return;
+        }
+
         String productID = req.getParameter("id");
+        String path = req.getServletPath();
+        int user_id = user.getId();
+        FavoriteProductDao favoriteDao = new FavoriteProductDao();
 
-        if (productID != null) {
+        if (productID == null) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("Thiếu tham số ID.");
+            return;
+        }
 
-                // Tìm sản phẩm từ id
-                int id = Integer.parseInt(productID);
-                ProductsDao dao = new ProductsDao();
-                Product product = dao.getProductById(id);
+        int product_id = Integer.parseInt(productID);
 
-                // Nếu tìm thấy sản phẩm
-                if (product != null) {
-                    HttpSession session = req.getSession();
+        if (path.equals("/wishlist")) {
+            ProductsDao productsDao = new ProductsDao();
+            Product product = productsDao.getProductById(product_id);
 
-                    // Nếu wishlist chưa tồn tại trong session, tạo mới
-
-
-                    // Thêm sản phẩm vào wishlist
-                    products.add(product);
-                    session.setAttribute("Wishlistproduct", products);
-
-                    // Gửi phản hồi thành công
+            if (product != null) {
+                boolean isSuccess = favoriteDao.addFavorite(new FavoriteProducts(user_id, product_id));
+                if (isSuccess) {
+                    List<Product> updatedWishlist = favoriteDao.getFavoriteListByUserId(user_id);
+                    session.setAttribute("Wishlistproduct", updatedWishlist);
                     resp.setStatus(HttpServletResponse.SC_OK);
                     resp.getWriter().write("Sản phẩm đã được thêm vào wishlist.");
                 } else {
-                    // Nếu không tìm thấy sản phẩm
-                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    resp.getWriter().write("Không tìm thấy sản phẩm.");
+                    resp.setStatus(HttpServletResponse.SC_CONFLICT);
+                    resp.getWriter().write("Sản phẩm đã có trong danh sách.");
                 }
+            } else {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                resp.getWriter().write("Không tìm thấy sản phẩm.");
+            }
 
-
-        } else {
-            // Nếu không có tham số id
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("Thiếu tham số ID.");
+        } else if (path.equals("/cancelWishlist")) {
+            boolean isDeleted = favoriteDao.deleteFavorite(user_id, product_id);
+            if (isDeleted) {
+                List<Product> updatedWishlist = favoriteDao.getFavoriteListByUserId(user_id);
+                session.setAttribute("Wishlistproduct", updatedWishlist);
+            }
+            resp.sendRedirect("wishlist");
         }
-
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doPost(req, resp);
     }
 }

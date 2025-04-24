@@ -127,15 +127,15 @@
                         </div>
                     </div>
                     <div class="menu_profile">
-                        <a href="http://localhost:8080/WebMyPham__/index/inforUser.jsp" class="item_menu_profile ">Quản lý tài
+                        <a href="inforUser.jsp" class="item_menu_profile ">Quản lý tài
                             khoản</a>
                         <a href="accumulationOfP.html" class="item_menu_profile ">TTT tích
                             điểm</a>
                         <a href="${pageContext.request.contextPath}/index/inforUser.jsp" class="item_menu_profile ">Thông tin tài
                             khoản</a>
-                        <a href="http://localhost:8080/WebMyPham__/ManagerProduct" class="item_menu_profile active">Đơn hàng
+                        <a href="${pageContext.request.contextPath}/ManagerProduct" class="item_menu_profile active">Đơn hàng
                             của tôi</a>
-                        <a href="http://localhost:8080/WebMyPham__/ManagerProduct" class="item_menu_profile ">Booking của tôi</a>
+                        <a href="${pageContext.request.contextPath}/ManagerProduct" class="item_menu_profile ">Booking của tôi</a>
                         <a href="#" class="item_menu_profile ">Sổ địa chỉ
                             nhận hàng</a>
                         <a href="spyt.html" class="item_menu_profile ">Danh sách yêu thích</a>
@@ -210,8 +210,10 @@
     String payProductJson = (payProduct != null) ? new GsonUtil().getGson().toJson(payProduct) : "null";
 %>
 
-
+<script src="../js/wishlist.js"></script>
 <script>
+
+
     document.addEventListener("DOMContentLoaded", function () {
         const productContainer = document.getElementById("productContainer");
 

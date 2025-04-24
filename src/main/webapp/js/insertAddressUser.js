@@ -13,14 +13,28 @@ function addAddressUser() {
     };
 
     if (fullName && phone && city && district && address) {
-        fetch("http://localhost:8080/WebMyPham__/AddAddressUser", {
+        fetch("AddAddressUser", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(UserAddress)
         }).then(response => {
             if (response.ok) {
                 alert("Địa chỉ người dùng đã được thêm thành công!");
-                window.location.href = "http://localhost:8080/WebMyPham__/AddAddressUser";
+                fetch( "AddAddressUser")
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Network response was not ok");
+                        }
+                        return response.text(); // hoặc .json() nếu trả về JSON
+                    })
+                    .then(data => {
+                        console.log("Dữ liệu từ servlet:", data);
+                        // xử lý dữ liệu hoặc hiển thị
+                    })
+                    .catch(error => {
+                        console.error("Lỗi khi fetch servlet:", error);
+                    });
+
             } else {
                 response.text().then(text => {
                     console.error("Lỗi:", response.status, text);
