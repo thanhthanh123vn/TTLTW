@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="object.cart.Cart" %>
+
 <%@ page import="object.User" %>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix = "f" uri = "http://java.sun.com/jsp/jstl/fmt" %>
@@ -30,21 +30,21 @@
         <div class="cart">
             <div class="cart-items">
                 <c:forEach var="cartItem" items="${sessionScope.cart.list}">
-                    <div class="cart-item">
-                        <div class="product-info">
+                    <div class="cart-item" id="product-${cartItem.id}">
+                        <div class="product-info" >
                             <img src="${cartItem.image}" alt="${cartItem.name}">
                             <div class="product-details">
                                 <h3>${cartItem.name}</h3>
                                 <p>${cartItem.detail}</p>
                                 <span>${cartItem.price} <del>229.000 ₫</del></span>
                                 <div class="actions">
-                                    <a href="wishlist?id="+cartItem.id>Yêu thích</a> | <a href="" onclick="removeProduct(${cartItem.id})">Xóa</a>
+                                    <a href="wishlist?id="+cartItem.id>Yêu thích</a> | <a href="" onclick="removeProduct(${cartItem.id},event)">Xóa</a>
                                 </div>
                                 <div class="promotion">Tặng ngay phần quà khi mua tại cửa hàng còn quà</div>
                             </div>
                         </div>
                         <div class="quantity" >
-                            <input type="number" value="${cartItem.count}" name="quantity" min="1"
+                            <input type="number" value="${cartItem.count}" name="quantity"
                                    onchange="updateProductQuantity(${cartItem.id}, this.value)">
                         </div>
                         <div class="total-price">${cartItem.price * cartItem.count}</div>

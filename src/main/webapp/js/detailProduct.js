@@ -1,21 +1,18 @@
 function addCart(product) {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "AddCart", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
 
-
-
-        fetch("AddCart", { // Adjust the URL for product removal
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(product)
-        }).then(response => {
-            if (response.ok) {
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) { // DONE
+            if (xhr.status === 200) {
                 alert("Sản phẩm đã được thêm vào giỏ hàng thành công!");
-
             } else {
-                alert("Lỗi khi khi thêm  sản phẩm vào giỏ.");
+                alert("Lỗi khi thêm sản phẩm vào giỏ.");
+                console.error('Lỗi:', xhr.responseText);
             }
-        }).catch(error => {
-            console.error("Lỗi:", error);
-            alert("Lỗi khi khi thêm  sản phẩm vào giỏ.");
-        });
+        }
+    };
 
+    xhr.send(JSON.stringify(product));
 }

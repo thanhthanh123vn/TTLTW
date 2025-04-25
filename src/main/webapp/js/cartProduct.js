@@ -1,30 +1,50 @@
-async function removeProduct(productId) {
-    // Gọi đến backend để xóa sản phẩm
-    const response = await fetch(`removeProductFromCart?productId=${productId}`, {
-        method: 'GET'
-    });
+function removeProduct(productId, event) {
+    if (event) {
+        event.preventDefault(); // Chỉ ngăn hành động mặc định nếu có event
+    }
 
-    if (response.ok) {
-        // Cập nhật giao diện sau khi xóa sản phẩm thành công
-        document.location.reload(true);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", `removeProductFromCart?productId=${productId}`, true);
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                const productElement = document.getElementById(`product-${productId}`);
+                if (productElement) {
+                    productElement.remove();
+                }
+            } else {
+                alert("Lỗi khi xóa sản phẩm khỏi giỏ hàng.");
+            }
+        }
+    };
+
+    xhr.send();
+}
+function updateProductQuantity(productId, quantity) {
+    quantity = parseInt(quantity); // hoặc Number(quantity)
+    if (quantity === 0) {
+        console.log("Quantity is 0, calling removeProduct");
+        removeProduct(productId);
     } else {
-        alert("Lỗi khi xóa sản phẩm khỏi giỏ hàng.");
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", `UpdateCart?productId=${productId}&quantity=${quantity}`, true);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    console.log("Updated product quantity");
+                } else {
+                    alert("Lỗi khi cập nhật số lượng sản phẩm trong giỏ hàng.");
+                }
+            }
+        };
+
+        xhr.send();
     }
 }
 
-
-async function updateProductQuantity(productId, quantity) {
-    const response = await fetch(`UpdateCart?productId=${productId}&quantity=${quantity}`, {
-        method: 'GET'
-    });
-
-    if (response.ok) {
-        // Cập nhật giao diện sau khi cập nhật số lượng sản phẩm thành công
-        document.location.reload(true);
-    } else {
-        alert("Lỗi khi cập nhật số lượng sản phẩm trong giỏ hàng.");
-    }
-}
 function  checkProductInvaild(){
     const totalPrice = document.querySelector(".totalPrice").value;
     console.log(totalPrice);
