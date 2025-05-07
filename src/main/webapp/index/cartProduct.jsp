@@ -173,7 +173,6 @@
                 if (cartItem) {
                     // Xóa sản phẩm khỏi giỏ hàng
                     cartItem.remove();
-
                     updateCartSummary();
                 }
             });
