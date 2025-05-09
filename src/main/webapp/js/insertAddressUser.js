@@ -22,10 +22,19 @@ function clearPhoneError() {
 function addAddressUser() {
     const fullName = document.getElementById("fullname").value;
     const phone = document.getElementById("phone").value;
-    const city = document.getElementById("city").value;
-    const district = document.getElementById("district").value;
-    const address = document.getElementById("address").value;
+
     const number_hours = document.getElementById("number-hours").value;
+
+
+    const citySelect = document.getElementById("city");
+    const districtSelect = document.getElementById("district");
+    const addressSelect = document.getElementById("address");
+
+
+    const cityName = citySelect.options[citySelect.selectedIndex].text;
+    const districtName = districtSelect.options[districtSelect.selectedIndex].text;
+    const addressName = addressSelect.options[addressSelect.selectedIndex].text;
+
 
 
     clearPhoneError(); // Clear any previous error
@@ -37,7 +46,7 @@ function addAddressUser() {
     var UserAddress = {
         userName: fullName,
         phone: phone,
-        address: number_hours + " , " + address + " , " + district + " , " + city
+        address: number_hours + " , " + addressName + " , " + districtName + " , " + cityName
     };
 
     if (fullName && phone && city && district && address) {

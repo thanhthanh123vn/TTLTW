@@ -135,22 +135,22 @@ function continueToNext() {
     };
 
     localStorage.setItem('address', JSON.stringify(addressData));
-    window.location.href = 'deliveryAdd.html';
+    window.location.href = 'deliveryAdd.jsp';
 }
 
 // Hàm kiểm tra người dùng
 function checkUser() {
     const user = JSON.parse(localStorage.getItem('user'));
     if (!user) {
-        window.location.href = 'login.html';
+        window.location.href = 'login.jsp';
     } else {
-        window.location.href = 'cartProduct.html';
+        window.location.href = 'cartProduct.jsp';
     }
 }
 
 // Hàm reset form
 function resetForm() {
-    window.location.href = 'cartProduct.html';
+    window.location.href = 'cartProduct.jsp';
 }
 
 // Khởi tạo

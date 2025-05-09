@@ -15,19 +15,19 @@ function loginUser() {
 	if (tagData) {
 		const loginHoverDiv = document.querySelector(".login-hover");
 
-		for (let sheet of document.styleSheets) {
-
-			for (let i = 0; i < sheet.cssRules.length; i++) {
-				const rule = sheet.cssRules[i];
-
-
-				if (rule.selectorText === ".header-icons .login-hover:hover .login-box") {
-
-					sheet.deleteRule(i);
-					break;
-				}
-			}
-		}
+		// for (let sheet of document.styleSheets) {
+		//
+		// 	for (let i = 0; i < sheet.cssRules.length; i++) {
+		// 		const rule = sheet.cssRules[i];
+		//
+		//
+		// 		if (rule.selectorText === ".header-icons .login-hover:hover .login-box") {
+		//
+		// 			sheet.deleteRule(i);
+		// 			break;
+		// 		}
+		// 	}
+		// }
 
 		if (loginHoverDiv) {
 

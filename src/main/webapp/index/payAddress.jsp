@@ -35,13 +35,7 @@
             <div class="form-group">
                 <select id="city" required>
                     <option value="">Chọn Tỉnh/Thành phố</option>
-                    <option value="hanoi">Hà Nội</option>
-                    <option value="haiphong">Hải Phòng</option>
-                    <option value="thuathienhue">Thừa Thiên Huế</option>
-                    <option value="nhatrang">Nha Trang</option>
-                    <option value="danang">Đà Nẵng</option>
-                    <option value="tphcm">Thành phố Hồ Chí Minh</option>
-                    <option value="cantho">Cần Thơ</option>
+
                 </select>
             </div>
             <div class="district1">

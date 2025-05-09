@@ -20,6 +20,7 @@ function createOrderHTML(product , orderDetail , isPayProduct = false) {
         📅 Ngày đặt: ${orderDetail.date || "10/04/2025"}<br>
         💳 Phương thức thanh toán: "COD"<br>
        📍  Địa chỉ: ${orderDetail.address || "Chưa có địa chỉ"}
+     
       </div>
     </div>`;
 }
@@ -69,5 +70,6 @@ function toggleDetails(button) {
     const isVisible = details.style.display === "block";
     details.style.display = isVisible ? "none" : "block";
     button.textContent = isVisible ? "Xem chi tiết" : "Ẩn chi tiết";
+
 }
 
