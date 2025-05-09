@@ -38,7 +38,7 @@
                                 <p>${cartItem.detail}</p>
                                 <span>${cartItem.price} <del>229.000 ₫</del></span>
                                 <div class="actions">
-                                    <a href="#">Yêu thích</a> | <a href="" onclick="removeProduct(${cartItem.id})">Xóa</a>
+                                    <a href="wishlist?id="+cartItem.id>Yêu thích</a> | <a href="" onclick="removeProduct(${cartItem.id})">Xóa</a>
                                 </div>
                                 <div class="promotion">Tặng ngay phần quà khi mua tại cửa hàng còn quà</div>
                             </div>

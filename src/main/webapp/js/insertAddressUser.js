@@ -1,15 +1,52 @@
+function validatePhone(phone) {
+    // Kiểm tra số điện thoại Việt Nam (bắt đầu bằng 0 và có 10 số)
+    const phoneRegex = /^0[0-9]{9}$/;
+    return phoneRegex.test(phone);
+}
+
+function showPhoneError(message) {
+    const phoneInput = document.getElementById("phone");
+    const formMessage = phoneInput.nextElementSibling;
+    formMessage.textContent = message;
+    formMessage.style.color = "red";
+    phoneInput.style.borderColor = "red";
+}
+
+function clearPhoneError() {
+    const phoneInput = document.getElementById("phone");
+    const formMessage = phoneInput.nextElementSibling;
+    formMessage.textContent = "";
+    phoneInput.style.borderColor = "";
+}
+
 function addAddressUser() {
     const fullName = document.getElementById("fullname").value;
     const phone = document.getElementById("phone").value;
-    const city = document.getElementById("city").value;
-    const district = document.getElementById("district").value;
-    const address = document.getElementById("address").value;
+
     const number_hours = document.getElementById("number-hours").value;
+
+
+    const citySelect = document.getElementById("city");
+    const districtSelect = document.getElementById("district");
+    const addressSelect = document.getElementById("address");
+
+
+    const cityName = citySelect.options[citySelect.selectedIndex].text;
+    const districtName = districtSelect.options[districtSelect.selectedIndex].text;
+    const addressName = addressSelect.options[addressSelect.selectedIndex].text;
+
+
+
+    clearPhoneError(); // Clear any previous error
+    if (!validatePhone(phone)) {
+        showPhoneError("Số điện thoại không hợp lệ!");
+        return;
+    }
 
     var UserAddress = {
         userName: fullName,
         phone: phone,
-        address: number_hours + " , " + address + " , " + district + " , " + city
+        address: number_hours + " , " + addressName + " , " + districtName + " , " + cityName
     };
 
     if (fullName && phone && city && district && address) {

@@ -33,7 +33,7 @@
                 <div class="logo-right">
                     <a href="/lien-he.html">Gửi yêu cầu</a>
                     <span>|</span>
-                    <a href="https://WebBanMyPham/index/login.html">Đăng nhập</a>
+                    <a href="${pageContext.request.contextPath}/login.jsp">Đăng nhập</a>
                 </div>
             </div>
         </div>
@@ -79,7 +79,7 @@
     </div>
     <div class="container">
         <div class="break with-comom">
-            <a href="/">Trang chủ</a>
+            <a href="${pageContext.request.contextPath}/products">Trang chủ</a>
             <a href="main.html" class="active">Hệ Thống Cửa Hàng TTT Trên Toàn Quốc</a>
         </div>
     </div>

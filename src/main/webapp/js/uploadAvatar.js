@@ -20,7 +20,7 @@
 
     formData.append("avatar", fileInput.files[0]);
 
-    fetch("http://localhost:8080/WebMyPham__/uploadAvatar", {
+    fetch("uploadAvatar", {
     method: "POST",
     body: formData
 })

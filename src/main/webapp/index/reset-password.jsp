@@ -96,7 +96,7 @@
 <body>
 
 
-<form action="http://localhost:8080/WebMyPham__/resetPassword" method="post">
+<form action="${pageContext.request.contextPath}/resetPassword" method="post">
   <h2>Đặt lại mật khẩu</h2>
   <p>Vui lòng nhập mật khẩu mới cho tài khoản của bạn.</p>
   <input type="hidden" name="token" value="<%= token %>">

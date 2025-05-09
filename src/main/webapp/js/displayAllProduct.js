@@ -10,7 +10,7 @@ async function fetchBrandAndCategoryList() {
     try {
         // Gửi yêu cầu song song để lấy danh sách thương hiệu và danh mục
         const [flashSale,brandResponse, categoryResponse,hotProduct] = await Promise.all([
-            fetch("http://localhost:8080/WebMyPham__/flashSale"),
+            fetch("flashSale"),
             fetch("brandList"),
             fetch(`categoryList?startIndex=${encodeURIComponent(currentCategorySlideIndex)}`),
             fetch("hotProduct")

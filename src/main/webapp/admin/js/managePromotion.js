@@ -1,12 +1,12 @@
 let promotions = []; // Biến chứa danh sách promotions
 
 // Hiển thị danh sách promotions
+
 async function displayPromotions() {
-    const promotionsBody = document.getElementById("promotionsBody");
-    promotionsBody.innerHTML = "";  // Clear previous data
+    const tableId = '#promotionTable';
 
-
-        const response = await fetch("http://localhost:8080/WebMyPham__/lProducts");
+    try {
+        const response = await fetch("list_Promotions");
         if (!response.ok) throw new Error("Không thể tải danh sách promotions.");
 
         promotions = await response.json();  // Cập nhật danh sách promotions
@@ -15,22 +15,20 @@ async function displayPromotions() {
             productId: promotion.productId,
             name: promotion.name,
             discountPercentage: promotion.discountPercentage,
-            startDate: promotion.startDate || 'N/A',  // Xử lý ngày tháng không hợp lệ
-            endDate: promotion.endDate || 'N/A',      // Xử lý ngày tháng không hợp lệ
-            action: `<td style="display: flex; justify-content: space-around; text-align: center;">
+            startDate: promotion.startDate || 'N/A',
+            endDate: promotion.endDate || 'N/A',
+            action: `<div style="display: flex; justify-content: space-around; text-align: center;">
                         <button onclick="editPromotion(${index})">Sửa</button>
                         <button style="margin-left: 10px" onclick="deletePromotion(${index})">Xóa</button>
-                    </td>`
+                    </div>`
         }));
 
-        // Kiểm tra nếu DataTable đã được khởi tạo
-        if ($.fn.DataTable.isDataTable('#userTable')) {
-            const table = $('#userTable').DataTable();
+        if ($.fn.DataTable.isDataTable(tableId)) {
+            const table = $(tableId).DataTable();
             table.clear();
             table.rows.add(modifiedPromotions).draw();
         } else {
-            // Khởi tạo DataTable nếu chưa
-            $('#userTable').DataTable({
+            $(tableId).DataTable({
                 data: modifiedPromotions,
                 columns: [
                     { data: 'productId' },
@@ -42,8 +40,24 @@ async function displayPromotions() {
                 ]
             });
         }
-
+    } catch (error) {
+        console.error("Lỗi khi hiển thị promotions:", error);
+    }
 }
+$(document).ready(function () {
+    displayPromotions();
+
+    $("#list-header").on({
+        mouseenter: function () {
+            $(this).css("background-color", "lightgray");
+        },
+        mouseleave: function () {
+            $(this).css("background-color", "lightblue");
+        },
+    });
+});
+
+
 
 // Hiển thị modal thêm promotion
 function showAddPromotionModal() {
@@ -137,6 +151,3 @@ function hideModal() {
     delete document.getElementById("promotionsModal").dataset.index;
 }
 
-$(document).ready(function () {
-    displayPromotions();
-});

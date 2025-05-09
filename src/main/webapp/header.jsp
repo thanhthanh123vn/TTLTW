@@ -146,7 +146,7 @@
                 <div class="header-icon-sub">
                     <img src="https://hasaki.vn/images/graphics/icon_header_1.svg">
 
-                    <a href="http://localhost:8080/WebMyPham__/loginCart" class="cart-icon"> Giỏ hàng <span
+                    <a href="loginCart" class="cart-icon"> Giỏ hàng <span
                             class="cart-count"></span></a>
                 </div>
             </div>

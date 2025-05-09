@@ -319,7 +319,7 @@ window.location.href = `danh-muc?name=` + searchInput;
 
 }
 function payProductDetail(productId) {
-window.location.href = "http://localhost:8080/WebMyPham__/payProduct?productId="+productId;
+window.location.href = "payProduct?productId="+productId;
 
 }
         function  sendComment(){
@@ -327,7 +327,7 @@ window.location.href = "http://localhost:8080/WebMyPham__/payProduct?productId="
             var id = product.id;
             const comment = document.getElementById("rating_content").value;
 
-            window.location.href = "http://localhost:8080/WebMyPham__/sendComment?productID=" + id+"&comment="+comment;
+            window.location.href = "sendComment?productID=" + id+"&comment="+comment;
 
         }
         function redirectToProductDetails(id) {

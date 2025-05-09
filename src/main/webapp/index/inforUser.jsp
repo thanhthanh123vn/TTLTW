@@ -47,16 +47,16 @@
             </div>
           </div>
           <div class="menu_profile">
-            <a href="http://localhost:8080/WebMyPham__/index/inforUser.jsp" class="item_menu_profile ">Quản lý tài
+            <a href="${pageContext.request.contextPath}/inforUser.jsp" class="item_menu_profile ">Quản lý tài
               khoản</a>
             <a href="https://hasaki.vn/user/loyalty/home" class="item_menu_profile ">Hasaki tích
               điểm</a>
-            <a href="http://localhost:8080/WebMyPham__/index/inforUser.jsp" class="item_menu_profile active">Thông tin tài
+            <a href="${pageContext.request.contextPath}/inforUser.jsp" class="item_menu_profile active">Thông tin tài
               khoản</a>
-            <a href="http://localhost:8080/WebMyPham__/index/qldonhang.jsp" class="item_menu_profile ">Đơn hàng
+            <a href=${pageContext.request.contextPath}/qldonhang.jsp" class="item_menu_profile ">Đơn hàng
               của tôi</a>
             <a href="https://hasaki.vn/bookings/history" class="item_menu_profile ">Booking của tôi</a>
-            <a href="http://localhost:8080/WebMyPham__/index/newaddress.jsp" class="item_menu_profile ">Sửa địa chỉ
+            <a href="${pageContext.request.contextPath}/newaddress.jsp" class="item_menu_profile ">Sửa địa chỉ
               nhận hàng</a>
             <a href="https://hasaki.vn/wishlist" class="item_menu_profile ">Danh sách yêu thích</a>
             <a href="https://hasaki.vn/user/repurchase-products" class="item_menu_profile ">Mua lại</a>
@@ -66,7 +66,7 @@
       </div>
       <div class="account-info-container">
         <div class="account-section">
-          <form action="http://localhost:8080/WebMyPham__/updateInforUser" method="post" class="form" id="register-form">
+          <form action="${pageContext.request.contextPath}/updateInforUser" method="post" class="form" id="register-form">
           <h2>Thông tin tài khoản</h2>
             <div class="profile-picture">
               <div class="profile-picture-left">

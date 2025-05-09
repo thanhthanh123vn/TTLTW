@@ -46,7 +46,7 @@
       </div>
       <div class="address-actions">
         <button class="delete-btn"><i class="fas fa-trash-alt"></i></button>
-        <a href="payAddress.html" class="edit-link">Sửa</a>
+        <a href="${pageContext.request.contextPath}/index/payAddress.jsp" class="edit-link">Sửa</a>
       </div>
     </div>
   </div>
