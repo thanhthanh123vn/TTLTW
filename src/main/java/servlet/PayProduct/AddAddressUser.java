@@ -26,6 +26,7 @@ public class AddAddressUser extends HttpServlet {
 
         Gson gson = GsonUtil.getGson();
          userAddress = gson.fromJson(reader, UserInf.class);
+        System.out.println(userAddress.toString());
          HttpSession session = req.getSession();
          User user = (User) session.getAttribute("user");
          userAddress.setEmail(user.getEmail());
@@ -36,11 +37,11 @@ public class AddAddressUser extends HttpServlet {
         userAddress.setProvider(user.getProvider());
 
 
-        System.out.println(userAddress.toString());
 
         InforUser userDao = new InforUser();
         userAddress.setId(userDao.findIdByEmail(user.getEmail()));
         boolean isSuccess = dao.upsertAddressUser(userAddress);
+        System.out.println(userAddress.toString());
 
 
 

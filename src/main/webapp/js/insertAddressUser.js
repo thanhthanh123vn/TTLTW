@@ -1,3 +1,24 @@
+function validatePhone(phone) {
+    // Kiểm tra số điện thoại Việt Nam (bắt đầu bằng 0 và có 10 số)
+    const phoneRegex = /^0[0-9]{9}$/;
+    return phoneRegex.test(phone);
+}
+
+function showPhoneError(message) {
+    const phoneInput = document.getElementById("phone");
+    const formMessage = phoneInput.nextElementSibling;
+    formMessage.textContent = message;
+    formMessage.style.color = "red";
+    phoneInput.style.borderColor = "red";
+}
+
+function clearPhoneError() {
+    const phoneInput = document.getElementById("phone");
+    const formMessage = phoneInput.nextElementSibling;
+    formMessage.textContent = "";
+    phoneInput.style.borderColor = "";
+}
+
 function addAddressUser() {
     const fullName = document.getElementById("fullname").value;
     const phone = document.getElementById("phone").value;
@@ -6,6 +27,13 @@ function addAddressUser() {
     const address = document.getElementById("address").value;
     const number_hours = document.getElementById("number-hours").value;
 
+
+    clearPhoneError(); // Clear any previous error
+    if (!validatePhone(phone)) {
+        showPhoneError("Số điện thoại không hợp lệ!");
+        return;
+    }
+
     var UserAddress = {
         userName: fullName,
         phone: phone,
@@ -13,28 +41,14 @@ function addAddressUser() {
     };
 
     if (fullName && phone && city && district && address) {
-        fetch("AddAddressUser", {
+        fetch("http://localhost:8080/WebMyPham__/AddAddressUser", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(UserAddress)
         }).then(response => {
             if (response.ok) {
                 alert("Địa chỉ người dùng đã được thêm thành công!");
-                fetch( "AddAddressUser")
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error("Network response was not ok");
-                        }
-                        return response.text(); // hoặc .json() nếu trả về JSON
-                    })
-                    .then(data => {
-                        console.log("Dữ liệu từ servlet:", data);
-                        // xử lý dữ liệu hoặc hiển thị
-                    })
-                    .catch(error => {
-                        console.error("Lỗi khi fetch servlet:", error);
-                    });
-
+                window.location.href = "http://localhost:8080/WebMyPham__/AddAddressUser";
             } else {
                 response.text().then(text => {
                     console.error("Lỗi:", response.status, text);

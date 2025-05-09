@@ -2,209 +2,174 @@ const citySelect = document.getElementById('city');
 const districtSelect = document.getElementById('district');
 const addressSelect = document.getElementById('address');
 
-const districtsData = {
-    hanoi: [
-        "Ba Đình",
-        "Hoàn Kiếm",
-        "Đống Đa",
-        "Hai Bà Trưng",
-        "Hoàng Mai",
-        "Long Biên",
-        "Nam Từ Liêm",
-        "Tây Hồ",
-        "Thanh Xuân",
-        "Cầu Giấy",
-        "Gia Lâm",
-        "Sóc Sơn"
-    ],
-    haiphong: [
-        "Hồng Bàng",
-        "Lê Chân",
-        "Ngô Quyền",
-        "Kiến An",
-        "Đồ Sơn",
-        "Dương Kinh",
-        "An Dương",
-        "An Lão",
-        "Tiên Lãng",
-        "Vĩnh Bảo"
-    ],
-    thuathienhue: [
-        "Hương Thủy",
-        "Hương Trà",
-        "Phú Vang",
-        "Phú Lộc",
-        "A Lưới",
-        "Nam Đông",
-        "Bạch Mã"
-    ],
-    nhatrang: [
-        "Nha Trang",
-        "Cam Ranh",
-        "Vĩnh Hải",
-        "Vĩnh Nguyên",
-        "Diên Khánh"
-    ],
-    danang: [
-        "Hải Châu",
-        "Thanh Khê",
-        "Sơn Trà",
-        "Ngũ Hành Sơn",
-        "Liên Chiểu",
-        "Hòa Vang"
-    ],
-    tphcm: [
-        "Quận 1",
-        "Quận 2",
-        "Quận 3",
-        "Quận 4",
-        "Quận 5",
-        "Quận 6",
-        "Quận 7",
-        "Quận 8",
-        "Quận 9",
-        "Quận 10",
-        "Quận 11",
-        "Quận 12"
-    ],
-    cantho: [
-        "Ninh Kiều",
-        "Cái Răng",
-        "Ô Môn",
-        "Thốt Nốt",
-        "Phong Điền",
-        "Vĩnh Thạnh",
-        "Cờ Đỏ"
-    ]
-};
+// Hàm lấy danh sách tỉnh/thành phố
+async function loadProvinces() {
+    try {
+        const response = await fetch('https://provinces.open-api.vn/api/');
+        if (!response.ok) throw new Error('Không thể tải danh sách tỉnh/thành phố');
 
-const addressesData = {
-    hanoi: {
-        "Ba Đình": ["Phường Trúc Bạch", "Phường Đội Cấn"],
-        "Hoàn Kiếm": ["Phường Hàng Bạc", "Phường Hàng Đào"],
-        "Đống Đa": ["Phường Khâm Thiên", "Phường Trung Liệt"],
-        "Hai Bà Trưng": ["Phường Bùi Thị Xuân", "Phường Vĩnh Tuy"],
+        const provinces = await response.json();
+        citySelect.innerHTML = '<option value="">Chọn tỉnh/thành phố</option>';
 
-    },
-    haiphong: {
-        "Hồng Bàng": ["Phường Hạ Lý", "Phường Minh Khai"],
-        "Lê Chân": ["Phường Vĩnh Niệm", "Phường Dư Hàng Kênh"],
-
-    },
-    thuathienhue: {
-        "Hương Thủy": ["Phường Thủy Dương", "Phường Thủy Vân"],
-
-    },
-    nhatrang: {
-        "Nha Trang": ["Phường Vĩnh Hải", "Phường Vĩnh Nguyên"],
-
-    },
-    danang: {
-        "Hải Châu": ["Phường Hòa Cường Bắc", "Phường Hòa Cường Nam"],
-
-    },
-    tphcm: {
-        "Quận 1": ["Phường Bến Nghé", "Phường Bến Thành"],
-
-    },
-    cantho: {
-        "Ninh Kiều": ["Phường An Nghiệp", "Phường An Khánh"],
-
-    }
-};
-
-citySelect.addEventListener('change', function () {
-    const selectedCity = this.value;
-
-
-    districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
-    addressSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
-
-    if (districtsData[selectedCity]) {
-        districtsData[selectedCity].forEach(district => {
+        provinces.forEach(province => {
             const option = document.createElement('option');
-            option.value = district;
-            option.textContent = district;
+            option.value = province.code;
+            option.textContent = province.name;
+            citySelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Lỗi khi tải tỉnh/thành phố:', error);
+        showAlert('Không thể tải danh sách tỉnh/thành phố', 'danger');
+    }
+}
+
+// Hàm lấy danh sách quận/huyện
+async function loadDistricts(provinceCode) {
+    try {
+        const response = await fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`);
+        if (!response.ok) throw new Error('Không thể tải danh sách quận/huyện');
+
+        const data = await response.json();
+        districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
+
+        data.districts.forEach(district => {
+            const option = document.createElement('option');
+            option.value = district.code;
+            option.textContent = district.name;
             districtSelect.appendChild(option);
         });
+    } catch (error) {
+        console.error('Lỗi khi tải quận/huyện:', error);
+        showAlert('Không thể tải danh sách quận/huyện', 'danger');
     }
-});
+}
 
-districtSelect.addEventListener('change', function () {
-    const selectedCity = citySelect.value;
-    const selectedDistrict = this.value;
+// Hàm lấy danh sách phường/xã
+async function loadWards(districtCode) {
+    try {
+        const response = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
+        if (!response.ok) throw new Error('Không thể tải danh sách phường/xã');
 
+        const data = await response.json();
+        addressSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
 
-    addressSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
-
-    if (addressesData[selectedCity] && addressesData[selectedCity][selectedDistrict]) {
-        addressesData[selectedCity][selectedDistrict].forEach(address => {
+        data.wards.forEach(ward => {
             const option = document.createElement('option');
-            option.value = address;
-            option.textContent = address;
+            option.value = ward.code;
+            option.textContent = ward.name;
             addressSelect.appendChild(option);
         });
+    } catch (error) {
+        console.error('Lỗi khi tải phường/xã:', error);
+        showAlert('Không thể tải danh sách phường/xã', 'danger');
+    }
+}
+
+// Event listeners
+citySelect.addEventListener('change', function() {
+    const selectedProvinceCode = this.value;
+    if (selectedProvinceCode) {
+        loadDistricts(selectedProvinceCode);
+        addressSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
+    } else {
+        districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
+        addressSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
     }
 });
 
-const buttonhome = document.getElementById('buttonhome');
-const buttonCity = document.getElementById('buttonCity');
-//thêm sự kiện cho nút buttonHome
-buttonhome.addEventListener('click',()=> {
-    buttonhome.classList.add('btn-selected');
-    buttonCity.classList.remove('btn-selected');
-});
-// thêm nút sự kiện cho buttonCity
-buttonCity.addEventListener('click',() =>{
-    buttonCity.classList.add('btn-selected');
-    buttonhome.classList.remove('btn-selected')
+districtSelect.addEventListener('change', function() {
+    const selectedDistrictCode = this.value;
+    if (selectedDistrictCode) {
+        loadWards(selectedDistrictCode);
+    } else {
+        addressSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
+    }
 });
 
+// Hàm hiển thị thông báo
+function showAlert(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    document.querySelector('.container').insertAdjacentElement('afterbegin', alertDiv);
+
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
+}
+
+// Hàm lấy địa chỉ đầy đủ
+function getFullAddress() {
+    const province = citySelect.options[citySelect.selectedIndex].text;
+    const district = districtSelect.options[districtSelect.selectedIndex].text;
+    const ward = addressSelect.options[addressSelect.selectedIndex].text;
+    const numberHours = document.getElementById('number-hours').value;
+
+    return {
+        province,
+        district,
+        ward,
+        numberHours
+    };
+}
+
+// Hàm tiếp tục
 function continueToNext() {
-    // Lấy dữ liệu từ form
     const fullname = document.getElementById('fullname').value;
     const phone = document.getElementById('phone').value;
-    const citySelect = document.getElementById('city');
-    const districtSelect = document.getElementById('district');
-    const addressSelect = document.getElementById('address');
-    const numberHours = document.getElementById('number-hours');
+    const address = getFullAddress();
 
-    // Kiểm tra nếu thiếu thông tin cần thiết
-    if (fullname === '' || phone === '' || citySelect.value === '' || districtSelect.value === '') {
-        alert('Vui lòng nhập đầy đủ thông tin');
+    if (!fullname || !phone || !address.province || !address.district) {
+        showAlert('Vui lòng nhập đầy đủ thông tin', 'warning');
         return;
     }
 
-    // Tạo đối tượng chứa thông tin người dùng và địa chỉ
-    var addressfull = {
-        fullname: fullname,
-        phone: phone,
-        address: {
-            city: citySelect.value,
-            district: districtSelect.value,
-            address: addressSelect.value,
-            numberHours: numberHours.value
-        }
+    const addressData = {
+        fullname,
+        phone,
+        address
     };
 
-    // Lưu đối tượng vào localStorage
-    localStorage.setItem('address', JSON.stringify(addressfull));
-
-    // Chuyển hướng sang trang khác
+    localStorage.setItem('address', JSON.stringify(addressData));
     window.location.href = 'deliveryAdd.html';
 }
 
-
-function checkUser(){
-    if(user === null){
+// Hàm kiểm tra người dùng
+function checkUser() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
         window.location.href = 'login.html';
-    }else{
+    } else {
         window.location.href = 'cartProduct.html';
     }
-
-
 }
-function resetForm(){
+
+// Hàm reset form
+function resetForm() {
     window.location.href = 'cartProduct.html';
-
 }
+
+// Khởi tạo
+document.addEventListener('DOMContentLoaded', () => {
+    loadProvinces();
+
+    // Thêm sự kiện cho các nút
+    const buttonHome = document.getElementById('buttonhome');
+    const buttonCity = document.getElementById('buttonCity');
+
+    if (buttonHome && buttonCity) {
+        buttonHome.addEventListener('click', () => {
+            buttonHome.classList.add('btn-selected');
+            buttonCity.classList.remove('btn-selected');
+        });
+
+        buttonCity.addEventListener('click', () => {
+            buttonCity.classList.add('btn-selected');
+            buttonHome.classList.remove('btn-selected');
+        });
+    }
+});

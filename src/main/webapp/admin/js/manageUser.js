@@ -2,8 +2,8 @@
 let userInfs = [];
 
 async function displayUsers() {
-    const userBody = document.getElementById("userBody");
-    userBody.innerHTML = "";
+    // const userBody = document.getElementById("userBody");
+    // userBody.innerHTML = "";
 
     try {
         const response = await fetch("http://localhost:8080/WebMyPham__/listUserInf");

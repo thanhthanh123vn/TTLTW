@@ -669,7 +669,7 @@
             <h6 class="m-0 font-weight-bold text-primary">Bảng User</h6>
           </div>
           <main> <section class="products">
-            <table id="userTable">
+            <table id="promotionTable">
               <thead>
               <tr id="list-header">
                 <th scope="col" class="background-green bold ">ProductID</th>
@@ -754,7 +754,7 @@
           <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="http://localhost:8080/WebMyPham__/login.jsp">Logout</a>
+            <a class="btn btn-primary" href="${pageContext.request.contextPath}/login.jsp">Logout</a>
           </div>
         </div>
       </div>
@@ -770,9 +770,9 @@
     <script src="js/managePromotion.js">
 
 
-      const users = <%= PromotionsJson %>;
+      const promotions = <%= PromotionsJson %>;
 
-      console.log(users); // Kiểm tra dữ liệu trong console
+      console.log(promotions); // Kiểm tra dữ liệu trong console
     </script>
 
     <!-- Bootstrap core JavaScript-->

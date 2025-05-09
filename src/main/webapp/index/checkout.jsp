@@ -12,10 +12,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Đặt hàng</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/checkout.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/checkout.css"/>
     <link rel="icon" href="${pageContext.request.contextPath}/images/logo.png" type="image/x-icon">
 </head>
 <body>
@@ -55,15 +55,15 @@
             <div class="card-content">
                 <form id="payment-form">
                     <div class="radio">
-                        <input type="radio" name="paymentMethod" id="cod" value="cod" checked />
+                        <input type="radio" name="paymentMethod" id="cod" value="cod" checked/>
                         <label for="cod">💵 Thanh toán khi nhận hàng (COD)</label>
                     </div>
                     <div class="radio">
-                        <input type="radio" name="paymentMethod" id="card" value="card" />
+                        <input type="radio" name="paymentMethod" id="card" value="card"/>
                         <label for="card">💳 Thanh toán qua thẻ</label>
                     </div>
                     <div class="radio">
-                        <input type="radio" name="paymentMethod" id="wallet" value="wallet" />
+                        <input type="radio" name="paymentMethod" id="wallet" value="wallet"/>
                         <label for="wallet">📱 Thanh toán qua ví điện tử</label>
                     </div>
                 </form>
@@ -95,7 +95,6 @@
                     </div>
                     <div class="shipping-note">Giao trong 4-6 ngày</div>
                 </div>
-
 
 
                 <div class="order-summary">
@@ -181,23 +180,24 @@
                 </div>
             </div>
             <div class="policy">
-                Đã bao gồm VAT, phí đóng gói, phí vận chuyển và các chi phí khác. Vui lòng xem <a href="#">Chính sách vận chuyển</a>
+                Đã bao gồm VAT, phí đóng gói, phí vận chuyển và các chi phí khác. Vui lòng xem <a href="#">Chính sách
+                vận chuyển</a>
             </div>
         </div>
     </div>
 </div>
 
 
-<% Cart  cart = (Cart)session.getAttribute("cart");
-Product product = (Product) session.getAttribute("payProduct");
-double totalAmount = 0;
-if(cart!=null){
-    totalAmount = cart.getTotalCart();
+<% Cart cart = (Cart) session.getAttribute("cart");
+    Product product = (Product) session.getAttribute("payProduct");
+    double totalAmount = 0;
+    if (cart != null) {
+        totalAmount = cart.getTotalCart();
 
 
-}else{
-    totalAmount = product.getPrice()*product.getQuantity();
-}
+    } else {
+        totalAmount = product.getPrice() * product.getQuantity();
+    }
 %>
 
 <script>
@@ -211,7 +211,7 @@ if(cart!=null){
         if (method === 'cod') {
 
             window.open("${pageContext.request.contextPath}/ManagerProduct");
-        }else if (method === 'card') {
+        } else if (method === 'card') {
             fetch('${pageContext.request.contextPath}/payment', {
                 method: 'POST',
                 headers: {
@@ -226,7 +226,7 @@ if(cart!=null){
                 .then(response => response.json())
                 .then(data => {
                     // Xử lý kết quả từ server
-                    
+
                     console.log('Payment success:', data);
                     alert('Thanh toán bằng thẻ thành công!');
                 })
@@ -234,17 +234,9 @@ if(cart!=null){
                     console.error('Error during card payment:', error);
                     alert('Có lỗi xảy ra khi thanh toán bằng thẻ.');
                 });
+        } else if (method === 'wallet') {
+            alert("Bạn đã chọn thanh toán qua ví điện tử.");
         }
-
-
-
-
-
-        else
-    if (method === 'wallet') {
-        alert("Bạn đã chọn thanh toán qua ví điện tử.");
-    }
-
 
 
     }

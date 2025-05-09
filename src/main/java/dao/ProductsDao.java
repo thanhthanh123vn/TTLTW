@@ -85,27 +85,39 @@ public class ProductsDao {
         }
         return false;
 }
-    public  List<Product> listProducts() {
+    public List<Product> listProducts() {
         String sql = "SELECT * FROM products";
+        String sql_order = "SELECT SUM(quantity) AS totalSold FROM orderdetails WHERE productid = ?";
         List<Product> products = new ArrayList<>();
 
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                System.out.println("ProductDetails success");
                 Product product = new Product();
-                product.setId(resultSet.getInt("Id"));
-                product.setQuantity(resultSet.getInt("quantity"));
+                int productId = resultSet.getInt("Id");
+
+                product.setId(productId);
                 product.setName(resultSet.getString("Name"));
                 product.setDetail(resultSet.getString("Detail"));
                 product.setPrice(resultSet.getDouble("Price"));
                 product.setImage(resultSet.getString("Image"));
                 product.setCategory_id(resultSet.getInt("CategoryId"));
-//                product.setPriceNew(resultSet.getBigDecimal("PriceNew"));
-//                product.setDate(resultSet.getDate("Date"));
-//                product.setOrderProduct(resultSet.getInt("orderProduct"));
-//                product.setGroupProductId(resultSet.getInt("GroupProduct_Id"));
+                int initialQuantity = resultSet.getInt("quantity");
+
+                // Lấy tổng số lượng đã bán từ orderdetails
+                try (PreparedStatement orderStmt = conn.prepareStatement(sql_order)) {
+                    orderStmt.setInt(1, productId);
+                    ResultSet orderResult = orderStmt.executeQuery();
+                    int soldQuantity = 0;
+                    if (orderResult.next()) {
+                        soldQuantity = orderResult.getInt("totalSold");
+                    }
+
+                    // Số lượng còn lại = số lượng ban đầu - đã bán
+                    int remainingQuantity = initialQuantity - soldQuantity;
+                    product.setQuantity(remainingQuantity);
+                }
 
                 products.add(product);
             }
@@ -115,6 +127,7 @@ public class ProductsDao {
 
         return products;
     }
+
     public boolean deleteProduct(int id){
         String sql = "delete from products where id=?";
         String sqlPD = "delete from productdetail where id = ? ";
