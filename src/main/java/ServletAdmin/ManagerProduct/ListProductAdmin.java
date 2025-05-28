@@ -13,7 +13,7 @@ import gson.GsonUtil;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/listProducts")
+@WebServlet("/ManagerProduct/listProducts")
 public class ListProductAdmin extends HttpServlet {
 
     @Override

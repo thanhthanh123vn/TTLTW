@@ -17,7 +17,7 @@ import object.Product;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-@WebServlet("/EditProduct")
+@WebServlet("/ManagerProduct/EditProduct")
 public class EditProductAdmin extends HttpServlet {
     ProductsDao productsDao = new ProductsDao();
     LogDao logDAO = new LogDAOImp();
