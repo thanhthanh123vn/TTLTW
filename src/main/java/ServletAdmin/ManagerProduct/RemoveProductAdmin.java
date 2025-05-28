@@ -17,7 +17,7 @@ import object.Product;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-@WebServlet("/removeProduct")
+@WebServlet("/ManagerProduct/removeProduct")
 public class RemoveProductAdmin extends HttpServlet {
     ProductsDao productsDao = new ProductsDao();
     LogDao logDAO = new LogDAOImp();

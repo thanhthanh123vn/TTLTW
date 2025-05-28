@@ -72,6 +72,8 @@ LogDao logDao = new LogDAOImp();
 				req.getRequestDispatcher("products").forward(req, resp);
 			} else if ("admin".equalsIgnoreCase(userCus.getRole())) {
 				IndexAdminDao dao = new IndexAdminDao();
+				session.setAttribute("uid", userCus.getId()); // 👈 THÊM DÒNG NÀY
+
 				LocalDate date = LocalDate.now();
 				int year = date.getYear();
 				int month = date.getMonthValue();
