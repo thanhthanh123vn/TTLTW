@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Utils {
-    private final String url = "jdbc:mysql://sql12.freesqldatabase.com:3306/sql12781782?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC";
+    private final String url = "jdbc:mysql://sql12.freesqldatabase.com:3306/sql12781782";
     private final String user = "sql12781782";
     private final String password = "RP5S1NhSP8";
     
