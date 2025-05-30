@@ -225,20 +225,22 @@ private Utils utils;
     }
     public boolean upsertAddressUser(UserInf userInf) {
         String sql = """
-        INSERT INTO usersarress (address, phone, fullName, userid, provider)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO usersarress (address, phone, fullName, userid,email)
+        VALUES (?, ?, ?, ?,?)
         ON DUPLICATE KEY UPDATE
             address = VALUES(address),
             phone = VALUES(phone),
             fullName = VALUES(fullName),
-            provider = VALUES(provider)
+            email = VALUES(email)
+         
         """;
         try (PreparedStatement stm = conn.prepareStatement(sql)) {
             stm.setString(1, userInf.getAddress());
             stm.setString(2, userInf.getPhone());
             stm.setString(3, userInf.getUserName());
             stm.setInt(4, userInf.getId());
-            stm.setString(5, userInf.getProvider());
+            stm.setString(5, userInf.getEmail());
+
 
             int row = stm.executeUpdate();
             System.out.println("Upsert user address successfully: " + row);

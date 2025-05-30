@@ -92,16 +92,17 @@ public class AddAddressUser extends HttpServlet {
         }
         in.close();
 
-        // Trả dữ liệu JSON về frontend
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
-        resp.getWriter().write(responseStr.toString());
+//        // Trả dữ liệu JSON về frontend
+//        resp.setContentType("application/json");
+//        resp.setCharacterEncoding("UTF-8");
+//        resp.getWriter().write(responseStr.toString());
 
 
 
 
         if (isSuccess) {
           // Đảm bảo đường dẫn chính xác
+            session.setAttribute("shipFee",responseStr.toString());
             session.setAttribute("UserAddress", userAddress);
         } else {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
