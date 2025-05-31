@@ -50,14 +50,14 @@ function addAddressUser() {
     };
 
     if (fullName && phone && city && district && address) {
-        fetch("http://localhost:8080/WebMyPham__/AddAddressUser", {
+        fetch("AddAddressUser", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(UserAddress)
         }).then(response => {
             if (response.ok) {
                 alert("Địa chỉ người dùng đã được thêm thành công!");
-                window.location.href = "http://localhost:8080/WebMyPham__/AddAddressUser";
+                window.location.href = "AddAddressUser";
             } else {
                 response.text().then(text => {
                     console.error("Lỗi:", response.status, text);

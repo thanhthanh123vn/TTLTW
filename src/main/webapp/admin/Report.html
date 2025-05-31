@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo - Quản Lý Kho</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            height: 100vh;
+            background-color: #343a40;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: block;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .report-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        .report-summary {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .summary-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            flex: 1;
+            margin: 0 10px;
+        }
+        .summary-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        .summary-item p {
+            color: #6c757d;
+            margin: 0;
+        }
+        .trend-up {
+            color: #28a745;
+        }
+        .trend-down {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <h3 class="text-white text-center mb-4">Quản Lý Kho</h3>
+                <a href="Home.html"><i class="fas fa-home"></i> Trang Chủ</a>
+                <a href="ManageProduct.html"><i class="fas fa-boxes"></i> Sản Phẩm</a>
+                <a href="ImportProduct.html"><i class="fas fa-truck"></i> Nhập Kho</a>
+                <a href="ExportProduct.html"><i class="fas fa-shopping-cart"></i> Xuất Kho</a>
+                <a href="Report.html" class="active"><i class="fas fa-chart-bar"></i> Báo Cáo</a>
+                <a href="#"><i class="fas fa-cog"></i> Cài Đặt</a>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 main-content">
+                <h2 class="mb-4">Báo Cáo</h2>
+
+                <!-- Date Range Filter -->
+                <div class="report-card mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <label class="form-label">Khoảng Thời Gian</label>
+                            <select class="form-select">
+                                <option value="today">Hôm nay</option>
+                                <option value="week">Tuần này</option>
+                                <option value="month" selected>Tháng này</option>
+                                <option value="quarter">Quý này</option>
+                                <option value="year">Năm nay</option>
+                                <option value="custom">Tùy chỉnh</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Từ Ngày</label>
+                            <input type="date" class="form-control" value="2024-03-01">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Đến Ngày</label>
+                            <input type="date" class="form-control" value="2024-03-15">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="report-summary">
+                    <div class="summary-item">
+                        <h3>125,000,000đ</h3>
+                        <p>Tổng Giá Trị Kho</p>
+                        <small class="trend-up"><i class="fas fa-arrow-up"></i> 5.2% so với tháng trước</small>
+                    </div>
+                    <div class="summary-item">
+                        <h3>45</h3>
+                        <p>Số Đơn Nhập</p>
+                        <small class="trend-up"><i class="fas fa-arrow-up"></i> 12.5% so với tháng trước</small>
+                    </div>
+                    <div class="summary-item">
+                        <h3>32</h3>
+                        <p>Số Đơn Xuất</p>
+                        <small class="trend-down"><i class="fas fa-arrow-down"></i> 3.2% so với tháng trước</small>
+                    </div>
+                    <div class="summary-item">
+                        <h3>1,234</h3>
+                        <p>Tổng Sản Phẩm</p>
+                        <small class="trend-up"><i class="fas fa-arrow-up"></i> 8.7% so với tháng trước</small>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="row">
+                    <!-- Inventory Value Trend -->
+                    <div class="col-md-6">
+                        <div class="report-card">
+                            <h4 class="mb-3">Xu Hướng Giá Trị Kho</h4>
+                            <div class="chart-container">
+                                <canvas id="inventoryValueChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Category Distribution -->
+                    <div class="col-md-6">
+                        <div class="report-card">
+                            <h4 class="mb-3">Phân Bố Sản Phẩm Theo Loại</h4>
+                            <div class="chart-container">
+                                <canvas id="categoryDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Products and Low Stock -->
+                <div class="row">
+                    <!-- Top Products -->
+                    <div class="col-md-6">
+                        <div class="report-card">
+                            <h4 class="mb-3">Sản Phẩm Bán Chạy</h4>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Sản Phẩm</th>
+                                            <th>Số Lượng Xuất</th>
+                                            <th>Doanh Thu</th>
+                                            <th>Tăng Trưởng</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Laptop Dell XPS 13</td>
+                                            <td>45</td>
+                                            <td>112,500,000đ</td>
+                                            <td><span class="trend-up">+15%</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>iPhone 15 Pro</td>
+                                            <td>38</td>
+                                            <td>95,000,000đ</td>
+                                            <td><span class="trend-up">+8%</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Samsung Galaxy S24</td>
+                                            <td>32</td>
+                                            <td>80,000,000đ</td>
+                                            <td><span class="trend-down">-3%</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Low Stock Alert -->
+                    <div class="col-md-6">
+                        <div class="report-card">
+                            <h4 class="mb-3">Cảnh Báo Tồn Kho</h4>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Sản Phẩm</th>
+                                            <th>Tồn Kho</th>
+                                            <th>Mức Tối Thiểu</th>
+                                            <th>Trạng Thái</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>AirPods Pro</td>
+                                            <td>5</td>
+                                            <td>20</td>
+                                            <td><span class="badge bg-danger">Cần bổ sung</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>MacBook Pro M3</td>
+                                            <td>8</td>
+                                            <td>15</td>
+                                            <td><span class="badge bg-warning">Sắp hết</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>iPad Pro</td>
+                                            <td>12</td>
+                                            <td>25</td>
+                                            <td><span class="badge bg-warning">Sắp hết</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Inventory Value Trend Chart
+        const inventoryCtx = document.getElementById('inventoryValueChart').getContext('2d');
+        new Chart(inventoryCtx, {
+            type: 'line',
+            data: {
+                labels: ['1/3', '5/3', '10/3', '15/3', '20/3', '25/3', '30/3'],
+                datasets: [{
+                    label: 'Giá trị kho',
+                    data: [100000000, 105000000, 110000000, 115000000, 120000000, 122000000, 125000000],
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return (value / 1000000) + 'M';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Category Distribution Chart
+        const categoryCtx = document.getElementById('categoryDistributionChart').getContext('2d');
+        new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Điện tử', 'Quần áo', 'Thực phẩm', 'Đồ gia dụng'],
+                datasets: [{
+                    data: [450, 300, 200, 150],
+                    backgroundColor: [
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 99, 132)',
+                        'rgb(75, 192, 192)',
+                        'rgb(255, 206, 86)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

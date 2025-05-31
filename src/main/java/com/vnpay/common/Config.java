@@ -23,11 +23,11 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class Config {
 
-    public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_ReturnUrl = "https://680b-113-161-91-65.ngrok-free.app/WebMyPham__/vnpayReturn";
+    public static String vnp_PayUrl = " https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+    public static String vnp_ReturnUrl = "https://ttltw.onrender.com/vnpayReturn";
 
-    public static String vnp_TmnCode = "7UWK3F28";
-    public static String secretKey = "8QNNXUYJ64SMIZGIAKGOJH3FR8FFEIIS";
+    public static String vnp_TmnCode = "5GVTIL87";
+    public static String secretKey = "B1IN8U0OW0FHNJTQ4JVGKMM1RJRZ0TWA";
     public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
     public static String md5(String message) {
