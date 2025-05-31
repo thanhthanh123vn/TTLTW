@@ -104,10 +104,10 @@
 
                         <c:choose>
                             <c:when test="${ not empty sessionScope.cart.totalCart}">
-                                <span class="total-amount">${sessionScope.cart.totalCart}</span>
+                                <span class="total-amount">${sessionScope.cart.totalCart+sessionScope.shipFee}</span>
                             </c:when>
                             <c:when test="${not empty sessionScope.payProduct.price}">
-                                <span class="total-amount">${sessionScope.payProduct.price}</span>
+                                <span class="total-amount">${sessionScope.cart.totalCart+sessionScope.shipFee}</span>
                             </c:when>
 
                             <c:otherwise>
@@ -161,17 +161,17 @@
                 </div>
                 <div class="row">
                     <span class="label">Phí vận chuyển</span>
-                    <span class="value">${requestScope.shipFee} đ</span>
+                    <span class="value">${sessionScope.shipFee} đ</span>
 
                 </div>
                 <div class="row total">
                     <span class="label">Thành tiền (Đã VAT)</span>
                     <c:choose>
                         <c:when test="${not empty sessionScope.cart.totalCart}">
-                            <span class="total-amount">${sessionScope.cart.totalCart}+${requestScope.shipFee}</span>
+                            <span class="total-amount">${sessionScope.cart.totalCart+sessionScope.shipFee}</span>
                         </c:when>
                         <c:when test="${not empty sessionScope.payProduct.price}">
-                            <span class="total-amount">${sessionScope.payProduct.price}+${requestScope.shipFee}</span>
+                            <span class="total-amount">${sessionScope.payProduct.price+sessionScope.shipFee}</span>
                         </c:when>
 
                         <c:otherwise>

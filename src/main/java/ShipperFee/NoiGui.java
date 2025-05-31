@@ -1,6 +1,6 @@
 package ShipperFee;
 
 public class NoiGui {
-public static final String PICK_PROVINCE = "Hồ Chí Minh";
-public static final String PICK_DISTRICTS = "Linh Trung";
+public static final String PICK_PROVINCE = "Hà Nội";
+public static final String PICK_DISTRICTS = "Quận Thanh Xuân";
 }
