@@ -164,8 +164,10 @@
                         <a class="collapse-item" href="${pageContext.request.contextPath}/table-admin-User">Quản lý người dùng</a>
                         <a class="collapse-item" href="${pageContext.request.contextPath}/table-admin-Product">Quản lý Sản Phẩm</a>
                         <a class="collapse-item" href="${pageContext.request.contextPath}/order-table">Quản lý đơn hàng</a>
-                        <a class="collapse-item" href="${pageContext.request.contextPath}/listPromotions">Quản lý giảm giá</a>
-                        <a class="collapse-item" href="${pageContext.request.contextPath}/listPromotions">Quản lý Kho</a>
+                        <a class="collapse-item" href="${pageContext.request.contextPath}/lProducts">Quản lý giảm giá</a>
+                        <a class="collapse-item" href="${pageContext.request.contextPath}/LogManager">Quản lý Log</a>
+                        <a class="collapse-item" href="${pageContext.request.contextPath}/KhoManager" target="_blank">Quản lý Kho</a>
+
                         <div class="collapse-divider"></div>
 
                     </div>

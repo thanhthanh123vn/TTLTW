@@ -62,6 +62,26 @@ public class ProductsDao {
         return false;
     }
 
+    public boolean updateProductQuantity(Product product) {
+        String sql = "UPDATE products SET   quantity = ? WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setInt(1, product.getQuantity());
+
+            ps.setInt(2, product.getId());
+
+            int row = ps.executeUpdate();
+            if (row > 0) {
+                return true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public boolean insertProduct(Product product) {
         String sql = "insert into products (id,name,Detail,price,quantity,image,CategoryID) " +
                 "values(?,?,?,?,?,?,?)";
@@ -255,9 +275,11 @@ public class ProductsDao {
         try {
 
             // Chuẩn bị câu truy vấn
+
             PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT products.id , products.name , products.detail , " +
-                            "products.price , products.image , " +
+
+                    "SELECT products.id , products.name ,products.quantity, products.detail , " +
+                            "products.price , products.image ,products.CategoryID , " +
                             "ProductDetail.ProductName , ProductDetail.Category, " +
                             "ProductDetail.Description, ProductDetail.SuitableSkin, ProductDetail.SkinSolution, " +
                             "ProductDetail.Highlight, ProductDetail.Ingredients, ProductDetail.FullIngredients, " +

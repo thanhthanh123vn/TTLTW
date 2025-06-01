@@ -616,7 +616,7 @@ INSERT INTO `productdetail` VALUES (68, 'Sữa Rửa Mặt Klairs Dưỡng Ẩm,
 INSERT INTO `productdetail` VALUES (69, 'Kem Dưỡng Ẩm Klairs Cho Da Khô, Nhạy Cảm 20ml\r\nRich Moist Soothing Cream\r\n', 'Dưỡng Thể', 'là sản phẩm sữa rửa mặt đến từ thương hiệu mỹ phẩm Klairs của Hàn Quốc, chứa phức hợp đen từ các thành phần thiên nhiên giúp làm sạch sâu đồng thời dưỡng ẩm và nuôi dưỡng làn da khoẻ mạnh. Sản phẩm có độ pH lý tưởng 5.5 - 6.5 giúp duy trì độ ẩm tự nhiên c', NULL, 'Mọi loại da', NULL, NULL, NULL, NULL, NULL, 'Klairs', 'Hàn Quốc', 'Korea', '8809572891243', '50ml 100ml 150ml', b'1', '2025-01-16 00:00:00');
 INSERT INTO `productdetail` VALUES (70, 'Serum L\'Oreal Hyaluronic Acid Cấp Ẩm Sáng Da 30ml\r\nRevitalift Hyaluronic Acid 1.5% Hyaluron Serum', 'Dưỡng Thể', 'là dòng sản phẩm serum đến từ thương hiệu L\'Oréal Paris nổi tiếng của Pháp, với sự kết hợp không chỉ 1 mà đến 2 loại Hyaluronic Acid ưu việt ở nồng độ 1.5% sẽ là giải pháp chăm sóc da hiệu quả dành cho làn da khô & lão hóa, giúp cung cấp độ ẩm tối đa cho', NULL, 'Mọi loại da', NULL, NULL, NULL, NULL, NULL, 'L\'Oréal Paris', 'Pháp', 'Trung Quốc', '6923700966701\r\n6923700966701\r\n6923700966701\r\n69237', '400ml 600ml 900ml', b'1', '2025-01-16 00:00:00');
 INSERT INTO `productdetail` VALUES (71, 'Kem Chống Nắng L\'Oreal Paris X20 Thoáng Da Mỏng Nhẹ 50ml\r\nUV Defender Serum Invisible Resist SPF50+ PA++++', 'Sữa Chống Nắng', 'là sản phẩm chống nắng dạng serum đến từ thương hiệu L\'Oreal - Pháp. Sản phẩm là serum đầu tiên với 24% phức hợp chống nắng phổ rộng kết hợp cùng Hyaluronic Acid + Peptides là giải pháp bảo vệ, cải thiện làn da với hiệu quả rõ rệt', NULL, 'Da dầu', NULL, NULL, NULL, NULL, NULL, 'L\'Oréal Paris', 'Pháp', 'Trung Quốc', '8994993018086', '20ml 50ml 70ml', b'1', '2025-01-16 00:00:00');
-INSERT INTO `productdetail` VALUES (72, 'Serum L\'Oreal Sáng Da, Mờ Thâm Mụn & Nám 30ml (Mới)\r\nGlycolic Bright Melasyl 8% [Melasyl+Glycolic+Niacinamide]', 'Dưỡng Thể', 'là sản phẩm tinh chất dưỡng da đến từ thương hiệu mỹ phẩm L’Oreal Paris - Pháp, với thành phần đột phá sáng da MelasylTM từ viện nghiên cứu L’Oreal Paris cùng phức hợp hoạt chất 8% [Melasyl+Glycolic+Niacinamide] giúp dưỡng sáng da, làm mờ các vết thâm ná', NULL, 'Mọi loại da', NULL, NULL, NULL, NULL, NULL, 'L\'Oréal Paris\r\n', 'Pháp', 'Trung Quốc', '8994993016587', '30ml', b'1', '2025-01-16 00:00:00');
+INSERT INTO `productdetail` VALUES (72, 'Serum L\'Oreal Sáng Da, Mờ Thâm Mụn & Nám 30ml (Mới)\r\nGlycolic Bright Melasyl 8% [Melasyl+Glycolic+Niacinamide]', 'Dưỡng Thể', 'là sản phẩm tinh chất dưỡng da đến từ thương hiệu mỹ phẩm L'Oreal Paris - Pháp, với thành phần đột phá sáng da MelasylTM từ viện nghiên cứu L'Oreal Paris cùng phức hợp hoạt chất 8% [Melasyl+Glycolic+Niacinamide] giúp dưỡng sáng da, làm mờ các vết thâm ná', NULL, 'Mọi loại da', NULL, NULL, NULL, NULL, NULL, 'L\'Oréal Paris\r\n', 'Pháp', 'Trung Quốc', '8994993016587', '30ml', b'1', '2025-01-16 00:00:00');
 INSERT INTO `productdetail` VALUES (73, 'Bộ Gội Xả L\'Oreal Dưỡng Tóc Suôn Mượt Tóc Cao Cấp 440mlx2\r\nExtraordinary Oil Sleek Silicone-free Shampoo & Conditioner', 'Bộ gội xã', 'được chiết xuất từ 100% tinh dầu gỗ tuyết tùng tự nhiên từ Pháp dưỡng ẩm sâu cho tóc khô và xơ rối, giúp tóc suôn mượt và ngăn ngừa tóc chẻ ngọn.', NULL, 'Tóc xơ rối và khó vào nếp', NULL, NULL, NULL, NULL, NULL, 'L\'Oréal Paris\r\n', 'Pháp', 'Trung Quốc', NULL, '250ml', b'1', '2025-01-16 00:00:00');
 INSERT INTO `productdetail` VALUES (74, 'Combo Cocoon Tẩy Da Chết Cho Mặt & Toàn Thân Từ Cà Phê Đắk Lắk (200ml+150ml)', 'Bộ chăm sóc da\r\nBộ chăm sóc da\r\nBộ chăm sóc da\r\nBộ chăm sóc da', 'là dòng tẩy da chết cho mặt với thành phần từ hạt cà phê Đắk Lắk xay nhuyễn giàu cafeine hòa quyện với bơ cacao Tiền Giang giúp loại bỏ lớp tế bào chết già cỗi và xỉn màu, đánh thức làn da tươi mới, mang lại làn da mịn màng ngay sau lần đầu sử dụng, làn d', NULL, 'Da thường/Mọi loại da\r\n', NULL, NULL, NULL, NULL, NULL, 'Cocoon', 'Mỹ', 'Việt Nam', NULL, '150ml 200ml', b'1', '2025-01-16 00:00:00');
 INSERT INTO `productdetail` VALUES (75, 'Serum La Roche-Posay Giảm Thâm Nám & Dưỡng Sáng Da 30ml Mela B3 Serum', 'Dưỡng Sáng Da', 'là sản phẩm tinh chất đến từ thương hiệu La Roche-Posay - Pháp. Sản phẩm giúp giảm thâm nám & ngăn ngừa đốm nâu sâu từng nanomet tế bào da Mela B3 với 18 năm nghiên cứu và phát triển từ các chuyên gia da liễu hàng đầu trên thế giới. Với thành phần Melasyl', NULL, 'Da thường', NULL, NULL, NULL, NULL, NULL, 'La Roche-Posay', 'Pháp', 'Pháp', '3337875890021', '30ml', b'1', '2025-01-16 00:00:00');
@@ -771,7 +771,7 @@ CREATE TABLE `shipping`  (
   `City` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
   `PostalCode` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
   `Country` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
-  `ShippingStatus` enum('Pending','Shipped','Delivered','Cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT 'Pending',
+  `ShippingStatus` enum('Pending','Shipped','Delivered','Cancelled','Failed','') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT 'Pending',
   `ShippingDate` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`ShippingID`) USING BTREE,
   INDEX `OrderID`(`OrderID` ASC) USING BTREE,
@@ -901,5 +901,55 @@ CREATE TABLE `wishlist`  (
 INSERT INTO `wishlist` VALUES (1, 10, 1, '2025-01-08 10:46:15');
 INSERT INTO `wishlist` VALUES (2, 10, 2, '2025-01-08 10:46:31');
 INSERT INTO `wishlist` VALUES (3, 10, 46, '2025-01-08 10:46:48');
+
+-- ----------------------------
+-- Table structure for import_receipts
+-- ----------------------------
+CREATE TABLE import_receipts (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    import_date DATETIME NOT NULL,
+    supplier_id INT NOT NULL,
+    note TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+    total_amount DECIMAL(15,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (supplier_id) REFERENCES suppliers(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Table structure for import_receipt_details
+-- ----------------------------
+CREATE TABLE import_receipt_details (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    import_receipt_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(15,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (import_receipt_id) REFERENCES import_receipts(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+-- ----------------------------
+-- Table structure for suppliers
+-- ----------------------------
+CREATE TABLE suppliers (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    address TEXT,
+    phone VARCHAR(20),
+    email VARCHAR(100),
+    tax_code VARCHAR(50),
+    contact_person VARCHAR(100),
+    status BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Add some sample suppliers
+INSERT INTO suppliers (name, address, phone, email, tax_code, contact_person) VALUES
+('Công ty TNHH ABC', '123 Đường ABC, Quận 1, TP.HCM', '02812345678', 'contact@abc.com', '1234567890', 'Nguyễn Văn A'),
+('Công ty XYZ', '456 Đường XYZ, Quận 2, TP.HCM', '02887654321', 'info@xyz.com', '0987654321', 'Trần Thị B'),
+('Công ty DEF', '789 Đường DEF, Quận 3, TP.HCM', '02898765432', 'sales@def.com', '1122334455', 'Lê Văn C');
 
 SET FOREIGN_KEY_CHECKS = 1;

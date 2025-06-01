@@ -396,6 +396,7 @@ if (user != null) {
                     <a class="collapse-item" href="${pageContext.request.contextPath}/order-table">Quản lý đơn hàng</a>
                     <a class="collapse-item" href="${pageContext.request.contextPath}/lProducts">Quản lý giảm giá</a>
                     <a class="collapse-item" href="${pageContext.request.contextPath}/LogManager">Quản lý Log</a>
+                    <a class="collapse-item" href="${pageContext.request.contextPath}/KhoManager">Quản lý Kho</a>
                     
                     <div class="collapse-divider"></div>
                   
