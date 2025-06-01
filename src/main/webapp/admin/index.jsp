@@ -36,7 +36,7 @@
 
     <style>
        .bg-blueblue-primary{
-            
+
      background-color: #2e5f45;
         }
         .badge-danger{
@@ -46,7 +46,7 @@
         .btn{
             background-color: #28a745;
             color: white;
-         
+
         }
     </style>
 
@@ -59,7 +59,7 @@
 
         <!-- Sidebar -->
         <ul class="navbar-nav bg-blueblue-primary sidebar sidebar-dark accordion" id="accordionSidebar"
-        
+
      >
 
             <!-- Sidebar - Brand -->
@@ -150,7 +150,7 @@
                         <a class="collapse-item" href="blank.html">Blank Page</a>
                     </div>
                 </div>
-                
+
             </li>
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
@@ -164,12 +164,15 @@
                         <a class="collapse-item" href="${pageContext.request.contextPath}/table-admin-User">Quản lý người dùng</a>
                         <a class="collapse-item" href="${pageContext.request.contextPath}/table-admin-Product">Quản lý Sản Phẩm</a>
                         <a class="collapse-item" href="${pageContext.request.contextPath}/order-table">Quản lý đơn hàng</a>
-                        <a class="collapse-item" href="${pageContext.request.contextPath}/listPromotions">Quản lý giảm giá</a>
+                        <a class="collapse-item" href="${pageContext.request.contextPath}/lProducts">Quản lý giảm giá</a>
+                        <a class="collapse-item" href="${pageContext.request.contextPath}/LogManager">Quản lý Log</a>
+                        <a class="collapse-item" href="${pageContext.request.contextPath}/KhoManager" target="_blank">Quản lý Kho</a>
+
                         <div class="collapse-divider"></div>
-                      
+
                     </div>
                 </div>
-                
+
             </li>
             <!-- Nav Item - Charts -->
             <!-- <li class="nav-item">
@@ -179,7 +182,7 @@
             </li> -->
 
             <!-- Nav Item - Tables -->
-             
+
 
 
             <!-- Divider -->
@@ -190,7 +193,7 @@
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
 
-         
+
 
         </ul>
         <!-- End of Sidebar -->
@@ -625,17 +628,17 @@
                             </div>
 
                             <!-- Color System -->
-                            
+
 
                         </div>
 
                         <div class="col-lg-6 mb-4">
 
                             <!-- Illustrations -->
-                           
+
 
                             <!-- Approach -->
-                       
+
 
                         </div>
                     </div>

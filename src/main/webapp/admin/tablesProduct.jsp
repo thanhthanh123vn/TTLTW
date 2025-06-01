@@ -413,8 +413,9 @@
                     <a class="collapse-item" href="${pageContext.request.contextPath}/table-admin-User">Quản lý người dùng</a>
                     <a class="collapse-item" href="${pageContext.request.contextPath}/table-admin-Product">Quản lý Sản Phẩm</a>
                     <a class="collapse-item" href="${pageContext.request.contextPath}/order-table">Quản lý đơn hàng</a>
-                    <a class="collapse-item" href="${pageContext.request.contextPath}/listPromotions">Quản lý giảm giá</a>
+                    <a class="collapse-item" href="${pageContext.request.contextPath}/lProducts">Quản lý giảm giá</a>
                     <a class="collapse-item" href="${pageContext.request.contextPath}/LogManager">Quản lý Log</a>
+                    <a class="collapse-item" href="${pageContext.request.contextPath}/KhoManager">Quản lý Kho</a>
 
                     <div class="collapse-divider"></div>
 
@@ -667,7 +668,7 @@
                     text-align: center; justify-content: center; padding: 10px 20px;">
 
                     <button  onclick="showAddProductModal()" style="margin-right: 20px">Thêm</button>
-<%--                    <button onclick="showModal()">Thêm Nhiều sản phẩm</button>--%>
+                    <%--                    <button onclick="showModal()">Thêm Nhiều sản phẩm</button>--%>
 
                 </div>
 
@@ -723,8 +724,8 @@
                         <span class="close" onclick="hideModal()">&times;</span>
 
                         <h3 id="modalTitle">Thêm sản phẩm</h3>
-<%--                        <label>ID:</label>--%>
-<%--                        <input type="text" id="id">--%>
+                        <%--                        <label>ID:</label>--%>
+                        <%--                        <input type="text" id="id">--%>
                         <label>Tên sản phẩm:</label>
                         <input type="text" id="productName">
                         <label>Mã danh mục:</label>
@@ -739,76 +740,76 @@
                         <button onclick="saveProduct()">Lưu</button>
                         <button onclick="hideModal()">Hủy</button>
                     </div>
-                    <!-- /.container-fluid -->
+                        <!-- /.container-fluid -->
+
+                    </div>
+                    <!-- End of Main Content -->
+
+                    <!-- Footer -->
+
+                    <!-- End of Footer -->
 
                 </div>
-                <!-- End of Main Content -->
-
-                <!-- Footer -->
-
-                <!-- End of Footer -->
+                <!-- End of Content Wrapper -->
 
             </div>
-            <!-- End of Content Wrapper -->
+            <!-- End of Page Wrapper -->
 
-        </div>
-        <!-- End of Page Wrapper -->
+            <!-- Scroll to Top Button-->
+            <a class="scroll-to-top rounded" href="#page-top">
+                <i class="fas fa-angle-up"></i>
+            </a>
 
-        <!-- Scroll to Top Button-->
-        <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
-        </a>
-
-        <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" href="login.html">Logout</a>
+            <!-- Logout Modal-->
+            <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                            <a class="btn btn-primary" href="login.html">Logout</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
 
 
 
-<%--                <% List<Product> products = (List<Product>) request.getAttribute("listProduct");--%>
-<%--        String productToJson =  new Gson().toJson(products);--%>
-<%--    %>--%>
+            <%--                <% List<Product> products = (List<Product>) request.getAttribute("listProduct");--%>
+            <%--        String productToJson =  new Gson().toJson(products);--%>
+            <%--    %>--%>
             <script src="js/manageProduct.js">
                 <%--const productsJs = <%= productToJson %>;--%>
                 <%--console.log(productsJs);--%>
             </script>
 
             <!-- Bootstrap core JavaScript-->
-        <script src="vendor/jquery/jquery.min.js"></script>
-        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <script src="vendor/jquery/jquery.min.js"></script>
+            <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-        <!-- Core plugin JavaScript-->
-        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+            <!-- Core plugin JavaScript-->
+            <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-        <!-- Custom scripts for all pages-->
-        <script src="js/sb-admin-2.min.js"></script>
+            <!-- Custom scripts for all pages-->
+            <script src="js/sb-admin-2.min.js"></script>
 
-        <!-- Page level plugins -->
-        <script src="vendor/datatables/jquery.dataTables.min.js"></script>
-        <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-       <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+            <!-- Page level plugins -->
+            <script src="vendor/datatables/jquery.dataTables.min.js"></script>
+            <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+            <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
             <script>
                 // let table = new DataTable('#productTables');
             </script>
-        <!-- Page level custom scripts -->
-        <script src="js/demo/datatables-demo.js"></script>
+            <!-- Page level custom scripts -->
+            <script src="js/demo/datatables-demo.js"></script>
             <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 
             <script>

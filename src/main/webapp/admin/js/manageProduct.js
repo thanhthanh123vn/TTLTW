@@ -7,7 +7,7 @@ async function displayProducts() {
     const productBody = document.getElementById("productBody");
     productBody.innerHTML = "";
     try {
-        const response = await fetch(`http://localhost:8080/WebMyPham__/listProducts`); // Adjust URL to your backend endpoint
+        const response = await fetch(`http://localhost:8080/WebMyPham__/ManagerProduct/listProducts`); // Adjust URL to your backend endpoint
         if (!response.ok) {
             throw new Error("Không thể tải danh sách sản phẩm.");
         }
@@ -91,7 +91,7 @@ function saveProduct() {
     const product = { id,name, image, price, detail: description, quantity: stock, category_id: category };
 
     const index = document.getElementById("productModal").dataset.index;
-    const url = index !== undefined ? "http://localhost:8080/WebMyPham__/EditProduct" : "http://localhost:8080/WebMyPham__/AddProduct";
+    const url = index !== undefined ? "http://localhost:8080/WebMyPham__/ManagerProduct/EditProduct" : "http://localhost:8080/WebMyPham__/ManagerProduct/AddProduct";
 
     fetch(url, {
         method: "POST",
@@ -115,7 +115,7 @@ function saveProduct() {
 function deleteProduct(index) {
     if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
         const product = products[index];
-        fetch("http://localhost:8080/WebMyPham__/removeProduct", {
+        fetch("http://localhost:8080/WebMyPham__/ManagerProduct/removeProduct", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(product)

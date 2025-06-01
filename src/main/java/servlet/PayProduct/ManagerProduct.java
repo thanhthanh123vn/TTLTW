@@ -1,5 +1,8 @@
 package servlet.PayProduct;
 
+import ShipperFee.APIGHTK;
+import ShipperFee.GHTKOrderResponse;
+import ShipperFee.NoiGui;
 import com.google.gson.Gson;
 import dao.OrderDao;
 import dao.ProductsDao;
@@ -18,6 +21,9 @@ import utils.Email;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +79,16 @@ public class ManagerProduct extends HttpServlet {
 
             if (isSuccess>0) {
                 action = "success";
+
+
+                    // Tạo đơn hàng GHTK
+                    String getTrackingNumber = createOrder(userAddress, product);
+                    String actionProduct = getOrderStatus(getTrackingNumber);
+                    // Parse response và lưu mã vận đơn
+                    // Tiếp tục xử lý đơn hàng như bình thường
+
                 session.setAttribute("action",action);
+                session.setAttribute("actionProduct",actionProduct);
                 session.setAttribute("order",order);
                 Date date1 = new Date(System.currentTimeMillis());
 
@@ -120,6 +135,11 @@ public class ManagerProduct extends HttpServlet {
 
                     int isSuccess = dao.insertOrderWithDetails(order2, orderDetail2);
                     if (isSuccess>0) {
+                        String getTrackingNumber = createOrder(userAddress, product);
+                        String actionProduct = getOrderStatus(getTrackingNumber);
+
+                        session.setAttribute("action",action);
+                        session.setAttribute("actionProduct",actionProduct);
                         action = "success";
                         Date date1 = new Date(System.currentTimeMillis());
 
@@ -161,4 +181,113 @@ public class ManagerProduct extends HttpServlet {
         return products;
 
     }
+    public static String getOrderStatus(String maVanDon) throws IOException {
+        String apiUrl = "https://services.ghtk.vn/services/shipment/v2/" + maVanDon;
+
+
+        URL url = new URL(apiUrl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Token", APIGHTK.API_GHTK);
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                conn.getResponseCode() == 200 ? conn.getInputStream() : conn.getErrorStream()));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+        return response.toString(); // JSON response
+    }
+    public static String createOrder(UserInf userAddress, Product product) throws IOException {
+        String apiUrl = "https://services.ghtk.vn/services/shipment/order";
+
+
+        // Parse địa chỉ người nhận
+        String[] addressParts = userAddress.getAddress().split(",");
+        String province = addressParts[addressParts.length - 1].trim();
+        String district = addressParts[addressParts.length - 2].trim();
+
+        // Tạo JSON cho đơn hàng
+        String jsonInput = String.format("""
+    {
+        "order": {
+            "id": "DH%s",
+            "pick_name": "%s",
+            "pick_address": "%s",
+            "pick_province": "%s",
+            "pick_district": "%s",
+            "pick_tel": "%s",
+            "name": "%s",
+            "address": "%s",
+            "province": "%s",
+            "district": "%s",
+            "tel": "%s",
+            "hamlet": "Khác",
+            "is_freeship": "0",
+            "pick_money": %f,
+            "note": "Giao giờ hành chính",
+            "value": %f,
+            "weight_option": "gram",
+            "products": [
+                {
+                    "name": "%s",
+                    "weight": 1000,
+                    "quantity": %d
+                }
+            ]
+        }
+    }
+    """,
+                System.currentTimeMillis(),
+                NoiGui.PICK_NAME,
+                NoiGui.PICK_ADDRESS,
+                NoiGui.PICK_PROVINCE,
+                NoiGui.PICK_DISTRICTS,
+                NoiGui.PICK_TEL,
+                userAddress.getUserName(),
+                userAddress.getAddress(),
+                province,
+                district,
+                userAddress.getPhone(),
+                product.getPrice(),
+                product.getPrice(),
+                product.getName(),
+                product.getQuantity()
+        );
+
+        // Gọi API GHTK
+        URL url = new URL(apiUrl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Token", APIGHTK.API_GHTK);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setDoOutput(true);
+
+        conn.getOutputStream().write(jsonInput.getBytes("UTF-8"));
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                conn.getResponseCode() == 200 ? conn.getInputStream() : conn.getErrorStream()));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+        // Parse response JSON
+        Gson gson = new Gson();
+        GHTKOrderResponse ghtkResponse = gson.fromJson(response.toString(), GHTKOrderResponse.class);
+
+        if (ghtkResponse.isSuccess()) {
+            return ghtkResponse.getTrackingNumber(); // Trả về mã vận đơn
+        } else {
+            throw new IOException("GHTK API Error: " + ghtkResponse.getMessage());
+        }
+    }
+
+
 }
