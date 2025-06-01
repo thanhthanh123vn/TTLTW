@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpSession;
 import object.*;
 import object.cart.Cart;
 import object.cart.ProductCart;
+import utils.Email;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,11 +34,16 @@ public class ManagerProduct extends HttpServlet {
         Date date = new Date(System.currentTimeMillis());
         User user = (User) req.getSession().getAttribute("user");
         UserInf userAddress = (UserInf) session.getAttribute("UserAddress");
+
+        if (user == null || userAddress == null) {
+            resp.sendRedirect("login.jsp");
+            return;
+        }
+
+        int userId = user.getId();
+        action = "fail";
+
         int id  ;
-
-
-
-
          id = user.getId();
         Order order = new Order();
 
@@ -76,9 +82,19 @@ public class ManagerProduct extends HttpServlet {
                 session.setAttribute("productQL", product);
                 session.removeAttribute("payProduct");
                 req.getRequestDispatcher("index/qldonhang.jsp").forward(req, resp);
+
+                    // tạo nội dung email
+                    String noiDung = "Cảm ơn bạn đã đặt hàng!\n\nSản phẩm: " + product.getName() +
+                            "\nSố lượng: " + product.getQuantity() +
+                            "\nGiá: " + product.getPrice() + "đ" +
+                            "\nTổng Số lượng: ..." + orderDetail.getTotalQuantity()+
+                            "\nTổng thanh toán: ..." + orderDetail.getTotalPrice() ;
+
+                    // gửi mail
+                    Email.emailOrderVerification(user.getEmail(), "Xác nhận đơn hàng", noiDung);
+
+
             } else {
-//                System.out.println("Mua ngay đó nha"+product.toString());
-//                req.setAttribute("product", product);
                 req.setAttribute("errorMessage", "Khong the chen Order");
                 req.getRequestDispatcher("index/qldonhang.jsp").forward(req, resp);
             }
@@ -86,7 +102,6 @@ public class ManagerProduct extends HttpServlet {
 
         }
         if (cart != null ){
-
             List<ProductCart> productCarts = cart.getList();
             List<Product> products = getProducts(productCarts);
 
@@ -110,7 +125,6 @@ public class ManagerProduct extends HttpServlet {
 
                         orderDetail.setDate(date1);
                         session.setAttribute("order",order2);
-
                         session.setAttribute("orderDetail",orderDetail2);
                         session.setAttribute("action",action);
                         session.setAttribute("cartQL", cart);

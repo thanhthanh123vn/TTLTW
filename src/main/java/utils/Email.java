@@ -11,10 +11,9 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
+
 public class Email {
-// Email 22130260@st.hcmuaf.edu.vn
+	// Email 22130260@st.hcmuaf.edu.vn
 // password :rbkp djik rbkx emxx
 	static final String from = "22130260@st.hcmuaf.edu.vn";
 	static final String password = "rwvkvrbobqiyhpqf";
@@ -75,5 +74,37 @@ public class Email {
 		}
 	}
 
+	public static boolean emailOrderVerification(String to, String tieuDe, String noiDung) {
+		try {
+			Properties props = new Properties();
+			props.put("mail.smtp.host", "smtp.gmail.com");
+			props.put("mail.smtp.port", "587");
+			props.put("mail.smtp.auth", "true");
+			props.put("mail.smtp.starttls.enable", "true");
+
+			Authenticator auth = new Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(from, password);
+				}
+			};
+
+			Session session = Session.getInstance(props, auth);
+			MimeMessage msg = new MimeMessage(session);
+
+			msg.setFrom(from);
+			msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
+			msg.setSubject(tieuDe);
+			msg.setSentDate(new Date());
+			msg.setContent(noiDung, "text/HTML; charset=UTF-8");
+
+			Transport.send(msg);
+			System.out.println("Đã gửi email xác nhận đơn hàng đến " + to);
+		} catch (Exception e) {
+			System.out.println("Lỗi gửi email xác nhận: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+        return false;
+    }
 
 }
