@@ -36,7 +36,9 @@ public class ImportReceiptDetailDAO {
     }
 
     public List<ImportReceiptDetail> getDetailsByReceiptId(int receiptId) throws SQLException {
-        String query = "SELECT * FROM import_receipt_details WHERE import_receipt_id = ?";
+        String query = "SELECT ir.id, ir.import_receipt_id, ir.product_id, ir.quantity, ir.price, p.name as product_name " +
+                       "FROM import_receipt_details ir JOIN products p ON ir.product_id = p.id " +
+                       "WHERE ir.import_receipt_id = ?";
         List<ImportReceiptDetail> details = new ArrayList<>();
         try {
             conn = new Utils().getConnection();
@@ -51,9 +53,27 @@ public class ImportReceiptDetailDAO {
                 detail.setProductId(rs.getInt("product_id"));
                 detail.setQuantity(rs.getInt("quantity"));
                 detail.setPrice(rs.getDouble("price"));
+                detail.setProductName(rs.getString("product_name"));
                 details.add(detail);
             }
             return details;
+        } finally {
+            closeResources();
+        }
+    }
+
+    public int getTotalProductsByReceiptId(int receiptId) throws SQLException {
+        String query = "SELECT COUNT(*) FROM import_receipt_details WHERE import_receipt_id = ?";
+        try {
+            conn = new Utils().getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, receiptId);
+            rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return 0;
         } finally {
             closeResources();
         }

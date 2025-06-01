@@ -6,6 +6,7 @@ public class ImportReceiptDetail {
     private int productId;
     private int quantity;
     private double price;
+    private String productName;
 
     public ImportReceiptDetail() {
     }
@@ -48,5 +49,13 @@ public class ImportReceiptDetail {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 } 
