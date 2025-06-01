@@ -12,7 +12,7 @@ RUN mvn clean package -DskipTests
 FROM tomcat:11.0.0-jre17-temurin
 WORKDIR /usr/local/tomcat
 
-# Xóa ứng dụng mặc định và thư mục work để tránh cache
+# Xóa ứng dụng mặc định và thư mục   work để tránh cache
 RUN rm -rf webapps/* && \
     rm -rf work/* && \
     rm -rf temp/*
