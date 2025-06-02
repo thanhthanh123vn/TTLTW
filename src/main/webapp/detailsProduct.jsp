@@ -95,12 +95,6 @@
                                     <a href="#" class="product-title">${products.detail}</a>
                                 </li>
                                 <li class="special-item"><a href="#">Số công bố với Bộ Y Tế : 71846/18/CBMP-QLD</a></li>
-                                <li class="custom-font-size">
-                                    <span class="color-orange">★★★★★ </span>
-                                    <a href="#">294 đánh giá</a>
-                                    <a href="#">| 955 Hỏi đáp</a>
-                                    <a href="#">| Mã sản phẩm: ${product.barcode}</a>
-                                </li>
                                 <li>
                                     <a href="#" class="price color-orange"><i
                                             class="fa-solid fa-money-check-dollar"></i>${products.price}
@@ -122,7 +116,6 @@
                                     </a></li>
                                     <li><a href="#"  class="hover-orange" onclick="hoverOrange()"><%=volumes[2]%>
                                     </a></li>
-
 
 
                                 </ul>
@@ -168,6 +161,7 @@
                             </ul>
                         </div>
                     </div>
+
                     <div class="your-infor">
                         <ul>
                             <li class="green">- MIỄN PHÍ VẬN CHUYỂN -</li>
@@ -200,19 +194,61 @@
                         </ul>
                     </div>
                 </div>
+
+
+                <!-- ==== BẮT ĐẦU ĐOẠN HIỂN THỊ ĐÁNH GIÁ ==== -->
+                <div class="review-section">
+                    <h3>Đánh giá sản phẩm</h3>
+                    <!-- 1. Nếu người dùng đã login & được phép đánh giá -->
+                    <c:if test="${canReview}">
+                        <div class="review-form">
+                            <form action="submitReview" method="post">
+                                <input type="hidden" name="productId" value="${products.id}" />
+                                <label for="rating">Chọn số sao:</label>
+                                <select name="rating" id="rating" required>
+                                    <option value="5">★★★★★</option>
+                                    <option value="4">★★★★☆</option>
+                                    <option value="3">★★★☆☆</option>
+                                    <option value="2">★★☆☆☆</option>
+                                    <option value="1">★☆☆☆☆</option>
+                                </select>
+                                <br>
+                                <textarea name="comment" placeholder="Viết nhận xét của bạn..." rows="3" style="width: 100%;" required></textarea>
+                                <br>
+                                <button type="submit">Gửi đánh giá</button>
+                            </form>
+                        </div>
+                    </c:if>
+
+                    <!-- 2. Hiển thị tất cả đánh giá -->
+                    <!-- 2. Hiển thị tất cả đánh giá -->
+                    <c:choose>
+                        <c:when test="${not empty reviews}">
+                            <c:forEach var="review" items="${reviews}">
+                                <div class="review-item">
+                                    <div class="review-header">
+                    <span class="review-stars">
+                        <c:forEach begin="1" end="${review.rating}">
+                            <i class="fa fa-star" style="color: orange;"></i>
+                        </c:forEach>
+                        <c:forEach begin="${review.rating + 1}" end="5">
+                            <i class="fa-regular fa-star" style="color: #ccc;"></i>
+                        </c:forEach>
+                    </span>
+                                        <span class="review-date">${review.reviewDate}</span>
+                                    </div>
+                                    <div class="review-comment">${review.comment}</div>
+                                </div>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <p>Chưa có đánh giá nào cho sản phẩm này.</p>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <!-- ==== KẾT THÚC ĐOẠN HIỂN THỊ ĐÁNH GIÁ ==== -->
+
                 <div class="main-infor-detail">
-
-                    <div class="choose-detail">
-                        <ul>
-                            <li><a href="#">Thông tin</a></li>
-                            <li><a href="#">Thông số</a></li>
-                            <li><a href="#">Thành phần</a></li>
-                            <li><a href="#">Cách dùng</a></li>
-                            <li><a href="#">Đánh giá</a></li>
-                            <li><a href="#">Hỏi </a></li>
-                        </ul>
-                    </div>
-
                     <c:choose>
                         <c:when test="${products.name == 'LOreal'}">
                             <jsp:include page="viewShare/index/LOrealViewShare.jsp" />
@@ -233,15 +269,11 @@
                             <p>Sản phẩm không xác định.</p>
                         </c:otherwise>
                     </c:choose>
-
-
-
-
-
                 </div>
             </div>
         </div>
-        <div class="view-product" style="width: 1200px; margin-left: auto; margin-right: auto;">
+
+            <div class="view-product" style="width: 1200px; margin-left: auto; margin-right: auto;">
             <div class="view-product-header">
                 <span>Sản phẩm đã xem</span>
             </div>

@@ -108,31 +108,6 @@
               <li>Khuyến khích sử dụng quy trình chăm sóc da hoàn chỉnh để có hiệu quả dưỡng da tốt nhất (Nước tẩy trang - Sữa rửa mặt - Nước hoa hồng - Kem dưỡng).</li>
             </ul>
           </div>
-          <div id="Evaluate">
-            <h3>Đánh giá</h3>
-            <p>Đánh giá trung bình: <strong>4.7</strong></p>
-            <p>
-              <span>★★★★★</span>
-            </p>
-            <p>294 nhận xét</p>
-            <p>
-              5 sao: <span class="rating-bar five-stars"></span> 228 Rất hài lòng
-            </p>
-            <p>
-              4 sao: <span class="rating-bar four-stars"></span> 55 Hài lòng
-            </p>
-            <p>
-              3 sao: <span class="rating-bar three-stars"></span> 7 Bình thường
-            </p>
-            <p>
-              2 sao: <span class="rating-bar two-stars"></span> 3 Không hài lòng
-            </p>
-            <p>
-              1 sao: <span class="rating-bar one-star"></span> 1 Rất tệ
-            </p>
-            <p>Chia sẻ nhận xét của bạn về sản phẩm này</p>
-            <a href="#" class="submit-review">Viết Bình luận</a>
-          </div>
           <div id="Q&A" style="margin-left: 4%">
             <h3>Hỏi đáp</h3>
             <textarea class="form-control" id="rating_content" name="rating_content" placeholder="Nhập mô tả tại đây"></textarea>
