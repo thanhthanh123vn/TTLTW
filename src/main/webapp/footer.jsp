@@ -26,10 +26,12 @@
                 <div class="chat-box" id="chatBox" style="display: none;">
                     <div class="chat-content">
                         <button class="close-chat" onclick="toggleChat()">X</button>
-                        <p>Xin chào! Bạn cần hỗ trợ gì?</p>
                         <div id="chatMessages"></div>
                     </div>
-                    <input type="text" id="chatInput" class="chat-input" placeholder="Nhập tin nhắn..." onkeypress="sendMessage(event)">
+                    <div class="chat-input">
+                        <textarea id="messageBox" placeholder="Nhập tin nhắn..."></textarea>
+                        <button class="send-message" onclick="sendMessage()">➤</button>
+                    </div>
                 </div>
             </div>
 
@@ -320,40 +322,52 @@
                     chatBox.style.display = chatBox.style.display === 'none' ? 'block' : 'none';
                 }
 
-                function sendMessage(event) {
-                    if (event.key === "Enter") {
-                        const input = document.getElementById("chatInput");
-                        const message = input.value.trim();
-                        if (message === "") return;
+                async function sendMessage() {
+                    const inputText = document.getElementById('messageBox').value.trim();
+                    if (!inputText) return;
 
-                        const chatMessages = document.getElementById("chatMessages");
-                        const userMsg = document.createElement("p");
-                        userMsg.innerHTML = "<strong>Bạn:</strong> " + message;
-                        chatMessages.appendChild(userMsg);
-                        input.value = "";
+                    addMessage(inputText, 'user');
+                    document.getElementById('messageBox').value = '';
 
-                        fetch("chatbot", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/x-www-form-urlencoded"
-                            },
-                            body: "userMessage=" + encodeURIComponent(message)
-                        })
-                            .then(response => response.text())
-                            .then(chatbotResponse => {
-                                const botMsg = document.createElement("p");
-                                botMsg.innerHTML = "<strong>Bot:</strong> " + chatbotResponse;
-                                chatMessages.appendChild(botMsg);
-                                chatMessages.scrollTop = chatMessages.scrollHeight;
-                            })
-                            .catch(error => {
-                                const errorMsg = document.createElement("p");
-                                errorMsg.innerHTML = "<strong>Bot:</strong> Lỗi khi gửi tin nhắn.";
-                                chatMessages.appendChild(errorMsg);
-                            });
+                    const apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDqkvQg4pbbQ8hhWEg28jYyo00e8H80PVY';
+                    const payload = {
+                        contents: [{ role: 'user', parts: [{ text: inputText }] }],
+                        generationConfig: {
+                            temperature: 1,
+                            topK: 40,
+                            topP: 0.95,
+                            maxOutputTokens: 1024
+                        }
+                    };
+
+                    try {
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const data = await response.json();
+                        const botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || "⚠️ Không nhận được phản hồi từ Gemini.";
+                        addMessage(botReply, 'bot');
+
+                    } catch (error) {
+                        console.error("Lỗi gửi yêu cầu:", error);
+                        addMessage("❌ Đã xảy ra lỗi khi kết nối API.", 'bot');
                     }
                 }
+
+                function addMessage(text, sender) {
+                    const messageEl = document.createElement('div');
+                    messageEl.className = `message ${sender}`;
+                    messageEl.innerText = text;
+
+                    const chatMessages = document.getElementById('chatMessages');
+                    chatMessages.appendChild(messageEl);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
             </script>
+
         </footer>
     </div>
 </div>
