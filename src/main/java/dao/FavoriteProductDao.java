@@ -14,10 +14,14 @@ import java.util.List;
 public class FavoriteProductDao {
 
     private Connection conn;
+    Utils utils;
 
     public FavoriteProductDao() {
         Utils utils = new Utils();
         conn = utils.getConnection();
+    }
+    public void closeConnection(){
+        utils.closeConnection(conn);
     }
 
     // Thêm sản phẩm yêu thích
@@ -83,22 +87,22 @@ public class FavoriteProductDao {
     public List<Product> getFavoriteListByUserId(int userId) {
         List<Product> list = new ArrayList<>();
 
-            String sql = "SELECT p.* FROM favorite_products f JOIN products p ON f.product_id = p.id WHERE f.user_id = ?";
-            try {
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ps.setInt(1, userId);
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    Product p = new Product();
-                    p.setId(rs.getInt("id"));
-                    p.setName(rs.getString("name"));
-                    p.setPrice(rs.getDouble("price"));
-                    p.setImage(rs.getString("image"));
-                    list.add(p);
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+        String sql = "SELECT p.* FROM favorite_products f JOIN products p ON f.product_id = p.id WHERE f.user_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Product p = new Product();
+                p.setId(rs.getInt("id"));
+                p.setName(rs.getString("name"));
+                p.setPrice(rs.getDouble("price"));
+                p.setImage(rs.getString("image"));
+                list.add(p);
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return list;
     }
 

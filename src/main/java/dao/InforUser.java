@@ -20,20 +20,22 @@ public class InforUser {
 		utils = new Utils();
 		conn = utils.getConnection();
 	}
-
+	public void closeConnection(){
+		utils.closeConnection(conn);
+	}
 	public boolean checkUser(String username, String password) {
-        String sql = "SELECT * FROM user WHERE username = ? AND password = ?";
-        try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setString(1, username);
-            statement.setString(2, password);
-            
-            ResultSet resultSet = statement.executeQuery();
-            return resultSet.next(); // Trả về true nếu tìm thấy người dùng
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
+		String sql = "SELECT * FROM user WHERE username = ? AND password = ?";
+		try (PreparedStatement statement = conn.prepareStatement(sql)) {
+			statement.setString(1, username);
+			statement.setString(2, password);
+
+			ResultSet resultSet = statement.executeQuery();
+			return resultSet.next(); // Trả về true nếu tìm thấy người dùng
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 	public int findIdByEmail(String email) {
 		String sql = "SELECT id FROM users WHERE email = ?";
 		try {
@@ -52,22 +54,22 @@ public class InforUser {
 		}
 	}
 
-	   public boolean insertUser(String username, String password, String email) {
-	        String sql = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
-	        
-	        try (PreparedStatement statement = conn.prepareStatement(sql)) {
-	            statement.setString(1, username);
-	            statement.setString(2, password);
-	            statement.setString(3, email);
+	public boolean insertUser(String username, String password, String email) {
+		String sql = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
 
-	            int rowsInserted = statement.executeUpdate();
-	            return rowsInserted > 0; // Trả về true nếu chèn thành công
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            return false; // Trả về false nếu có lỗi xảy ra
-	        }
-	    }
-public List<User> getList(){
+		try (PreparedStatement statement = conn.prepareStatement(sql)) {
+			statement.setString(1, username);
+			statement.setString(2, password);
+			statement.setString(3, email);
+
+			int rowsInserted = statement.executeUpdate();
+			return rowsInserted > 0; // Trả về true nếu chèn thành công
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false; // Trả về false nếu có lỗi xảy ra
+		}
+	}
+	public List<User> getList(){
 		List<User> list = new ArrayList<User>();
 		String sql = "SELECT * FROM users";
 		try {
@@ -90,7 +92,7 @@ public List<User> getList(){
 		}
 		return list;
 
-}
+	}
 	public boolean UpdateUser(User user) {
 		String sql = "UPDATE users SET username = ?, email = ?, password = ?, role = ?, created_at = ? WHERE id = ?";
 		try {
@@ -124,7 +126,7 @@ public List<User> getList(){
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-			return false;
+		return false;
 	}
 	public boolean UpdateToken(String  email ,String token) {
 		String sql = "UPDATE users SET token = ? WHERE  email = ? ";

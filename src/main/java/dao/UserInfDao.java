@@ -10,37 +10,45 @@ import java.util.List;
 
 public class UserInfDao {
     private Connection conn;
-private Utils utils;
-    public UserInfDao( ) {
+    private Utils utils;
+
+    public UserInfDao() {
         utils = new Utils();
         this.conn = utils.getConnection();
     }
 
-    public  int findbyAuthId(String authId) {
-        String sql = "select id from usersarress where auth_id=?";
-        try{
-            Connection conn = utils.getConnection();
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, authId);
-            ResultSet rs = statement.executeQuery();
+    public void closeConnection() {
+        try {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-            return rs.getInt(1);
+    public int findbyAuthId(String authId) {
+        String sql = "select id from usersarress where auth_id=?";
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, authId);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-
+        return -1;
     }
-    // Phương thức cập nhật dữ liệu trong cả hai bảng
+
     public void updateUserAndAddress(UserInf userInf) {
         String updateUserSQL = "UPDATE Users SET userName = ?, email = ? WHERE userID = ?";
         String updateUserAddressSQL = "UPDATE UserArress SET age = ?, address = ?, imageURL = ?, phone = ? WHERE email = ?";
 
         try {
-            // Bắt đầu giao dịch
             conn.setAutoCommit(false);
 
-            // Cập nhật bảng Users
             try (PreparedStatement psUser = conn.prepareStatement(updateUserSQL)) {
                 psUser.setString(1, userInf.getUserName());
                 psUser.setString(2, userInf.getEmail());
@@ -48,7 +56,6 @@ private Utils utils;
                 psUser.executeUpdate();
             }
 
-            // Cập nhật bảng UserArress
             try (PreparedStatement psUserAddress = conn.prepareStatement(updateUserAddressSQL)) {
                 psUserAddress.setString(1, userInf.getPassword());
                 psUserAddress.setString(2, userInf.getAddress());
@@ -58,12 +65,9 @@ private Utils utils;
                 psUserAddress.executeUpdate();
             }
 
-            // Cam kết giao dịch
             conn.commit();
-
         } catch (SQLException e) {
             try {
-                // Rollback nếu có lỗi
                 conn.rollback();
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -78,14 +82,12 @@ private Utils utils;
         }
     }
 
-    // Phương thức lấy danh sách người dùng
-    public List<UserInf> getListUserInf(){
+    public List<UserInf> getListUserInf() {
         List<UserInf> listUserInf = new ArrayList<>();
         String sql = "select ua.userID, u.userName,u.role, ua.email, u.password, ua.address, ua.imageURL, ua.phone from users u join usersarress ua on u.ID = ua.userID";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()){
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while(rs.next()) {
                 UserInf userInf = new UserInf(
                         rs.getInt("userID"),
                         rs.getString("userName"),
@@ -98,7 +100,7 @@ private Utils utils;
                 );
                 listUserInf.add(userInf);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return listUserInf;
@@ -111,89 +113,69 @@ private Utils utils;
                 "JOIN UsersArress ua ON u.ID = ua.userID " +
                 "WHERE u.userName LIKE ?";
 
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + name + "%");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                UserInf userInf = new UserInf(
-                        rs.getInt("userID"),
-                        rs.getString("userName"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("address"),
-                        rs.getString("imageURL"),
-                        rs.getString("phone"),
-                        rs.getString("role")
-                );
-                listUserInf.add(userInf);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    UserInf userInf = new UserInf(
+                            rs.getInt("userID"),
+                            rs.getString("userName"),
+                            rs.getString("email"),
+                            rs.getString("password"),
+                            rs.getString("address"),
+                            rs.getString("imageURL"),
+                            rs.getString("phone"),
+                            rs.getString("role")
+                    );
+                    listUserInf.add(userInf);
+                }
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return listUserInf;
     }
 
-
-    // Phương thức chèn dữ liệu vào bảng Users và UserArress
     public void insertUserAndAddress(UserInf userInf) {
         String insertUserSQL = "INSERT INTO users (userName, email, password) VALUES (?, ?, ?)";
         String insertUserAddressSQL = "INSERT INTO usersarress (userID, email, address, imageURL, phone) VALUES (?, ?, ?, ?, ?)";
 
         try {
-            // Start transaction
             conn.setAutoCommit(false);
-
-            // Insert into Users table
             int userID;
+
             try (PreparedStatement psUser = conn.prepareStatement(insertUserSQL, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 psUser.setString(1, userInf.getUserName());
                 psUser.setString(2, userInf.getEmail());
                 psUser.setString(3, userInf.getPassword());
-                int row = psUser.executeUpdate();
-                if (row > 0) {
-                    System.out.println("Inserted user successfully");
-                } else {
-                    System.out.println("Inserting user failed");
-                }
+                psUser.executeUpdate();
 
-                // Retrieve userID from Users table
                 try (ResultSet generatedKeys = psUser.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         userID = generatedKeys.getInt(1);
-                        System.out.println("Inserted user ID: " + userID);
                     } else {
                         throw new SQLException("Creating user failed, no ID obtained.");
                     }
                 }
             }
 
-            // Insert into UsersAddress table
             try (PreparedStatement psUserAddress = conn.prepareStatement(insertUserAddressSQL)) {
                 psUserAddress.setInt(1, userID);
                 psUserAddress.setString(2, userInf.getEmail());
                 psUserAddress.setString(3, userInf.getAddress());
                 psUserAddress.setString(4, userInf.getImageURL());
                 psUserAddress.setString(5, userInf.getPhone());
-                int row = psUserAddress.executeUpdate();
-                if (row > 0) {
-                    System.out.println("Inserted user address successfully");
-                } else {
-                    System.out.println("Inserting user address failed");
-                }
+                psUserAddress.executeUpdate();
             }
 
-            // Commit transaction
             conn.commit();
-
         } catch (SQLException e) {
-            e.printStackTrace();
             try {
-                // Rollback if there is an error
                 conn.rollback();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
+            e.printStackTrace();
         } finally {
             try {
                 conn.setAutoCommit(true);
@@ -203,26 +185,21 @@ private Utils utils;
         }
     }
 
-
     public int findAddressUser(String authID) {
         String sql = "SELECT id FROM usersarress WHERE authid = ?";
-
-        try {
-            Connection connection = utils.getConnection();
-            PreparedStatement stm = connection.prepareStatement(sql);
+        try (PreparedStatement stm = conn.prepareStatement(sql)) {
             stm.setString(1, authID);
-
-            ResultSet rs = stm.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("id");
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id");
+                }
             }
-
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Lỗi khi tìm địa chỉ user: " + e.getMessage(), e);
         }
-
-        return 0; // Trả về 0 nếu không tìm thấy
+        return 0;
     }
+
     public boolean upsertAddressUser(UserInf userInf) {
         String sql = """
         INSERT INTO usersarress (address, phone, fullName, userid,email)
@@ -232,7 +209,6 @@ private Utils utils;
             phone = VALUES(phone),
             fullName = VALUES(fullName),
             email = VALUES(email)
-         
         """;
         try (PreparedStatement stm = conn.prepareStatement(sql)) {
             stm.setString(1, userInf.getAddress());
@@ -241,35 +217,29 @@ private Utils utils;
             stm.setInt(4, userInf.getId());
             stm.setString(5, userInf.getEmail());
 
-
             int row = stm.executeUpdate();
-            System.out.println("Upsert user address successfully: " + row);
             return row > 0;
-
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
 
-
     private boolean checkIdAddressUser(int id, String authId) {
-        try {
-            String sql;
-            PreparedStatement stm;
+        String sql = authId != null ? 
+            "SELECT COUNT(*) FROM usersarress WHERE authid = ?" :
+            "SELECT COUNT(*) FROM usersarress WHERE userid = ?";
+            
+        try (PreparedStatement stm = conn.prepareStatement(sql)) {
             if (authId != null) {
-                sql = "SELECT COUNT(*) FROM usersarress WHERE authid = ?";
-                stm = conn.prepareStatement(sql);
                 stm.setString(1, authId);
             } else {
-                sql = "SELECT COUNT(*) FROM usersarress WHERE userid = ?";
-                stm = conn.prepareStatement(sql);
                 stm.setInt(1, id);
             }
-            ResultSet rs = stm.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -277,49 +247,31 @@ private Utils utils;
         return false;
     }
 
-    // Phương thức xóa dữ liệu từ bảng Users và UserArress
     public void deleteUserAndAddress(int userID) {
         String deleteUserAddressSQL = "DELETE FROM usersarress WHERE userID = ?";
         String deleteUserSQL = "DELETE FROM users WHERE id = ?";
 
         try {
-            // Start transaction
             conn.setAutoCommit(false);
 
-            // Delete from UsersArress table
             try (PreparedStatement psUserAddress = conn.prepareStatement(deleteUserAddressSQL)) {
                 psUserAddress.setInt(1, userID);
-                int row = psUserAddress.executeUpdate();
-                if (row > 0) {
-                    System.out.println("Deleted user address successfully");
-                } else {
-                    System.out.println("Deleting user address failed");
-                }
+                psUserAddress.executeUpdate();
             }
 
-            // Delete from Users table
             try (PreparedStatement psUser = conn.prepareStatement(deleteUserSQL)) {
                 psUser.setInt(1, userID);
-                int row = psUser.executeUpdate();
-                if (row > 0) {
-                    System.out.println("Deleted user successfully");
-                } else {
-                    System.out.println("Deleting user failed");
-                }
+                psUser.executeUpdate();
             }
 
-            // Commit transaction
             conn.commit();
-
         } catch (SQLException e) {
-            e.printStackTrace();
-
             try {
-                // Rollback if there is an error
                 conn.rollback();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
+            e.printStackTrace();
         } finally {
             try {
                 conn.setAutoCommit(true);
@@ -328,45 +280,41 @@ private Utils utils;
             }
         }
     }
-// Up load ảnh đại diện
-public boolean updateAvatar(int userID, String imageUrl) {
-    String sql = "UPDATE UserArress SET imageURL = ? WHERE userID = ?";
-    try {
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, imageUrl);
-        ps.setInt(2, userID);
 
-        int row = ps.executeUpdate();
-        return row > 0; // Trả về true nếu cập nhật thành công
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    return false; // Trả về false nếu có lỗi
-}
-public UserInf getUser(int userID) {
-    UserInf userInf = null;
-    String sql = "select ua.userID, u.userName,u.role, ua.email, u.password, ua.address, ua.imageURL, ua.phone from Users u join UsersArress ua on u.ID = ua.userID where u.ID = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, userID);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()){
-                 userInf = new UserInf(
-                        rs.getInt("userID"),
-                        rs.getString("userName"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("address"),
-                        rs.getString("imageURL"),
-                        rs.getString("phone"),
-                        rs.getString("role")
-                );
-
-            }
-        } catch (Exception e) {
+    public boolean updateAvatar(int userID, String imageUrl) {
+        String sql = "UPDATE UserArress SET imageURL = ? WHERE userID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, imageUrl);
+            ps.setInt(2, userID);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return userInf;
+        return false;
+    }
+
+    public UserInf getUser(int userID) {
+        String sql = "select ua.userID, u.userName,u.role, ua.email, u.password, ua.address, ua.imageURL, ua.phone from Users u join UsersArress ua on u.ID = ua.userID where u.ID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new UserInf(
+                            rs.getInt("userID"),
+                            rs.getString("userName"),
+                            rs.getString("email"),
+                            rs.getString("password"),
+                            rs.getString("address"),
+                            rs.getString("imageURL"),
+                            rs.getString("phone"),
+                            rs.getString("role")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static void main(String[] args) {
@@ -375,7 +323,7 @@ public UserInf getUser(int userID) {
       List<UserInf> users =   userInfDao.searchUserInf(name);
       System.out.println(users.size());
     }
-    }
+}
 
 
 

@@ -34,7 +34,7 @@ public class WishList extends HttpServlet {
 
         session.setAttribute("Wishlistproduct", wishlist);
         req.setAttribute("wishlist", wishlist);
-        req.getRequestDispatcher("/wishlist.jsp").forward(req, resp);
+        req.getRequestDispatcher("wishlist.jsp").forward(req, resp);
     }
 
     @Override

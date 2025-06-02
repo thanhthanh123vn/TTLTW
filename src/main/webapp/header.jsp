@@ -10,6 +10,38 @@
          pageEncoding="UTF-8"%>
 
 <header class="header">
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<%--    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/dark-theme.css">--%>
+
+<%--    <style>--%>
+<%--        .theme-toggle {--%>
+<%--            cursor: pointer;--%>
+<%--            padding: 8px;--%>
+<%--            margin: 0 10px;--%>
+<%--            border-radius: 50%;--%>
+<%--            transition: background-color 0.3s;--%>
+<%--            display: flex;--%>
+<%--            align-items: center;--%>
+<%--            justify-content: center;--%>
+<%--        }--%>
+
+<%--        .theme-toggle:hover {--%>
+<%--            background-color: rgba(0, 0, 0, 0.1);--%>
+<%--        }--%>
+
+<%--        .dark-mode .theme-toggle {--%>
+<%--            color: #fff;--%>
+<%--        }--%>
+
+<%--        .light-mode .theme-toggle {--%>
+<%--            color: #333;--%>
+<%--        }--%>
+
+<%--        .theme-toggle i {--%>
+<%--            font-size: 1.2em;--%>
+<%--        }--%>
+<%--    </style>--%>
 
     <div class="top-banner">
         <p>22.10 Ưu Đãi Đỉnh Nóc & Giờ Vàng Deal Sốc - Duy Nhất Từ 11h
@@ -149,6 +181,11 @@
                     <a href="loginCart" class="cart-icon"> Giỏ hàng <span
                             class="cart-count"></span></a>
                 </div>
+<%--                <div class="header-icon-sub">--%>
+<%--                    <div class="theme-toggle" onclick="toggleTheme()">--%>
+<%--                        <i class="fas fa-moon"></i>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
             </div>
         </div>
     </div>
@@ -209,4 +246,45 @@
             </ul>
         </nav>
     </div>
+
+<%--    <script>--%>
+<%--        // Theme toggle functionality--%>
+<%--        function toggleTheme() {--%>
+<%--            const body = document.body;--%>
+<%--            const isDarkMode = body.classList.contains('dark-mode');--%>
+<%--            const themeIcon = document.querySelector('.theme-toggle i');--%>
+<%--            --%>
+<%--            if (isDarkMode) {--%>
+<%--                body.classList.remove('dark-mode');--%>
+<%--                body.classList.add('light-mode');--%>
+<%--                themeIcon.classList.remove('fa-moon');--%>
+<%--                themeIcon.classList.add('fa-sun');--%>
+<%--                localStorage.setItem('theme', 'light');--%>
+<%--            } else {--%>
+<%--                body.classList.remove('light-mode');--%>
+<%--                body.classList.add('dark-mode');--%>
+<%--                themeIcon.classList.remove('fa-sun');--%>
+<%--                themeIcon.classList.add('fa-moon');--%>
+<%--                localStorage.setItem('theme', 'dark');--%>
+<%--            }--%>
+<%--        }--%>
+
+<%--        // Check for saved theme preference--%>
+<%--        document.addEventListener('DOMContentLoaded', () => {--%>
+<%--            const savedTheme = localStorage.getItem('theme');--%>
+<%--            const themeIcon = document.querySelector('.theme-toggle i');--%>
+<%--            --%>
+<%--            if (savedTheme === 'light') {--%>
+<%--                document.body.classList.remove('dark-mode');--%>
+<%--                document.body.classList.add('light-mode');--%>
+<%--                themeIcon.classList.remove('fa-moon');--%>
+<%--                themeIcon.classList.add('fa-sun');--%>
+<%--            } else {--%>
+<%--                document.body.classList.remove('light-mode');--%>
+<%--                document.body.classList.add('dark-mode');--%>
+<%--                themeIcon.classList.remove('fa-sun');--%>
+<%--                themeIcon.classList.add('fa-moon');--%>
+<%--            }--%>
+<%--        });--%>
+<%--    </script>--%>
 </header>

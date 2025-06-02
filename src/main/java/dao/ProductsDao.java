@@ -109,7 +109,7 @@ public class ProductsDao {
             e.printStackTrace();
         }
         return false;
-}
+    }
     public List<Product> listProducts() {
         String sql = "SELECT * FROM products";
         String sql_order = "SELECT SUM(quantity) AS totalSold FROM orderdetails WHERE productid = ?";
@@ -156,7 +156,7 @@ public class ProductsDao {
     public boolean deleteProduct(int id){
         String sql = "delete from products where id=?";
         String sqlPD = "delete from productdetail where id = ? ";
-        
+
         try {
             PreparedStatement ps = conn.prepareStatement(sqlPD);
             ps.setInt(1, id);
@@ -391,14 +391,14 @@ public class ProductsDao {
     public List<Product> getTop10Products() {
         List<Product> products = new ArrayList<>();
         String query = "SELECT p.id, p.name,p.image,p.detail, SUM(od.quantity) AS total_quantity\n" +
-                "                FROM products p\n" +
-                "                JOIN orderdetails od ON p.ID = od.ProductID\n" +
+                "                FROM Products p\n" +
+                "                JOIN OrderDetails od ON p.ID = od.ProductID\n" +
                 "                GROUP BY p.ID, p.name\n" +
                 "                ORDER BY total_quantity DESC\n" +
                 "                LIMIT 5;";
         try {
-             PreparedStatement ps = conn.prepareStatement(query);
-             ResultSet rs = ps.executeQuery();
+            PreparedStatement ps = conn.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 // Tạo đối tượng ProductsDao và ánh xạ dữ liệu
                 Product product = new Product();
@@ -414,7 +414,7 @@ public class ProductsDao {
         }
         return products;
     }
-public List<Product> getHotProduct(){
+    public List<Product> getHotProduct(){
         List<Product> products = new ArrayList<>();
         String sql = "SELECT p.id, p.`name`,p.detail, c.CategoryName,p.image,COUNT(*) as SL\n" +
                 "from products p join categories c\n" +
@@ -440,7 +440,7 @@ public List<Product> getHotProduct(){
 
 
         return products;
-}
+    }
     public List<Product> flashSale() {
         List<Product> products = new ArrayList<>();
         String sql = "SELECT p.*, pm.discountPercentage FROM products p JOIN promotions pm ON p.id = pm.productid";
@@ -475,7 +475,7 @@ public List<Product> getHotProduct(){
     public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
         String sql = "SELECT * FROM products ORDER BY name";
-        
+
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -492,7 +492,7 @@ public List<Product> getHotProduct(){
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return products;
     }
 
@@ -500,12 +500,12 @@ public List<Product> getHotProduct(){
     public List<Map<String, Object>> getTopSellingProductsByQuantity(Date startDate, Date endDate) {
         List<Map<String, Object>> topProducts = new ArrayList<>();
         String sql = "SELECT p.name, SUM(erd.quantity) as exportQuantity, SUM(erd.quantity * erd.price) as revenue " +
-                     "FROM products p " +
-                     "JOIN export_receipt_details erd ON p.id = erd.product_id " +
-                     "JOIN export_receipts er ON erd.receipt_id = er.id " +
-                     "WHERE er.export_date BETWEEN ? AND ? " +
-                     "GROUP BY p.id, p.name " +
-                     "ORDER BY exportQuantity DESC LIMIT 10";
+                "FROM products p " +
+                "JOIN export_receipt_details erd ON p.id = erd.product_id " +
+                "JOIN export_receipts er ON erd.receipt_id = er.id " +
+                "WHERE er.export_date BETWEEN ? AND ? " +
+                "GROUP BY p.id, p.name " +
+                "ORDER BY exportQuantity DESC LIMIT 10";
 
         try (Connection conn = utils.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -534,10 +534,10 @@ public List<Product> getHotProduct(){
     public Map<String, Integer> getTotalStockByCategory() {
         Map<String, Integer> stockByCategory = new HashMap<>();
         String sql = "SELECT c.CategoryName, SUM(p.quantity) AS totalStock " +
-                     "FROM products p " +
-                     "JOIN categories c ON p.CategoryID = c.CategoryID " +
-                     "GROUP BY c.CategoryID, c.CategoryName " +
-                     "ORDER BY c.CategoryName";
+                "FROM products p " +
+                "JOIN categories c ON p.CategoryID = c.CategoryID " +
+                "GROUP BY c.CategoryID, c.CategoryName " +
+                "ORDER BY c.CategoryName";
 
         try (Connection conn = utils.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -553,7 +553,6 @@ public List<Product> getHotProduct(){
         return stockByCategory;
     }
 
-    // Method to get total number of products
     public int getTotalProductCount() {
         String sql = "SELECT COUNT(*) FROM products";
         try (PreparedStatement statement = conn.prepareStatement(sql);
@@ -567,7 +566,6 @@ public List<Product> getHotProduct(){
         return 0;
     }
 
-    // Method to get products with pagination
     public List<Product> getProductsPaginated(int offset, int limit) {
         String sql = "SELECT * FROM products LIMIT ? OFFSET ?";
         List<Product> products = new ArrayList<>();
@@ -575,23 +573,22 @@ public List<Product> getHotProduct(){
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, limit);
             statement.setInt(2, offset);
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                Product product = new Product();
-                product.setId(resultSet.getInt("Id"));
-                product.setName(resultSet.getString("Name"));
-                product.setDetail(resultSet.getString("Detail"));
-                product.setPrice(resultSet.getDouble("Price"));
-                product.setImage(resultSet.getString("Image"));
-                product.setCategory_id(resultSet.getInt("CategoryId"));
-                product.setQuantity(resultSet.getInt("quantity"));
-                products.add(product);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Product product = new Product();
+                    product.setId(resultSet.getInt("Id"));
+                    product.setName(resultSet.getString("Name"));
+                    product.setDetail(resultSet.getString("Detail"));
+                    product.setPrice(resultSet.getDouble("Price"));
+                    product.setImage(resultSet.getString("Image"));
+                    product.setCategory_id(resultSet.getInt("CategoryId"));
+                    product.setQuantity(resultSet.getInt("quantity"));
+                    products.add(product);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return products;
     }
 

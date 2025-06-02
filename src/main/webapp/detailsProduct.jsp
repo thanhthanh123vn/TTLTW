@@ -48,7 +48,7 @@
 
 </head>
 
-<body>
+<body class="dark-mode">
 <div id="web-service">
     <jsp:include page="header.jsp"/>
     <div class="session-body">
