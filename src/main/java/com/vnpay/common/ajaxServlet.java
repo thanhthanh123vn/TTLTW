@@ -214,6 +214,7 @@ public class ajaxServlet extends HttpServlet {
         String paymentUrl = Config.vnp_PayUrl + "?" + queryUrl;
         System.out.println(paymentUrl);
 
+        // Trả về URL thanh toán dưới dạng JSON
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter out = resp.getWriter();

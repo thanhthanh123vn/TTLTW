@@ -12,7 +12,7 @@ import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
 
-@WebFilter(filterName = "AdminPermissionFilter", urlPatterns = { "/ManagerProduct", "/bank", "/discounts", "/user", "/dashboard", "/logs", "/orderManagement", "/KeyManagement"})
+@WebFilter(filterName = "AdminPermissionFilter", urlPatterns = {  "/bank", "/discounts", "/user", "/dashboard", "/logs", "/orderManagement", "/KeyManagement"})
 public class AdminPermissionFilter implements Filter {
 
     public void init(FilterConfig config) throws ServletException {

@@ -215,7 +215,7 @@
                 .then(response => response.json())
                 .then(data => {
                     // Xử lý kết quả từ server
-
+                    window.location.href = data.data;
                     console.log('Payment success:', data);
                     alert('Thanh toán bằng thẻ thành công!');
                 })

@@ -98,6 +98,7 @@ public class LoginServlet extends HttpServlet {
 
 
 
+
 //            response.setContentType("text/html");
 //            PrintWriter out = response.getWriter();
 //            out.println("<h1>Login Success</h1>");
@@ -167,6 +168,8 @@ public class LoginServlet extends HttpServlet {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+
+
         }else{
             System.out.println("id is empty");
         }

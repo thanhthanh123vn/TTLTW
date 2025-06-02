@@ -24,25 +24,13 @@
                          style="width: 60px;" alt="Chat Icon" onclick="toggleChat()">
                 </div>
                 <div class="chat-box" id="chatBox" style="display: none;">
-                    <div class="chat-header">
-                        <div class="chat-title">
-                            <img src="https://wsc.hasaki.vn/assets/customer_icons/appIcon.svg" alt="Chat Icon" style="width: 30px;">
-                            <span>TTT Chat Support</span>
-                        </div>
-                        <button class="close-chat" onclick="toggleChat()">×</button>
-                    </div>
                     <div class="chat-content">
-                        <div id="chatMessages">
-                            <div class="message bot">
-                                Xin chào! Tôi là trợ lý ảo của TTT. Tôi có thể giúp gì cho bạn?
-                            </div>
-                        </div>
+                        <button class="close-chat" onclick="toggleChat()">X</button>
+                        <div id="chatMessages"></div>
                     </div>
                     <div class="chat-input">
-                        <textarea id="messageBox" placeholder="Nhập tin nhắn của bạn..." rows="1"></textarea>
-                        <button class="send-message" onclick="sendMessage()">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
+                        <textarea id="messageBox" placeholder="Nhập tin nhắn..."></textarea>
+                        <button class="send-message" onclick="sendMessage()">➤</button>
                     </div>
                 </div>
             </div>
@@ -328,172 +316,11 @@
                 </div>
             </div>
 
-            <style>
-                #chat-icon {
-                    position: fixed;
-                    bottom: 20px;
-                    right: 20px;
-                    z-index: 1000;
-                }
-
-                .chat-box-icon {
-                    cursor: pointer;
-                    transition: transform 0.3s ease;
-                }
-
-                .chat-box-icon:hover {
-                    transform: scale(1.1);
-                }
-
-                .chat-box {
-                    position: fixed;
-                    bottom: 100px;
-                    right: 20px;
-                    width: 350px;
-                    height: 500px;
-                    background: white;
-                    border-radius: 10px;
-                    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-                    display: flex;
-                    flex-direction: column;
-                    overflow: hidden;
-                }
-
-                .chat-header {
-                    background: #ff6b00;
-                    color: white;
-                    padding: 15px;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }
-
-                .chat-title {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    font-weight: bold;
-                }
-
-                .close-chat {
-                    background: none;
-                    border: none;
-                    color: white;
-                    font-size: 24px;
-                    cursor: pointer;
-                    padding: 0;
-                    line-height: 1;
-                }
-
-                .chat-content {
-                    flex: 1;
-                    padding: 15px;
-                    overflow-y: auto;
-                    background: #f5f5f5;
-                }
-
-                .message {
-                    margin-bottom: 15px;
-                    max-width: 80%;
-                    padding: 10px 15px;
-                    border-radius: 15px;
-                    position: relative;
-                    word-wrap: break-word;
-                }
-
-                .message.user {
-                    background: #ff6b00;
-                    color: white;
-                    margin-left: auto;
-                    border-bottom-right-radius: 5px;
-                }
-
-                .message.bot {
-                    background: white;
-                    color: #333;
-                    margin-right: auto;
-                    border-bottom-left-radius: 5px;
-                    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-                }
-
-                .chat-input {
-                    padding: 15px;
-                    background: white;
-                    border-top: 1px solid #eee;
-                    display: flex;
-                    gap: 10px;
-                }
-
-                .chat-input textarea {
-                    flex: 1;
-                    border: 1px solid #ddd;
-                    border-radius: 20px;
-                    padding: 10px 15px;
-                    resize: none;
-                    outline: none;
-                    font-family: inherit;
-                }
-
-                .chat-input textarea:focus {
-                    border-color: #ff6b00;
-                }
-
-                .send-message {
-                    background: #ff6b00;
-                    color: white;
-                    border: none;
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 50%;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    transition: background 0.3s;
-                }
-
-                .send-message:hover {
-                    background: #e65c00;
-                }
-
-                /* Custom scrollbar */
-                .chat-content::-webkit-scrollbar {
-                    width: 6px;
-                }
-
-                .chat-content::-webkit-scrollbar-track {
-                    background: #f1f1f1;
-                }
-
-                .chat-content::-webkit-scrollbar-thumb {
-                    background: #888;
-                    border-radius: 3px;
-                }
-
-                .chat-content::-webkit-scrollbar-thumb:hover {
-                    background: #555;
-                }
-            </style>
-
             <script>
                 function toggleChat() {
                     const chatBox = document.getElementById('chatBox');
                     chatBox.style.display = chatBox.style.display === 'none' ? 'block' : 'none';
                 }
-
-                // Tự động điều chỉnh chiều cao của textarea
-                document.getElementById('messageBox').addEventListener('input', function() {
-                    this.style.height = 'auto';
-                    this.style.height = (this.scrollHeight) + 'px';
-                });
-
-                // Gửi tin nhắn khi nhấn Enter
-                document.getElementById('messageBox').addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        sendMessage();
-                    }
-                });
 
                 async function sendMessage() {
                     const inputText = document.getElementById('messageBox').value.trim();
@@ -501,7 +328,6 @@
 
                     addMessage(inputText, 'user');
                     document.getElementById('messageBox').value = '';
-                    document.getElementById('messageBox').style.height = 'auto';
 
                     const apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDqkvQg4pbbQ8hhWEg28jYyo00e8H80PVY';
                     const payload = {
