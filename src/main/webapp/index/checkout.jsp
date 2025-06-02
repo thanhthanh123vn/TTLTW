@@ -148,7 +148,7 @@
     <!-- Right Section -->
     <div class="right-section">
         <div class="order-summary">
-            <button class="order-btn" onclick="redirectPay()"> Đặt hàng</button>
+            <button class="order-btn" onclick="CompleteProduct()"> Đặt hàng</button>
             <div class="invoice">
                 <span>Thông tin xuất hóa đơn</span>
                 <a href="#">Nhập</a>

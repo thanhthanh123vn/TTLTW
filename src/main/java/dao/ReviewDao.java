@@ -6,11 +6,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewDao {
-    private Connection conn;
+    private static Utils utils;
+    private static Connection conn;
 
     public ReviewDao() {
-        // Khởi tạo connection qua Utils (giống các DAO khác)
-        this.conn = new Utils().getConnection();
+        utils = new Utils();
+        conn = utils.getConnection();
+    }
+
+    public void closeConnection() {
+        try {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /** Thêm 1 đánh giá mới vào DB */
@@ -33,7 +44,9 @@ public class ReviewDao {
     /** Lấy tất cả đánh giá của 1 sản phẩm (theo productId) */
     public List<ProductReview> getReviewsByProductId(int productId) {
         List<ProductReview> reviews = new ArrayList<>();
-        String sql = "SELECT * FROM ProductReview WHERE productId = ? ORDER BY reviewDate DESC";
+        String sql = "SELECT pr.*, u.username FROM ProductReview pr " +
+                    "JOIN users u ON pr.userId = u.id " +
+                    "WHERE pr.productId = ? ORDER BY pr.reviewDate DESC";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, productId);
             ResultSet rs = ps.executeQuery();
@@ -45,6 +58,7 @@ public class ReviewDao {
                 r.setRating(rs.getInt("rating"));
                 r.setComment(rs.getString("comment"));
                 r.setReviewDate(rs.getTimestamp("reviewDate"));
+                r.setUsername(rs.getString("username"));
                 reviews.add(r);
             }
         } catch (Exception e) {
@@ -55,7 +69,6 @@ public class ReviewDao {
 
     /**
      * Kiểm tra xem userId đã từng đánh giá productId chưa.
-     * Nếu đã có record thì return true, ngược lại false.
      */
     public boolean hasReviewed(int userId, int productId) {
         String sql = "SELECT COUNT(*) FROM ProductReview WHERE userId = ? AND productId = ?";
@@ -74,16 +87,12 @@ public class ReviewDao {
 
     /**
      * Kiểm tra xem userId đã mua (và đã giao) productId chưa.
-     * Giả sử bạn có bảng Orders (đơn) và OrderDetail (chi tiết đơn).
-     * - Bảng Orders có cột status ENUM('Pending','Processing','Shipped','Completed','Cancelled'),
-     *   trong đó 'Completed' hoặc 'Shipped' có thể hiểu là đã giao.
-     * - Bảng OrderDetail lưu quan hệ orderId -> productId
      */
     public boolean hasPurchased(int userId, int productId) {
         String sql =
                 "SELECT COUNT(*) " +
-                        "FROM orders o JOIN orderdetails od ON o.OrderID = od.OrderID " +
-                        "WHERE o.UserID = ? AND od.ProductID = ? AND o.Status = 'Completed'";
+                "FROM orders o JOIN orderdetails od ON o.OrderID = od.OrderID " +
+                "WHERE o.UserID = ? AND od.ProductID = ? AND o.Status = 'Completed'";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ps.setInt(2, productId);
@@ -99,10 +108,6 @@ public class ReviewDao {
 
     /** Đóng connection khi không dùng nữa */
     public void close() {
-        try {
-            if (conn != null) conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        closeConnection();
     }
 }

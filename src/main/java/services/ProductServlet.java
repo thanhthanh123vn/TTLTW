@@ -42,8 +42,9 @@ public class ProductServlet extends HttpServlet {
 
             // Get total number of products for pagination
             int totalProducts = productDetails.getTotalProductCount();
-            int totalPages = (int) Math.ceil((double) totalProducts / PRODUCTS_PER_PAGE);
 
+            int totalPages = (int) Math.ceil((double) totalProducts / PRODUCTS_PER_PAGE);
+            productDetails.closeConnection();
             if (products != null && !products.isEmpty()) {
                 request.setAttribute("products", products);
                 request.setAttribute("categories", categories);

@@ -28,6 +28,7 @@ public class SendComment extends HttpServlet {
         comment.setProductId(productID);
         comment.setUserId(userID);
         comment.setContent(req.getParameter("comment"));
+        comment.setUsername(user.getFullName());
         boolean isSuccess = false;
         List<Comment> comments = new ArrayList<>();
         try {

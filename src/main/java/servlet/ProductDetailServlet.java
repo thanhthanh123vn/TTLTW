@@ -1,6 +1,7 @@
 package servlet;
 
 import dao.ProductsDao;
+import dao.CommentDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,6 +13,7 @@ import object.ProductDetail;
 import dao.ReviewDao;
 import object.ProductReview;
 import object.User;
+import object.Comment;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,7 +38,6 @@ public class ProductDetailServlet extends HttpServlet {
                 throw new NullPointerException("Product not found for ID: " + productId);
             }
 
-
             ProductDetail productDetail = product.getProductDetail();
             List<String> listImage = productsDao.getImageProductDetail(Integer.parseInt(productId));
             System.out.println(listImage.size()+" ListImage");
@@ -48,6 +49,7 @@ public class ProductDetailServlet extends HttpServlet {
             }
 
             // Đặt thông tin sản phẩm vào request scope
+
             request.setAttribute("product", productDetail);
             request.setAttribute("listImage", listImage);
             request.setAttribute("products", product);
@@ -79,7 +81,14 @@ public class ProductDetailServlet extends HttpServlet {
             }
             request.setAttribute("canReview", canReview);
 
+            // Lấy danh sách comment
+            CommentDAO commentDAO = new CommentDAO();
+            List<Comment> comments = commentDAO.getCommentsByProductId(Integer.parseInt(productId));
+            request.setAttribute("comments", comments);
+
+            productsDao.closeConnection();
             reviewDao.close();
+            commentDAO.close();
 
             // Chuyển tiếp đến trang chi tiết sản phẩm (JSP)
             request.getRequestDispatcher("detailsProduct.jsp").forward(request, response);

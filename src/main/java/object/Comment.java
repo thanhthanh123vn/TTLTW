@@ -6,6 +6,7 @@ public class Comment {
     private int userId;         // ID người dùng
     private String content;     // Nội dung comment
     private String createdAt;   // Thời gian tạo
+    private String username;    // Tên người dùng
 
     // Constructor mặc định
     public Comment() {
@@ -61,6 +62,14 @@ public class Comment {
         this.createdAt = createdAt;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Override
     public String toString() {
         return "Comment{" +
@@ -69,6 +78,7 @@ public class Comment {
                 ", userId=" + userId +
                 ", content='" + content + '\'' +
                 ", createdAt='" + createdAt + '\'' +
+                ", username='" + username + '\'' +
                 '}';
     }
 }
