@@ -1,11 +1,11 @@
 package services;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.Scanner;
 
 import dao.IndexAdminDao;
 import dao.LogDAOImp;
@@ -20,19 +20,26 @@ import jakarta.servlet.http.HttpSession;
 import object.LogEntry;
 import object.Log_Level;
 import object.User;
+import org.json.JSONObject;
+import servlet.CaptchaUtil;
 
 @WebServlet("/LoginHandle")
 public class LoginUser extends HttpServlet {
 	private InforUser user;
 
 LogDao logDao = new LogDAOImp();
-
-
-
-	@Override
+@Override
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		user = new InforUser();
+
+		String recaptchaResponse = req.getParameter("g-recaptcha-response");
+		if (!CaptchaUtil.verify(recaptchaResponse)) {
+			req.setAttribute("mess", "Captcha không hợp lệ!");
+			req.getRequestDispatcher("login.jsp").forward(req, resp);
+			return;
+		}
+
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
 
@@ -111,6 +118,8 @@ LogDao logDao = new LogDAOImp();
 			req.getRequestDispatcher("login.jsp").forward(req, resp);
 		}
 	}
+
+
 
 	// Ghi log đăng nhập hoặc cảnh báo
 	synchronized public void logLogin(User user, String level, String message) {
