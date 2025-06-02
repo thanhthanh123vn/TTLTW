@@ -391,8 +391,8 @@ public class ProductsDao {
     public List<Product> getTop10Products() {
         List<Product> products = new ArrayList<>();
         String query = "SELECT p.id, p.name,p.image,p.detail, SUM(od.quantity) AS total_quantity\n" +
-                "                FROM Products p\n" +
-                "                JOIN OrderDetails od ON p.ID = od.ProductID\n" +
+                "                FROM products p\n" +
+                "                JOIN orderdetails od ON p.ID = od.ProductID\n" +
                 "                GROUP BY p.ID, p.name\n" +
                 "                ORDER BY total_quantity DESC\n" +
                 "                LIMIT 5;";
@@ -551,6 +551,48 @@ public List<Product> getHotProduct(){
             e.printStackTrace(); // Log the error
         }
         return stockByCategory;
+    }
+
+    // Method to get total number of products
+    public int getTotalProductCount() {
+        String sql = "SELECT COUNT(*) FROM products";
+        try (PreparedStatement statement = conn.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // Method to get products with pagination
+    public List<Product> getProductsPaginated(int offset, int limit) {
+        String sql = "SELECT * FROM products LIMIT ? OFFSET ?";
+        List<Product> products = new ArrayList<>();
+
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, limit);
+            statement.setInt(2, offset);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Product product = new Product();
+                product.setId(resultSet.getInt("Id"));
+                product.setName(resultSet.getString("Name"));
+                product.setDetail(resultSet.getString("Detail"));
+                product.setPrice(resultSet.getDouble("Price"));
+                product.setImage(resultSet.getString("Image"));
+                product.setCategory_id(resultSet.getInt("CategoryId"));
+                product.setQuantity(resultSet.getInt("quantity"));
+                products.add(product);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return products;
     }
 
 }

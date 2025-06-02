@@ -15,9 +15,11 @@
 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
+    <%-- Link đến file CSS giao diện tối --%>
+<%--    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/dark-theme.css">--%>
 
 </head>
-<body>
+<body class="dark-mode">
 <div id="web-service">
 
     <jsp:include page="header.jsp"/>
@@ -198,27 +200,27 @@
 
 
             <div class="product-listing">
-
                 <c:forEach var="product" items="${products}">
-
                     <div class="product" onclick="redirectToProductDetails('${product.id}')">
                         <img src="${product.image}" alt="${product.name}">
                         <h4>${product.name}</h4>
                         <div class="vn_names">${product.detail}</div>
-
                         <div style="display: flex; justify-content: space-between;">
-
                             <p>${product.price}</p>
-
                             <p style="text-decoration: line-through;">300.000đ</p>
                         </div>
                         <button class="btn-buy">Buy Now</button>
                     </div>
-
                 </c:forEach>
             </div>
 
-
+            <c:if test="${currentPage < totalPages}">
+                <div class="load-more-container" style="text-align: center; margin: 20px 0;">
+                    <button id="loadMoreBtn" class="load-more-btn" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Xem thêm
+                    </button>
+                </div>
+            </c:if>
 
             <div class="view-product" style="width: 1200px; margin: 15px 0 0 0; margin-left: auto; margin-right: auto;">
                 <div class="view-product-header" style="margin-top: 15px; margin-bottom: 15px;">
@@ -336,8 +338,43 @@
 
 
     </script>
+        <script>
+            // Initialize pagination variables
+            var pagination = {
+                currentPage: parseInt('${currentPage}'),
+                totalPages: parseInt('${totalPages}')
+            };
 
-        <%
+            // Add click event listener to load more button
+            document.getElementById('loadMoreBtn')?.addEventListener('click', function() {
+                if (pagination.currentPage < pagination.totalPages) {
+                    console.log("Lazy Loadin");
+                    pagination.currentPage++;
+                    loadMoreProducts();
+                }
+            });
+
+            // Function to load more products
+            function loadMoreProducts() {
+                fetch('${pageContext.request.contextPath}/products?page=' + pagination.currentPage)
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const newProducts = doc.querySelector('.product-listing').innerHTML;
+
+                        document.querySelector('.product-listing').innerHTML += newProducts;
+
+                        if (pagination.currentPage >= pagination.totalPages) {
+                            document.querySelector('.load-more-container').style.display = 'none';
+                        }
+                    })
+                    .catch(error => console.error('Error loading more products:', error));
+            }
+        </script>
+
+
+    <%
 
     // Lấy username từ session
     User user = (User) session.getAttribute("user");
@@ -362,15 +399,7 @@
             loginUser();
         }
 
-        // Đảm bảo xử lý nút đăng xuất
-        document.addEventListener("DOMContentLoaded", () => {
-            const logoutButtons = document.querySelectorAll(".logout-account");
-            logoutButtons.forEach(button => {
-                button.addEventListener("click", () => {
-                    logoutUser();
-                });
-            });
-        });
+
 
         // Hàm xử lý đăng xuất
         function logoutUser() {
