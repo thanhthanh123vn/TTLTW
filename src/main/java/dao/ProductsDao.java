@@ -25,6 +25,9 @@ public class ProductsDao {
         System.out.println("haha");
         conn = utils.getConnection();
     }
+    public void closeConnection(){
+        utils.closeConnection(conn);
+    }
     public List<String> getImageProductDetail(int id){
         List<String> result = new ArrayList<>();
         String sql = "select image from listimageproductdetail where productid =?";

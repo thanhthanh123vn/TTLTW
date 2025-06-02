@@ -9,6 +9,16 @@ public class ProductReview {
     private int rating;
     private String comment;
     private Timestamp reviewDate;
+    private String username;
+
+    // Thêm getter/setter cho username
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
     public ProductReview() {
 
     }

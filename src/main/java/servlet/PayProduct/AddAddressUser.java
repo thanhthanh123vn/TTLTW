@@ -66,6 +66,7 @@ public class AddAddressUser extends HttpServlet {
         if (ghtkResponse != null && ghtkResponse.success) {
             session.setAttribute("shipFee", ghtkResponse.fee.fee);
             session.setAttribute("userAddress", userAddress);
+            userDao.closeConnection();
         } else {
             System.err.println("GHTK API Error: " + shippingJson);
         }

@@ -199,54 +199,307 @@
                 <!-- ==== BẮT ĐẦU ĐOẠN HIỂN THỊ ĐÁNH GIÁ ==== -->
                 <div class="review-section">
                     <h3>Đánh giá sản phẩm</h3>
-                    <!-- 1. Nếu người dùng đã login & được phép đánh giá -->
+                    
+                    <!-- Hiển thị thông báo thành công/lỗi -->
+                    <c:if test="${not empty sessionScope.successMsg}">
+                        <div class="alert alert-success">
+                            ${sessionScope.successMsg}
+                            <% session.removeAttribute("successMsg"); %>
+                        </div>
+                    </c:if>
+                    <c:if test="${not empty sessionScope.errorMsg}">
+                        <div class="alert alert-danger">
+                            ${sessionScope.errorMsg}
+                            <% session.removeAttribute("errorMsg"); %>
+                        </div>
+                    </c:if>
+
+                    <!-- Form đánh giá -->
                     <c:if test="${canReview}">
                         <div class="review-form">
                             <form action="submitReview" method="post">
                                 <input type="hidden" name="productId" value="${products.id}" />
-                                <label for="rating">Chọn số sao:</label>
-                                <select name="rating" id="rating" required>
-                                    <option value="5">★★★★★</option>
-                                    <option value="4">★★★★☆</option>
-                                    <option value="3">★★★☆☆</option>
-                                    <option value="2">★★☆☆☆</option>
-                                    <option value="1">★☆☆☆☆</option>
-                                </select>
-                                <br>
-                                <textarea name="comment" placeholder="Viết nhận xét của bạn..." rows="3" style="width: 100%;" required></textarea>
-                                <br>
-                                <button type="submit">Gửi đánh giá</button>
+                                <div class="rating-select">
+                                    <label for="rating">Chọn số sao:</label>
+                                    <select name="rating" id="rating" required>
+                                        <option value="5">★★★★★ Rất tốt</option>
+                                        <option value="4">★★★★☆ Tốt</option>
+                                        <option value="3">★★★☆☆ Bình thường</option>
+                                        <option value="2">★★☆☆☆ Không tốt</option>
+                                        <option value="1">★☆☆☆☆ Rất không tốt</option>
+                                    </select>
+                                </div>
+                                <div class="comment-input">
+                                    <textarea name="comment" placeholder="Viết nhận xét của bạn về sản phẩm..." 
+                                              rows="3" style="width: 100%;" required></textarea>
+                                </div>
+                                <button type="submit" class="submit-review">Gửi đánh giá</button>
                             </form>
                         </div>
                     </c:if>
 
-                    <!-- 2. Hiển thị tất cả đánh giá -->
-                    <!-- 2. Hiển thị tất cả đánh giá -->
-                    <c:choose>
-                        <c:when test="${not empty reviews}">
-                            <c:forEach var="review" items="${reviews}">
-                                <div class="review-item">
-                                    <div class="review-header">
-                    <span class="review-stars">
-                        <c:forEach begin="1" end="${review.rating}">
-                            <i class="fa fa-star" style="color: orange;"></i>
-                        </c:forEach>
-                        <c:forEach begin="${review.rating + 1}" end="5">
-                            <i class="fa-regular fa-star" style="color: #ccc;"></i>
-                        </c:forEach>
-                    </span>
-                                        <span class="review-date">${review.reviewDate}</span>
+                    <!-- Hiển thị danh sách đánh giá -->
+                    <div class="reviews-list">
+                        <c:choose>
+                            <c:when test="${not empty reviews}">
+                                <c:forEach var="review" items="${reviews}">
+                                    <div class="review-item">
+                                        <div class="review-header">
+                                            <div class="review-user">
+                                                <i class="fas fa-user-circle"></i>
+                                                <span class="username">${review.username}</span>
+                                            </div>
+                                            <div class="review-stars">
+                                                <c:forEach begin="1" end="${review.rating}">
+                                                    <i class="fas fa-star" style="color: #ffc107;"></i>
+                                                </c:forEach>
+                                                <c:forEach begin="${review.rating + 1}" end="5">
+                                                    <i class="far fa-star" style="color: #ffc107;"></i>
+                                                </c:forEach>
+                                            </div>
+                                            <div class="review-date">
+                                                <i class="far fa-clock"></i>
+                                                <f:formatDate value="${review.reviewDate}" pattern="dd/MM/yyyy HH:mm"/>
+                                            </div>
+                                        </div>
+                                        <div class="review-comment">
+                                            ${review.comment}
+                                        </div>
                                     </div>
-                                    <div class="review-comment">${review.comment}</div>
-                                </div>
-                            </c:forEach>
-                        </c:when>
-                        <c:otherwise>
-                            <p>Chưa có đánh giá nào cho sản phẩm này.</p>
-                        </c:otherwise>
-                    </c:choose>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <p class="no-reviews">Chưa có đánh giá nào cho sản phẩm này.</p>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
                 </div>
                 <!-- ==== KẾT THÚC ĐOẠN HIỂN THỊ ĐÁNH GIÁ ==== -->
+
+                <!-- ==== BẮT ĐẦU ĐOẠN HIỂN THỊ COMMENT ==== -->
+                <div class="comment-section">
+                    <h3>Bình luận sản phẩm</h3>
+                    
+                    <!-- Form bình luận -->
+                    <c:if test="${not empty sessionScope.user}">
+                        <div class="comment-form">
+                            <form action="submitComment" method="post">
+                                <input type="hidden" name="productId" value="${products.id}" />
+                                <div class="comment-input">
+                                    <textarea name="content" placeholder="Viết bình luận của bạn về sản phẩm..." 
+                                              rows="3" style="width: 100%;" required></textarea>
+                                </div>
+                                <button type="submit" class="submit-comment">Gửi bình luận</button>
+                            </form>
+                        </div>
+                    </c:if>
+
+                    <!-- Hiển thị danh sách bình luận -->
+                    <div class="comments-list">
+                        <c:choose>
+                            <c:when test="${not empty comments}">
+                                <c:forEach var="comment" items="${comments}">
+                                    <div class="comment-item">
+                                        <div class="comment-header">
+                                            <div class="comment-user">
+                                                <i class="fas fa-user-circle"></i>
+                                                <span class="username">${comment.username}</span>
+                                            </div>
+                                            <div class="comment-date">
+                                                <i class="far fa-clock"></i>
+                                                ${comment.createdAt}
+                                            </div>
+                                        </div>
+                                        <div class="comment-content">
+                                            ${comment.content}
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <p class="no-comments">Chưa có bình luận nào cho sản phẩm này.</p>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                </div>
+                <!-- ==== KẾT THÚC ĐOẠN HIỂN THỊ COMMENT ==== -->
+
+                <style>
+                .review-section {
+                    width: 964px;
+                    margin: 20px 43px;
+                    padding: 20px;
+                    background: #fff;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+
+                .review-form {
+                    margin-bottom: 30px;
+                    padding: 20px;
+                    background: #f8f9fa;
+                    border-radius: 8px;
+                }
+
+                .rating-select {
+                    margin-bottom: 15px;
+                }
+
+                .rating-select select {
+                    padding: 8px;
+                    border-radius: 4px;
+                    border: 1px solid #ddd;
+                }
+
+                .comment-input textarea {
+                    padding: 10px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    resize: vertical;
+                }
+
+                .submit-review {
+                    background: #ff6b00;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    transition: background 0.3s;
+                }
+
+                .submit-review:hover {
+                    background: #e65c00;
+                }
+
+                .review-item {
+                    border-bottom: 1px solid #eee;
+                    padding: 15px 0;
+                }
+
+                .review-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 10px;
+                }
+
+                .review-user {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+
+                .review-stars {
+                    color: #ffc107;
+                }
+
+                .review-date {
+                    color: #666;
+                    font-size: 0.9em;
+                }
+
+                .review-comment {
+                    color: #333;
+                    line-height: 1.5;
+                }
+
+                .alert {
+                    padding: 15px;
+                    margin-bottom: 20px;
+                    border-radius: 4px;
+                }
+
+                .alert-success {
+                    background: #d4edda;
+                    color: #155724;
+                    border: 1px solid #c3e6cb;
+                }
+
+                .alert-danger {
+                    background: #f8d7da;
+                    color: #721c24;
+                    border: 1px solid #f5c6cb;
+                }
+
+                .no-reviews {
+                    text-align: center;
+                    color: #666;
+                    font-style: italic;
+                }
+
+                .comment-section {
+                    width: 964px;
+                    margin: 20px 43px;
+                    padding: 20px;
+                    background: #fff;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+
+                .comment-form {
+                    margin-bottom: 30px;
+                    padding: 20px;
+                    background: #f8f9fa;
+                    border-radius: 8px;
+                }
+
+                .comment-input textarea {
+                    padding: 10px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    resize: vertical;
+                    margin-bottom: 10px;
+                }
+
+                .submit-comment {
+                    background: #28a745;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    transition: background 0.3s;
+                }
+
+                .submit-comment:hover {
+                    background: #218838;
+                }
+
+                .comment-item {
+                    border-bottom: 1px solid #eee;
+                    padding: 15px 0;
+                }
+
+                .comment-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 10px;
+                }
+
+                .comment-user {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+
+                .comment-date {
+                    color: #666;
+                    font-size: 0.9em;
+                }
+
+                .comment-content {
+                    color: #333;
+                    line-height: 1.5;
+                }
+
+                .no-comments {
+                    text-align: center;
+                    color: #666;
+                    font-style: italic;
+                }
+                </style>
 
                 <div class="main-infor-detail">
                     <c:choose>
