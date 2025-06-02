@@ -9,6 +9,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import object.Product;
 import object.ProductDetail;
+import dao.ReviewDao;
+import object.ProductReview;
+import object.User;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,7 +48,6 @@ public class ProductDetailServlet extends HttpServlet {
             }
 
             // Đặt thông tin sản phẩm vào request scope
-
             request.setAttribute("product", productDetail);
             request.setAttribute("listImage", listImage);
             request.setAttribute("products", product);
@@ -56,22 +58,32 @@ public class ProductDetailServlet extends HttpServlet {
             if (viewedList == null) {
                 viewedList = new ArrayList<>();
             }
-
             // Kiểm tra nếu chưa có thì thêm vào
             boolean exists = viewedList.stream().anyMatch(p -> p.getId()==(product.getId()));
             if (!exists && viewedList.size()<5) {
                 viewedList.add(product);
             }
-
             // Lưu lại vào session
             session.setAttribute("viewedList", viewedList);
             System.out.println(viewedList.size()+" viewedList");
 
-            // Forward đến trang chi tiết
+            // Lấy đánh giá sản phẩm từ database
+            ReviewDao reviewDao = new ReviewDao();
+            List<ProductReview> reviews = reviewDao.getReviewsByProductId(Integer.parseInt(productId));
+            request.setAttribute("reviews", reviews);
+            User user = (User) session.getAttribute("user");
+            boolean canReview = false;
+            if (user != null) {
+                canReview = reviewDao.hasPurchased(user.getId(), Integer.parseInt(productId))
+                        && !reviewDao.hasReviewed(user.getId(), Integer.parseInt(productId));
+            }
+            request.setAttribute("canReview", canReview);
 
+            reviewDao.close();
 
             // Chuyển tiếp đến trang chi tiết sản phẩm (JSP)
             request.getRequestDispatcher("detailsProduct.jsp").forward(request, response);
+
         } catch (Exception e) {
             e.printStackTrace(); // Log lỗi để debug
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
