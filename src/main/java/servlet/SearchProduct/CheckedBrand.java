@@ -26,6 +26,10 @@ public class CheckedBrand extends HttpServlet {
             request.setAttribute("products", brandsProduct);
             request.getRequestDispatcher("SearchProduct.jsp").forward(request, response);
 
+        }else{
+            System.out.println("No brands found");
+
+            request.getRequestDispatcher("SearchProduct.jsp").forward(request, response);
         }
 
 

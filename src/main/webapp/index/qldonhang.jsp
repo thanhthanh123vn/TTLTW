@@ -324,44 +324,56 @@
     User user = (User) session.getAttribute("user");
     String username = (user != null) ? user.getFullName() : "";
 
-    Cart cartData = (Cart) session.getAttribute("cartQL");
-    List<ProductCart> productCarts = (cartData != null) ? cartData.getList() : new ArrayList<>();
-    Product payProduct = (Product) session.getAttribute("productQL");
-    String action = (session.getAttribute("action") != null) ? (String) session.getAttribute("action") : "";
+    // Lấy dữ liệu đơn hàng
+    object.Order order = (object.Order) session.getAttribute("order");
+    List<OrderDetail> orderDetails = (List<OrderDetail>) session.getAttribute("orderDetails");
+    List<Product> productsToOrder = (List<Product>) session.getAttribute("productsToOrder");
+    String trackingNumber = (String) session.getAttribute("trackingNumber");
+    String action = (String) session.getAttribute("action");
+    Integer shipFee = (Integer) session.getAttribute("shipFee")!=null ? (Integer) session.getAttribute("shipFee"):0;
 
-    OrderDetail orderDetail = ((OrderDetail)session.getAttribute("orderDetail")==null)?null:(OrderDetail)session.getAttribute("orderDetail");
-
-    String orderDetailJson =(orderDetail != null) ? new GsonUtil().getGson().toJson(orderDetail) : "null";
-    System.out.println(orderDetailJson);
-    String cartJson = (cartData != null) ? new GsonUtil().getGson().toJson(productCarts) : "null";
-    String payProductJson = (payProduct != null) ? new GsonUtil().getGson().toJson(payProduct) : "null";
+    // Chuyển đổi dữ liệu sang JSON
+    Gson gson = new GsonUtil().getGson();
+    String orderJson = (order != null) ? gson.toJson(order) : "null";
+    String orderDetailsJson = (orderDetails != null) ? gson.toJson(orderDetails) : "[]";
+    String productsToOrderJson = (productsToOrder != null) ? gson.toJson(productsToOrder) : "[]";
 %>
 
 <script>
+    // Truyền dữ liệu từ JSP sang JavaScript
+    const orderData = {
+        order: <%= orderJson %>,
+        orderDetails: <%= orderDetailsJson %>,
+        productsToOrder: <%= productsToOrderJson %>,
+        trackingNumber: "<%= trackingNumber %>",
+        action: "<%= action %>",
+        shipFee: <%= shipFee%>
+    };
+</script>
 
-    document.addEventListener("DOMContentLoaded", function () {
+<div id="productContainer" class="order-container">
+    <!-- Orders will be loaded here -->
+</div>
+
+<script src="${pageContext.request.contextPath}/js/loadQldh.js"></script>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function() {
         const productContainer = document.getElementById("productContainer");
 
-        const cartData = <%= cartJson %>;
-        const payProductData = <%= payProductJson %>;
-        const action = "<%= action %>";
-        const orderDetail = <%= orderDetailJson %>;
-
-        if (cartData && cartData.length > 0 && action === "success") {
-            cartData.forEach(product => {
-                productContainer.innerHTML += createOrderHTML(product,orderDetail);
-                const mapDiv = document.createElement("div");
-                mapDiv.id = "osm-map";
-                mapDiv.style.height = "300px";
-                mapDiv.style.width = "100%";
-                productContainer.appendChild(mapDiv);
+        // Kiểm tra dữ liệu đơn hàng
+        if (orderData.action === "success" && orderData.productsToOrder.length > 0) {
+            // Tạo HTML cho mỗi sản phẩm trong đơn hàng
+            orderData.productsToOrder.forEach((product, index) => {
+                const orderDetail = orderData.orderDetails[index];
+                productContainer.innerHTML += createOrderHTML(product, orderDetail, orderData.trackingNumber,orderData.shipFee);
             });
-        } else if (payProductData !== null) {
-            productContainer.innerHTML += createOrderHTML(payProductData, orderDetail,true);
         } else {
             productContainer.innerHTML = "<p>Không có đơn hàng nào được tìm thấy.</p>";
         }
     });
+
 
 
 </script>
@@ -422,44 +434,60 @@
     }
 </script>
 
+
 <script>
-    <%--function createOrderHTML(product, orderDetail, isSingleProduct = false) {--%>
-    <%--    // ... existing code ...--%>
+    // Gán username từ server vào biến JavaScript
+    const username = "<%= username %>";
+    console.log(username);
 
-    <%--    // Thêm container bản đồ và nút theo dõi vào chi tiết đơn hàng--%>
-    <%--    const mapHtml = `--%>
-    <%--        <div class="map-container" id="map-${product.id}">--%>
-    <%--            <div id="map-${product.id}-container" style="height: 300px;"></div>--%>
-    <%--        </div>--%>
-    <%--        <button class="track-delivery-btn" onclick="toggleMap('${product.id}')">--%>
-    <%--            Xem vị trí giao hàng--%>
-    <%--        </button>--%>
-    <%--    `;--%>
-
-    <%--    // Thêm HTML bản đồ vào chi tiết đơn hàng--%>
-    <%--    orderDetailsHtml += mapHtml;--%>
-
-    <%--    return `--%>
-    <%--        <div class="order-card">--%>
-    <%--            ${orderHeaderHtml}--%>
-    <%--            ${orderInfoHtml}--%>
-    <%--            ${orderDetailsHtml}--%>
-    <%--        </div>--%>
-    <%--    `;--%>
-    <%--}--%>
-
-    function toggleMap(orderId) {
-        const mapContainer = document.getElementById(`map-${orderId}`);
-        mapContainer.classList.toggle('active');
-
-        if (mapContainer.classList.contains('active')) {
-            initMap(orderId);
-        }
+    // Kiểm tra trạng thái đăng nhập và gọi hàm loginUser nếu đã đăng nhập
+    if (username && username.trim() !== "") {
+        loginUser();
     }
 
+    // Đảm bảo xử lý nút đăng xuất
+    document.addEventListener("DOMContentLoaded", () => {
+        const logoutButtons = document.querySelectorAll(".logout-account");
+        logoutButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                logoutUser();
+            });
+        });
+    });
+
+    // Hàm xử lý đăng xuất
+    function logoutUser() {
+        console.log("Đăng xuất...");
+        fetch("LogoutServlet", {
+            method: "POST"
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log("Đăng xuất thành công");
+                    window.location.href = "index.jsp";
+                } else {
+                    console.error("Lỗi khi đăng xuất");
+                }
+            })
+            .catch(error => console.error("Lỗi kết nối:", error));
+    }
+
+    function toggleChat() {
+        var chatBox = document.getElementById("chatBox");
+        if (chatBox.style.display === "none" || chatBox.style.display === "") {
+            chatBox.style.display = "flex";
+        } else {
+            chatBox.style.display = "none";
+        }
+    }
+</script>
+
+<script>
     function initMap(orderId) {
-        // Lấy địa chỉ giao hàng từ orderDetail
-        const orderDetail = <%= orderDetailJson %>;
+        // Lấy địa chỉ giao hàng từ orderDetails
+        const orderDetails = orderData.orderDetails;
+        const orderDetail = orderDetails.find(detail => detail.productID === orderId);
+
         if (!orderDetail) {
             alert('Không tìm thấy thông tin địa chỉ giao hàng');
             return;
@@ -467,16 +495,12 @@
 
         // Tạo instance geocoder
         const geocoder = new google.maps.Geocoder();
-
-        // Lấy địa chỉ đầy đủ từ orderDetail
         const address = orderDetail.address;
 
         // Chuyển đổi địa chỉ thành tọa độ
         geocoder.geocode({ address: address }, (results, status) => {
             if (status === 'OK') {
                 const location = results[0].geometry.location;
-
-                // Tạo bản đồ
                 const map = new google.maps.Map(
                     document.getElementById(`map-${orderId}-container`),
                     {
@@ -490,15 +514,13 @@
                     }
                 );
 
-                // Thêm marker
-                new google.maps.Marker({
+                const marker = new google.maps.Marker({
                     position: location,
                     map: map,
                     title: 'Địa điểm giao hàng',
                     animation: google.maps.Animation.DROP
                 });
 
-                // Thêm thông tin địa chỉ
                 const infoWindow = new google.maps.InfoWindow({
                     content: `<div style="padding: 10px;">
                         <h4 style="margin: 0 0 5px 0;">Địa chỉ giao hàng:</h4>
@@ -506,7 +528,6 @@
                     </div>`
                 });
 
-                // Mở info window khi click vào marker
                 marker.addListener('click', () => {
                     infoWindow.open(map, marker);
                 });
@@ -518,54 +539,38 @@
     }
 </script>
 
-
-
 <script>
-    // Tọa độ mặc định (ví dụ: Hà Nội)
-    var lat = 21.0285;
-    var lng = 105.8542;
+    // Khởi tạo bản đồ với OpenStreetMap
+    document.addEventListener("DOMContentLoaded", function() {
+        if (orderData.orderDetails && orderData.orderDetails.length > 0) {
+            const firstOrderDetail = orderData.orderDetails[0];
+            const address = firstOrderDetail.address;
 
-    // Nếu bạn có địa chỉ, bạn có thể dùng API Nominatim để lấy tọa độ (xem bên dưới)
+            if (address) {
+                fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(address))
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.length > 0) {
+                            const lat = data[0].lat;
+                            const lon = data[0].lon;
 
-    // Khởi tạo bản đồ
-    var map = L.map('osm-map').setView([lat, lng], 15);
+                            const map = L.map('osm-map').setView([lat, lon], 15);
+                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                attribution: '© OpenStreetMap contributors'
+                            }).addTo(map);
 
-    // Thêm layer bản đồ OSM
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    // Thêm marker
-    L.marker([lat, lng]).addTo(map)
-        .bindPopup('Địa điểm giao hàng')
-        .openPopup();
-</script>
-
-<script>
-    // Lấy địa chỉ từ orderDetail (giả sử bạn đã có biến orderDetail.address)
-    var address = "<%= orderDetail != null ? orderDetail.getAddress() : "" %>";
-
-    // Gọi API Nominatim để lấy tọa độ từ địa chỉ
-    fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(address))
-        .then(response => response.json())
-        .then(data => {
-            if (data && data.length > 0) {
-                var lat = data[0].lat;
-                var lon = data[0].lon;
-                // Khởi tạo bản đồ tại vị trí giao hàng
-                var map = L.map('osm-map').setView([lat, lon], 15);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap contributors'
-                }).addTo(map);
-                L.marker([lat, lon]).addTo(map)
-                    .bindPopup('Địa điểm giao hàng:<br>' + address)
-                    .openPopup();
-            } else {
-                alert('Không tìm thấy địa chỉ trên bản đồ!');
+                            L.marker([lat, lon]).addTo(map)
+                                .bindPopup('Địa điểm giao hàng:<br>' + address)
+                                .openPopup();
+                        } else {
+                            console.log('Không tìm thấy địa chỉ trên bản đồ!');
+                        }
+                    })
+                    .catch(error => console.error('Lỗi khi tìm kiếm địa chỉ:', error));
             }
-        });
+        }
+    });
 </script>
 
 </body>
-
 </html>

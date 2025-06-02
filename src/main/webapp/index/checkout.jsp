@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="object.Product" %>
 <%@ page import="gson.GsonUtil" %>
 <%@ page import="object.cart.Cart" %>
@@ -8,6 +10,8 @@
   Time: 4:35 PM
   To change this template use File | Settings | File Templates.
 --%>
+
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,6 +37,28 @@
         </div>
     </div>
 </header>
+
+<%-- Scriptlet để tính toán tạm tính và tổng tiền --%>
+<%
+    Cart cart = (Cart) session.getAttribute("cart");
+    Product product = (Product) session.getAttribute("payProduct");
+    double subtotalAmount = 0; // Tạm tính (chỉ giá sản phẩm)
+    Integer shipFee = (Integer) session.getAttribute("shipFee");
+    double totalAmount = 0; // Tổng tiền (tạm tính + shipFee)
+
+    if (cart != null) {
+        subtotalAmount = cart.getTotalCart();
+    } else if (product != null) {
+        // Giả định quantity đã được set trên đối tượng product cho trường hợp mua ngay
+        subtotalAmount = product.getPrice() * product.getQuantity();
+    }
+
+    // Tính tổng tiền bằng cách cộng phí vận chuyển (nếu có)
+    totalAmount = subtotalAmount + (shipFee != null ? shipFee : 0);
+
+    // Biến totalAmount đã tính ở đây có thể dùng trực tiếp trong JSTL và scriptlet JS
+%>
+
 <div class="session-body">
     <!-- Left Section -->
     <div class="left-section">
@@ -91,30 +117,21 @@
                 <div class="shipping-info">
                     <div class="shipping-date">
                         <span>Thứ 2, 25/11 - Thứ 4, 27/11</span>
-                        <span class="shipping-cost">10.000 ₫</span>
+                        <span class="shipping-cost">
+                             <fmt:formatNumber value="${sessionScope.shipFee != null ? sessionScope.shipFee : 0}" type="number" groupingUsed="true"/> đ
+                        </span>
                     </div>
                     <div class="shipping-note">Giao trong 4-6 ngày</div>
                 </div>
-
 
                 <div class="order-summary">
                     <textarea placeholder="Ghi chú"></textarea>
                     <div class="total">
                         <span class="total-label">Tổng tiền (1):</span>
-
-                        <c:choose>
-                            <c:when test="${ not empty sessionScope.cart.totalCart}">
-                                <span class="total-amount">${sessionScope.cart.totalCart+sessionScope.shipFee}</span>
-                            </c:when>
-                            <c:when test="${not empty sessionScope.payProduct.price}">
-                                <span class="total-amount">${sessionScope.cart.totalCart+sessionScope.shipFee}</span>
-                            </c:when>
-
-                            <c:otherwise>
-
-                            </c:otherwise>
-                        </c:choose>
-
+                        <%-- Hiển thị tổng tiền (tạm tính + shipFee) đã tính ở scriptlet --%>
+                        <span class="total-amount">
+                            <fmt:formatNumber value="<%= totalAmount %>" type="number" groupingUsed="true"/> đ
+                        </span>
                     </div>
                     <button class="order-button" onclick="CompleteProduct()"> Đặt hàng</button>
                     <p class="terms-note">
@@ -124,7 +141,6 @@
                     </p>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -140,20 +156,10 @@
             <div class="order-details">
                 <div class="row">
                     <span class="label">Tạm tính (1)</span>
-
-                    <c:choose>
-                        <c:when test="${not empty sessionScope.cart.totalCart}">
-                            <span class="total-amount">${sessionScope.cart.totalCart}</span>
-                        </c:when>
-                        <c:when test="${not empty sessionScope.payProduct.price}">
-                            <span class="total-amount">${sessionScope.payProduct.price}</span>
-                        </c:when>
-                        <c:otherwise>
-                            <span class="total-amount">0</span>
-                        </c:otherwise>
-                    </c:choose>
-
-
+                    <%-- Hiển thị tạm tính đã tính ở scriptlet --%>
+                    <span class="total-amount">
+                        <fmt:formatNumber value="<%= subtotalAmount %>" type="number" groupingUsed="true"/> đ
+                    </span>
                 </div>
                 <div class="row">
                     <span class="label">Giảm giá</span>
@@ -161,23 +167,17 @@
                 </div>
                 <div class="row">
                     <span class="label">Phí vận chuyển</span>
-                    <span class="value">${sessionScope.shipFee} đ</span>
-
+                    <span class="value">
+                         <%-- Hiển thị phí vận chuyển từ session --%>
+                         <fmt:formatNumber value="${sessionScope.shipFee != null ? sessionScope.shipFee : 0}" type="number" groupingUsed="true"/> đ
+                    </span>
                 </div>
                 <div class="row total">
                     <span class="label">Thành tiền (Đã VAT)</span>
-                    <c:choose>
-                        <c:when test="${not empty sessionScope.cart.totalCart}">
-                            <span class="total-amount">${sessionScope.cart.totalCart+sessionScope.shipFee}</span>
-                        </c:when>
-                        <c:when test="${not empty sessionScope.payProduct.price}">
-                            <span class="total-amount">${sessionScope.payProduct.price+sessionScope.shipFee}</span>
-                        </c:when>
-
-                        <c:otherwise>
-
-                        </c:otherwise>
-                    </c:choose>
+                    <%-- Hiển thị tổng tiền đã tính ở scriptlet --%>
+                    <span class="total-amount">
+                        <fmt:formatNumber value="<%= totalAmount %>" type="number" groupingUsed="true"/> đ
+                    </span>
                 </div>
             </div>
             <div class="policy">
@@ -188,18 +188,6 @@
     </div>
 </div>
 
-
-<% Cart cart = (Cart) session.getAttribute("cart");
-    Product product = (Product) session.getAttribute("payProduct");
-    double totalAmount = 0;
-    if (cart != null) {
-        totalAmount = cart.getTotalCart();
-
-
-    } else {
-        totalAmount = product.getPrice() * product.getQuantity();
-    }
-%>
 
 <script>
 

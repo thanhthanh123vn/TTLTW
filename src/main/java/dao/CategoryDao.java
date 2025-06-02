@@ -17,12 +17,12 @@ public class CategoryDao   {
     Utils utils;
     Connection conn;
     public CategoryDao (){
-    utils = new Utils();
-    conn = utils.getConnection();
+        utils = new Utils();
+        conn = utils.getConnection();
 
     }
     public void closeConnection(){
-    utils.closeConnection(conn);
+        utils.closeConnection(conn);
     }
 
     public List<Categories> getAllCategories(int startIndex) {
@@ -48,7 +48,7 @@ public class CategoryDao   {
         } catch (Exception e) {
             e.printStackTrace();
         }
-       // System.out.println("Offset: " + offset);
+        // System.out.println("Offset: " + offset);
         System.out.println("Categories fetched: " + categories.size());
 
         return categories;

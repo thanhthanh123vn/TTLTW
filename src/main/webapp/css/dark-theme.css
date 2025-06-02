@@ -1,0 +1,245 @@
+/* src/main/webapp/css/dark-theme.css */
+
+body.dark-mode {
+    background-color: #181818; /* Nền tối */
+    color: #e0e0e0; /* Chữ sáng */
+}
+
+body.dark-mode a {
+    color: #bb86fc; /* Màu liên kết sáng hơn */
+}
+
+body.dark-mode .container {
+    background-color: #2c2c2c; /* Nền container tối hơn */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Bóng đổ nhẹ */
+}
+
+body.dark-mode .card, body.dark-mode .order-summary, body.dark-mode .product, body.dark-mode .item-view-products, body.dark-mode .top-search-item {
+    background-color: #2c2c2c; /* Nền các khối nội dung */
+    color: #e0e0e0; /* Màu chữ */
+    border: 1px solid #444; /* Viền tối */
+}
+
+body.dark-mode .card-header, body.dark-mode .flash-deals-header, body.dark-mode .list-header, body.dark-mode .brand-header, body.dark-mode .product-carousel-header, body.dark-mode .top-search-header, body.dark-mode .view-product-header {
+    background-color: #3a3a3a; /* Nền tiêu đề khối */
+    color: #e0e0e0; /* Màu chữ tiêu đề */
+    border-bottom: 1px solid #555; /* Viền dưới */
+}
+
+body.dark-mode .shipping-info, body.dark-mode .order-details {
+     background-color: #3a3a3a;
+     border-top: 1px solid #555;
+}
+
+body.dark-mode .total, body.dark-mode .row {
+    border-top: 1px solid #555; /* Viền trên cho tổng tiền */
+}
+
+body.dark-mode .shipping-cost, body.dark-mode .total-amount, body.dark-mode .value {
+    color: #bb86fc; /* Màu nhấn cho giá tiền */
+    font-weight: bold;
+}
+
+body.dark-mode button {
+    background-color: #bb86fc; /* Nền nút */
+    color: #181818; /* Chữ nút */
+    border: none;
+}
+
+body.dark-mode button:hover {
+    background-color: #9a67ea; /* Nền nút khi hover */
+}
+
+body.dark-mode .btn-buy {
+    background-color: #03dac6; /* Nền nút Buy Now */
+    color: #181818;
+}
+
+body.dark-mode .btn-buy:hover {
+    background-color: #00bfa5;
+}
+
+body.dark-mode .prev, body.dark-mode .next {
+    background-color: #555; /* Nền nút điều hướng */
+    color: #e0e0e0;
+}
+
+body.dark-mode .prev:hover, body.dark-mode .next:hover {
+    background-color: #666;
+}
+
+body.dark-mode input[type="text"], body.dark-mode textarea {
+    background-color: #3a3a3a;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}
+
+body.dark-mode input[type="text"]::placeholder, body.dark-mode textarea::placeholder {
+    color: #aaa;
+}
+
+.theme-toggle {
+    cursor: pointer;
+    padding: 8px;
+    margin: 0 10px;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle:hover {
+    background-color: rgba(187, 134, 252, 0.1);
+}
+
+body.dark-mode .theme-toggle {
+    color: #bb86fc;
+}
+
+body.light-mode .theme-toggle {
+    color: #333;
+}
+
+.theme-toggle i {
+    font-size: 1.2em;
+}
+
+/* Dark mode styles */
+.dark-mode {
+    background-color: #1a1a1a;
+    color: #fff;
+}
+
+.dark-mode .product {
+    background-color: #2d2d2d;
+    color: #fff;
+}
+
+.dark-mode .product h4,
+.dark-mode .product .vn_names {
+    color: #fff;
+}
+
+/* Light mode styles */
+.light-mode {
+    background-color: #fff;
+    color: #333;
+}
+
+.light-mode .product {
+    background-color: #fff;
+    color: #333;
+}
+
+.light-mode .product h4,
+.light-mode .product .vn_names {
+    color: #333;
+}
+
+/* Search Product Page Specific Styles */
+body.dark-mode .sidebar {
+    background-color: #2c2c2c;
+    border-right: 1px solid #444;
+}
+
+body.dark-mode .sidebar h3 {
+    color: #e0e0e0;
+    border-bottom: 1px solid #444;
+}
+
+body.dark-mode .sidebar ul li {
+    color: #e0e0e0;
+}
+
+body.dark-mode .sidebar ul li:hover {
+    background-color: #3a3a3a;
+}
+
+body.dark-mode .price-filter input {
+    background-color: #3a3a3a;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}
+
+body.dark-mode .price-filter input::placeholder {
+    color: #888;
+}
+
+body.dark-mode .price-filter button {
+    background-color: #bb86fc;
+    color: #181818;
+}
+
+body.dark-mode .price-filter button:hover {
+    background-color: #9a67ea;
+}
+
+body.dark-mode .item-checkbox {
+    accent-color: #bb86fc;
+}
+
+/* Product Listing Styles */
+body.dark-mode .product-listing {
+    background-color: #181818;
+}
+
+body.dark-mode .product {
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .product h4 {
+    color: #e0e0e0;
+}
+
+body.dark-mode .product .vn_names {
+    color: #bb86fc;
+}
+
+body.dark-mode .product p {
+    color: #e0e0e0;
+}
+
+body.dark-mode .btn-buy {
+    background-color: #03dac6;
+    color: #181818;
+}
+
+body.dark-mode .btn-buy:hover {
+    background-color: #00bfa5;
+}
+
+/* Search Results Styles */
+body.dark-mode .resultSearchProducts {
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+}
+
+body.dark-mode .search-notification {
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+}
+
+body.dark-mode .notifications li {
+    color: #e0e0e0;
+    border-bottom: 1px solid #444;
+}
+
+body.dark-mode .notifications li:hover {
+    background-color: #3a3a3a;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    body.dark-mode .sidebar {
+        background-color: #2c2c2c;
+    }
+    
+    body.dark-mode .product-listing {
+        background-color: #181818;
+    }
+}
+
+/* Các phần tử khác cần chỉnh sửa tùy theo cấu trúc HTML cụ thể */ 

@@ -17,6 +17,9 @@ public class ProductDetailsDao {
         utils = new Utils();
         conn = utils.getConnection();
     }
+    public void closeConnection(){
+        utils.closeConnection(conn);
+    }
     public List<ProductDetail> listProductsDetail() {
         String sql = "SELECT * FROM product_details";
         List<ProductDetail> products = new ArrayList<>();
