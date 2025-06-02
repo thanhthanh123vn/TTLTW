@@ -952,4 +952,53 @@ INSERT INTO suppliers (name, address, phone, email, tax_code, contact_person) VA
 ('Công ty XYZ', '456 Đường XYZ, Quận 2, TP.HCM', '02887654321', 'info@xyz.com', '0987654321', 'Trần Thị B'),
 ('Công ty DEF', '789 Đường DEF, Quận 3, TP.HCM', '02898765432', 'sales@def.com', '1122334455', 'Lê Văn C');
 
+-- Table for export receipts
+CREATE TABLE `export_receipts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `export_date` datetime NOT NULL,
+  `customer_id` int NOT NULL,
+  `reason` varchar(50) NOT NULL,
+  `total_amount` decimal(10,2) NOT NULL,
+  `note` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `customer_id` (`customer_id`),
+  CONSTRAINT `export_receipts_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Table for export receipt details
+CREATE TABLE `export_receipt_details` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `receipt_id` int NOT NULL,
+  `product_id` int NOT NULL,
+  `size` varchar(10) NOT NULL,
+  `quantity` int NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `total` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `receipt_id` (`receipt_id`),
+  KEY `product_id` (`product_id`),
+  CONSTRAINT `export_receipt_details_ibfk_1` FOREIGN KEY (`receipt_id`) REFERENCES `export_receipts` (`id`),
+  CONSTRAINT `export_receipt_details_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Table for customers
+CREATE TABLE `customers` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `phone` varchar(20),
+  `email` varchar(100),
+  `address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Sample data for customers
+INSERT INTO `customers` (`name`, `phone`, `email`, `address`) VALUES
+('Công ty TNHH ABC', '0123456789', 'abc@example.com', '123 Đường ABC, Quận 1, TP.HCM'),
+('Công ty XYZ', '0987654321', 'xyz@example.com', '456 Đường XYZ, Quận 2, TP.HCM'),
+('Công ty DEF', '0123987456', 'def@example.com', '789 Đường DEF, Quận 3, TP.HCM');
+
 SET FOREIGN_KEY_CHECKS = 1;

@@ -74,9 +74,9 @@
             <a href="KhoManager" class="active"><i class="fas fa-home"></i> Trang Chủ</a>
             <a href="ManagerKho"><i class="fas fa-boxes"></i> Sản Phẩm</a>
             <a href="admin/ImportProduct.jsp"><i class="fas fa-truck"></i> Nhập Kho</a>
-            <a href="#"><i class="fas fa-shopping-cart"></i> Xuất Kho</a>
-            <a href="#"><i class="fas fa-chart-bar"></i> Báo Cáo</a>
-            <a href="#"><i class="fas fa-cog"></i> Cài Đặt</a>
+            <a href="admin/ExportProduct.jsp"><i class="fas fa-shopping-cart"></i> Xuất Kho</a>
+            <a href="admin/Report.jsp"><i class="fas fa-chart-bar"></i> Báo Cáo</a>
+            <a href="admin/Setting.jsp"><i class="fas fa-cog"></i> Cài Đặt</a>
         </div>
 
         <!-- Main Content -->
@@ -90,7 +90,7 @@
                         <i class="fas fa-boxes"></i>
                         <%-- Display Total Products from request attribute --%>
                         <h3>${requestScope.totalProducts}</h3>
-                        <p>Tổng Sản Phẩm</p>
+                        <p style="color: white">Tổng Sản Phẩm</p>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -98,7 +98,7 @@
                         <i class="fas fa-arrow-up"></i>
                         <%-- Display Imported Today from request attribute (will be 0 based on current schema) --%>
                         <h3>${requestScope.importedToday}</h3>
-                        <p>Nhập Kho Hôm Nay</p>
+                        <p style="color: white">Nhập Kho Hôm Nay</p>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -106,7 +106,7 @@
                         <i class="fas fa-arrow-down"></i>
                         <%-- Display Exported Today from request attribute --%>
                         <h3>${requestScope.exportedToday}</h3>
-                        <p>Xuất Kho Hôm Nay</p>
+                        <p style="color: white">Xuất Kho Hôm Nay</p>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -114,7 +114,7 @@
                         <i class="fas fa-exclamation-triangle"></i>
                         <%-- Display Low Stock Count from request attribute --%>
                         <h3>${requestScope.lowStockCount}</h3>
-                        <p>Sản Phẩm Sắp Hết</p>
+                        <p style="color: white">Sản Phẩm Sắp Hết</p>
                     </div>
                 </div>
             </div>

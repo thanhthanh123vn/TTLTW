@@ -9,7 +9,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %> <%-- Changed prefix from f to fmt --%>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -72,9 +72,9 @@
       <a href="KhoManager" class="active"><i class="fas fa-home"></i> Trang Chủ</a>
       <a href="ManagerKho"><i class="fas fa-boxes"></i> Sản Phẩm</a>
       <a href="admin/ImportProduct.jsp"><i class="fas fa-truck"></i> Nhập Kho</a>
-      <a href="#"><i class="fas fa-shopping-cart"></i> Xuất Kho</a>
-      <a href="#"><i class="fas fa-chart-bar"></i> Báo Cáo</a>
-      <a href="#"><i class="fas fa-cog"></i> Cài Đặt</a>
+      <a href="admin/ExportProduct.jsp"><i class="fas fa-shopping-cart"></i> Xuất Kho</a>
+      <a href="admin/Report.jsp"><i class="fas fa-chart-bar"></i> Báo Cáo</a>
+      <a href="admin/Setting.jsp"><i class="fas fa-cog"></i> Cài Đặt</a>
     </div>
 
     <!-- Main Content -->

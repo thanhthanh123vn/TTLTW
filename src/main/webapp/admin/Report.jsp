@@ -1,3 +1,8 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"%>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -74,9 +79,9 @@
                 <a href="Home.jsp"><i class="fas fa-home"></i> Trang Chủ</a>
                 <a href="ManageProduct.html"><i class="fas fa-boxes"></i> Sản Phẩm</a>
                 <a href="ImportProduct.jsp"><i class="fas fa-truck"></i> Nhập Kho</a>
-                <a href="ExportProduct.html"><i class="fas fa-shopping-cart"></i> Xuất Kho</a>
-                <a href="Report.html" class="active"><i class="fas fa-chart-bar"></i> Báo Cáo</a>
-                <a href="#"><i class="fas fa-cog"></i> Cài Đặt</a>
+                <a href="ExportProduct.jsp"><i class="fas fa-shopping-cart"></i> Xuất Kho</a>
+                <a href="Report.jsp" class="active"><i class="fas fa-chart-bar"></i> Báo Cáo</a>
+                <a href="Setting.jsp"><i class="fas fa-cog"></i> Cài Đặt</a>
             </div>
 
             <!-- Main Content -->
@@ -172,24 +177,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Laptop Dell XPS 13</td>
-                                            <td>45</td>
-                                            <td>112,500,000đ</td>
-                                            <td><span class="trend-up">+15%</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>iPhone 15 Pro</td>
-                                            <td>38</td>
-                                            <td>95,000,000đ</td>
-                                            <td><span class="trend-up">+8%</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Samsung Galaxy S24</td>
-                                            <td>32</td>
-                                            <td>80,000,000đ</td>
-                                            <td><span class="trend-down">-3%</span></td>
-                                        </tr>
+
                                     </tbody>
                                 </table>
                             </div>
@@ -211,24 +199,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>AirPods Pro</td>
-                                            <td>5</td>
-                                            <td>20</td>
-                                            <td><span class="badge bg-danger">Cần bổ sung</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>MacBook Pro M3</td>
-                                            <td>8</td>
-                                            <td>15</td>
-                                            <td><span class="badge bg-warning">Sắp hết</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>iPad Pro</td>
-                                            <td>12</td>
-                                            <td>25</td>
-                                            <td><span class="badge bg-warning">Sắp hết</span></td>
-                                        </tr>
+
                                     </tbody>
                                 </table>
                             </div>
@@ -242,60 +213,183 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Inventory Value Trend Chart
-        const inventoryCtx = document.getElementById('inventoryValueChart').getContext('2d');
-        new Chart(inventoryCtx, {
-            type: 'line',
-            data: {
-                labels: ['1/3', '5/3', '10/3', '15/3', '20/3', '25/3', '30/3'],
-                datasets: [{
-                    label: 'Giá trị kho',
-                    data: [100000000, 105000000, 110000000, 115000000, 120000000, 122000000, 125000000],
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return (value / 1000000) + 'M';
+        // Function to load report data
+        function loadReportData(period = 'month') {
+            fetch('${pageContext.request.contextPath}/GetReportData?period=' + period)
+                .then(response => response.json())
+                .then(data => {
+                    // Update summary cards
+                    const summary = data.summary;
+                    document.querySelector('.summary-item:nth-child(1) h3').textContent = formatCurrency(summary.totalInventoryValue);
+                    document.querySelector('.summary-item:nth-child(2) h3').textContent = summary.importCount;
+                    document.querySelector('.summary-item:nth-child(3) h3').textContent = summary.exportCount;
+                    document.querySelector('.summary-item:nth-child(4) h3').textContent = summary.totalProducts;
+
+                    // Update trends
+                    updateTrendElement(0, summary.importTrend);
+                    updateTrendElement(1, summary.exportTrend);
+                    updateTrendElement(2, summary.inventoryTrend);
+
+                    // Update inventory trend chart
+                    updateInventoryTrendChart(data.inventoryTrend);
+
+                    // Update category distribution chart
+                    updateCategoryDistributionChart(data.categoryDistribution);
+
+                    // Update top products table
+                    updateTopProductsTable(data.topProducts);
+
+                    // Update low stock alerts
+                    updateLowStockTable(data.lowStockAlerts);
+                })
+                .catch(error => {
+                    console.error('Error loading report data:', error);
+                    alert('Có lỗi xảy ra khi tải dữ liệu báo cáo!');
+                });
+        }
+
+        // Helper function to update trend elements
+        function updateTrendElement(index, trend) {
+            const trendElement = document.querySelectorAll('.summary-item small')[index];
+            const isPositive = trend >= 0;
+            trendElement.className = isPositive ? 'trend-up' : 'trend-down';
+            trendElement.innerHTML = '<i class="fas fa-arrow-' + (isPositive ? 'up' : 'down') + '"></i> ' + 
+                Math.abs(trend).toFixed(1) + '% so với tháng trước';
+        }
+
+        // Function to update inventory trend chart
+        function updateInventoryTrendChart(trendData) {
+            const labels = trendData.map(point => formatDate(point.date));
+            const values = trendData.map(point => point.value);
+
+            if (window.inventoryChart) {
+                window.inventoryChart.destroy();
+            }
+
+            const ctx = document.getElementById('inventoryValueChart').getContext('2d');
+            window.inventoryChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Giá trị kho',
+                        data: values,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
 
-        // Category Distribution Chart
-        const categoryCtx = document.getElementById('categoryDistributionChart').getContext('2d');
-        new Chart(categoryCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Điện tử', 'Quần áo', 'Thực phẩm', 'Đồ gia dụng'],
-                datasets: [{
-                    data: [450, 300, 200, 150],
-                    backgroundColor: [
-                        'rgb(54, 162, 235)',
-                        'rgb(255, 99, 132)',
-                        'rgb(75, 192, 192)',
-                        'rgb(255, 206, 86)'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
+        // Function to update category distribution chart
+        function updateCategoryDistributionChart(distribution) {
+            const labels = Object.keys(distribution);
+            const values = Object.values(distribution);
+
+            if (window.categoryChart) {
+                window.categoryChart.destroy();
+            }
+
+            const ctx = document.getElementById('categoryDistributionChart').getContext('2d');
+            window.categoryChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: [
+                            'rgb(54, 162, 235)',
+                            'rgb(255, 99, 132)',
+                            'rgb(75, 192, 192)',
+                            'rgb(255, 206, 86)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
                     }
                 }
-            }
+            });
+        }
+
+        // Function to update top products table
+        function updateTopProductsTable(products) {
+            const tbody = document.querySelector('.table-responsive:first-of-type tbody');
+            tbody.innerHTML = '';
+
+            products.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = 
+                    '<td>' + product.name + '</td>' +
+                    '<td>' + product.exportQuantity + '</td>' +
+                    '<td>' + formatCurrency(product.revenue) + '</td>' +
+                    '<td><span class="' + (product.growth >= 0 ? 'trend-up' : 'trend-down') + '">' +
+                    (product.growth >= 0 ? '+' : '') + product.growth + '%</span></td>';
+                tbody.appendChild(row);
+            });
+        }
+
+        // Function to update low stock alerts
+        function updateLowStockTable(alerts) {
+            const tbody = document.querySelector('.table-responsive:last-of-type tbody');
+            tbody.innerHTML = '';
+
+            alerts.forEach(alert => {
+                const row = document.createElement('tr');
+                row.innerHTML = 
+                    '<td>' + alert.name + '</td>' +
+                    '<td>' + alert.currentStock + '</td>' +
+                    '<td>' + alert.minimumStock + '</td>' +
+                    '<td><span class="badge ' + (alert.status === 'critical' ? 'bg-danger' : 'bg-warning') + '">' + 
+                    (alert.status === 'critical' ? 'Cần bổ sung' : 'Sắp hết') + '</span></td>';
+                tbody.appendChild(row);
+            });
+        }
+
+        // Helper function to format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(amount);
+        }
+
+        // Helper function to format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit'
+            });
+        }
+
+        // Event listener for period select
+        document.querySelector('select').addEventListener('change', function(e) {
+            loadReportData(e.target.value);
+        });
+
+        // Initial load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadReportData();
         });
     </script>
 </body>

@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import com.google.gson.Gson;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.Map;
 import object.ImportReceipt;
@@ -20,8 +20,12 @@ import object.Product;
 import java.sql.Timestamp;
 import java.util.Date;
 
-@WebServlet(name = "SaveImportReceiptServlet", urlPatterns = {"/SaveImportReceipt"})
-public class SaveImportReceiptServlet extends HttpServlet {
+@WebServlet(name = "SaveImportReceiptServlet", urlPatterns = {
+        "/SaveImportReceipt",
+        "/SaveExportReceipt"
+
+})
+public class SaveImportExportReceiptServlet extends HttpServlet {
     private ImportReceiptDAO importReceiptDAO;
     private ImportReceiptDetailDAO importReceiptDetailDAO;
     private ProductsDao productsDao;
@@ -70,7 +74,14 @@ public class SaveImportReceiptServlet extends HttpServlet {
                 // Update product quantity
                 Product product = productsDao.getProductById(importDetail.getProductId());
 
+                String path = request.getServletPath();
+                if("SaveImportReceipt".equalsIgnoreCase(path)) {
+
                 product.setQuantity(product.getQuantity() + importDetail.getQuantity());
+                }else if("SaveExportReceipt".equalsIgnoreCase(path)) {
+                    product.setQuantity(product.getQuantity() - importDetail.getQuantity());
+                }
+
                 productsDao.updateProductQuantity(product);
             }
             

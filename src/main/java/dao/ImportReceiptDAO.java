@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Timestamp;
+import java.util.Date;
 
 public class ImportReceiptDAO {
     private Connection conn;
@@ -109,6 +111,35 @@ public class ImportReceiptDAO {
         } finally {
             closeResources();
         }
+    }
+
+    public List<ImportReceipt> getImportReceiptsByDateRange(Date startDate, Date endDate) {
+        List<ImportReceipt> receipts = new ArrayList<>();
+        String sql = "SELECT * FROM import_receipts WHERE import_date BETWEEN ? AND ? ORDER BY import_date DESC";
+        
+        try {
+            conn = new Utils().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setTimestamp(1, new Timestamp(startDate.getTime()));
+            ps.setTimestamp(2, new Timestamp(endDate.getTime()));
+            
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                ImportReceipt receipt = new ImportReceipt();
+                receipt.setId(rs.getInt("id"));
+                receipt.setImportDate(rs.getTimestamp("import_date"));
+                receipt.setSupplierId(rs.getInt("supplier_id"));
+                receipt.setTotalAmount(rs.getDouble("total_amount"));
+                receipt.setNote(rs.getString("note"));
+                receipts.add(receipt);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        
+        return receipts;
     }
 
     private void closeResources() {
