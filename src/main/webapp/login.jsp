@@ -122,7 +122,10 @@
 				<span class="form-message"></span>
 			</div>
 			<!-- Google reCAPTCHA -->
-			<div class="g-recaptcha" data-sitekey="6Lccm1MrAAAAAPUFwXHYvK6OjWGHKMnE6RUseH8q"></div>
+           <%--local host--%>
+<%--			<div class="g-recaptcha" data-sitekey="6Lccm1MrAAAAAPUFwXHYvK6OjWGHKMnE6RUseH8q"></div>	--%>
+<%--			deloy--%>
+			<div class="g-recaptcha" data-sitekey="6Lc7tFMrAAAAALLBkfhRv7rqtFp88H1O63PQ_SAj"></div>
 
 			<button  type="submit" class="form-submit" >Đăng Nhập</button>
 			<a id="quenmk" href="index/forgot-pass.jsp">Quên mật khẩu</a>

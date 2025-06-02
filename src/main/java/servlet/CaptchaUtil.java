@@ -10,11 +10,14 @@ import java.util.Scanner;
 import org.json.JSONObject;
 
 public class CaptchaUtil {
-    private static final String SECRET_KEY = "6Lccm1MrAAAAACbA-YROXevKb11U7Y6SuQksrLhf";
+    //local host
+    //private static final String SECRET_KEY = "6Lccm1MrAAAAACbA-YROXevKb11U7Y6SuQksrLhf";
+    // deloy
+    private static final String SECRET_KEY = "6Lc7tFMrAAAAABzuDGBh1jSgfDPRMim-SSpOJF3H";
 
     public static boolean verify(String gRecaptchaResponse) {
         try {
-            String secret = "6Lccm1MrAAAAACbA-YROXevKb11U7Y6SuQksrLhf";
+            String secret = "6Lc7tFMrAAAAABzuDGBh1jSgfDPRMim-SSpOJF3H";
             String url = "https://www.google.com/recaptcha/api/siteverify";
             String params = "secret=" + secret + "&response=" + gRecaptchaResponse;
             URL obj = new URL(url);
