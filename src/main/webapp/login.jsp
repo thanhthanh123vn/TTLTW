@@ -121,8 +121,8 @@
 										type="password" placeholder="Nhập mật khẩu" class="form-control">
 				<span class="form-message"></span>
 			</div>
-
-
+			<!-- Google reCAPTCHA -->
+			<div class="g-recaptcha" data-sitekey="6Lccm1MrAAAAAPUFwXHYvK6OjWGHKMnE6RUseH8q"></div>
 
 			<button  type="submit" class="form-submit" >Đăng Nhập</button>
 			<a id="quenmk" href="index/forgot-pass.jsp">Quên mật khẩu</a>
@@ -146,7 +146,8 @@
 </div>
 
 <script src="js/validatorSignUp.js"></script>
-
+<!-- Thêm script reCAPTCHA -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <%
 	String errorMessage = (request.getAttribute("errorMessage") !=null ) ? request.getAttribute("errorMessage").toString() : "";
@@ -213,15 +214,6 @@
 				}, 5000); // 5 giây
 			}
 		}
-
-
-
-
-
-
-
-
-
 
 
 
