@@ -5,10 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import object.Product;
 import object.ProductDetail;
+
+import java.sql.Timestamp;
 
 public class ProductsDao {
 
@@ -467,5 +472,85 @@ public List<Product> getHotProduct(){
         return products;
     }
 
+    public List<Product> getAllProducts() {
+        List<Product> products = new ArrayList<>();
+        String sql = "SELECT * FROM products ORDER BY name";
+        
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Product product = new Product();
+                product.setId(rs.getInt("id"));
+                product.setName(rs.getString("name"));
+                product.setDetail(rs.getString("detail"));
+                product.setPrice(rs.getDouble("price"));
+                product.setQuantity(rs.getInt("quantity"));
+                product.setCategory_id(rs.getInt("CategoryId"));
+                product.setImage(rs.getString("image"));
+                products.add(product);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return products;
+    }
+
+    // Method to get top selling products by quantity within a date range
+    public List<Map<String, Object>> getTopSellingProductsByQuantity(Date startDate, Date endDate) {
+        List<Map<String, Object>> topProducts = new ArrayList<>();
+        String sql = "SELECT p.name, SUM(erd.quantity) as exportQuantity, SUM(erd.quantity * erd.price) as revenue " +
+                     "FROM products p " +
+                     "JOIN export_receipt_details erd ON p.id = erd.product_id " +
+                     "JOIN export_receipts er ON erd.receipt_id = er.id " +
+                     "WHERE er.export_date BETWEEN ? AND ? " +
+                     "GROUP BY p.id, p.name " +
+                     "ORDER BY exportQuantity DESC LIMIT 10";
+
+        try (Connection conn = utils.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setTimestamp(1, new Timestamp(startDate.getTime()));
+            pstmt.setTimestamp(2, new Timestamp(endDate.getTime()));
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> productData = new HashMap<>();
+                    productData.put("name", rs.getString("name"));
+                    productData.put("exportQuantity", rs.getInt("exportQuantity"));
+                    productData.put("revenue", rs.getDouble("revenue"));
+                    // Growth percentage is not calculated in SQL, will be 0 or needs separate logic
+                    productData.put("growth", 0); // Placeholder
+                    topProducts.add(productData);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log the error
+        }
+        return topProducts;
+    }
+
+    // Method to get total stock quantity by category
+    public Map<String, Integer> getTotalStockByCategory() {
+        Map<String, Integer> stockByCategory = new HashMap<>();
+        String sql = "SELECT c.CategoryName, SUM(p.quantity) AS totalStock " +
+                     "FROM products p " +
+                     "JOIN categories c ON p.CategoryID = c.CategoryID " +
+                     "GROUP BY c.CategoryID, c.CategoryName " +
+                     "ORDER BY c.CategoryName";
+
+        try (Connection conn = utils.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    stockByCategory.put(rs.getString("CategoryName"), rs.getInt("totalStock"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log the error
+        }
+        return stockByCategory;
+    }
 
 }

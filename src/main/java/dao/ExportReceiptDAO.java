@@ -133,4 +133,30 @@ public class ExportReceiptDAO {
             return false;
         }
     }
+
+    public List<ExportReceipt> getExportReceiptsByDateRange(Date startDate, Date endDate) {
+        List<ExportReceipt> receipts = new ArrayList<>();
+        String sql = "SELECT * FROM export_receipts WHERE export_date BETWEEN ? AND ? ORDER BY export_date DESC";
+        
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setTimestamp(1, new Timestamp(startDate.getTime()));
+            pstmt.setTimestamp(2, new Timestamp(endDate.getTime()));
+            
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                ExportReceipt receipt = new ExportReceipt();
+                receipt.setId(rs.getInt("id"));
+                receipt.setExportDate(rs.getTimestamp("export_date"));
+                receipt.setCustomerId(rs.getInt("customer_id"));
+                receipt.setTotalAmount(rs.getDouble("total_amount"));
+                receipt.setReason(rs.getString("reason"));
+                receipt.setNote(rs.getString("note"));
+                receipts.add(receipt);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return receipts;
+    }
 } 

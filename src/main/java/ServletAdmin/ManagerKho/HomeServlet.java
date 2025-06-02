@@ -33,8 +33,8 @@ public class HomeServlet extends HttpServlet {
         Connection conn = null;
         Utils utils = new Utils();
         try {
-            // Register JDBC driver
-            Class.forName("com.mysql.cj.jdbc.Driver"); // Use appropriate driver class
+
+
 
             // Open a connection
             conn = utils.getConnection();
@@ -128,7 +128,7 @@ public class HomeServlet extends HttpServlet {
             se.printStackTrace();
             // Handle errors
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error: " + se.getMessage());
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "JDBC Driver not found: " + e.getMessage());
         } finally {

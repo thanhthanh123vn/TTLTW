@@ -60,12 +60,12 @@
         <!-- Sidebar -->
         <div class="col-md-2 sidebar">
             <h3 class="text-white text-center mb-4">Quản Lý Kho</h3>
-            <a href="KhoManager" class="active"><i class="fas fa-home"></i> Trang Chủ</a>
-            <a href="ManagerKho"><i class="fas fa-boxes"></i> Sản Phẩm</a>
-            <a href="admin/ImportProduct.jsp"><i class="fas fa-truck"></i> Nhập Kho</a>
-            <a href="admin/ExportProduct.jsp"><i class="fas fa-shopping-cart"></i> Xuất Kho</a>
-            <a href="#"><i class="fas fa-chart-bar"></i> Báo Cáo</a>
-            <a href="#"><i class="fas fa-cog"></i> Cài Đặt</a>
+            <a href="Home.jsp"><i class="fas fa-home"></i> Trang Chủ</a>
+            <a href="ManageProduct.html"><i class="fas fa-boxes"></i> Sản Phẩm</a>
+            <a href="ImportProduct.jsp"><i class="fas fa-truck"></i> Nhập Kho</a>
+            <a href="ExportProduct.jsp"><i class="fas fa-shopping-cart"></i> Xuất Kho</a>
+            <a href="Report.jsp" class="active"><i class="fas fa-chart-bar"></i> Báo Cáo</a>
+            <a href="Setting.jsp"><i class="fas fa-cog"></i> Cài Đặt</a>
         </div>
 
         <!-- Main Content -->
