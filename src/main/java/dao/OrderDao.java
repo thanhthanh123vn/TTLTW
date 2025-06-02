@@ -107,11 +107,13 @@ public class OrderDao {
         return orderDetailsList;
 
     }
-    public int insertOrderWithDetails(Order order, OrderDetail orderDetail) {
+    public int insertOrderWithDetails(Order order, List<OrderDetail> orderDetailsList) {
 
         String insertOrderSQL = "INSERT INTO orders (UserID, OrderDate, Status) VALUES (?, ?, ?)";
 
         String insertOrderDetailSQL = "INSERT INTO orderdetails (OrderID, ProductID, UserId, Quantity, Price) VALUES (?, ?, ?, ?, ?)";
+
+        int orderId = 0;
 
         try {
             // Tắt auto-commit để thực hiện giao dịch
@@ -121,36 +123,47 @@ public class OrderDao {
             PreparedStatement orderPs = conn.prepareStatement(insertOrderSQL, Statement.RETURN_GENERATED_KEYS);
             orderPs.setInt(1, order.getUserId());
             orderPs.setDate(2, new Date(order.getCreate_date().getTime()));
-            orderPs.setString(3, "Pending"); // Trạng thái mặc định
+            orderPs.setString(3, order.getStatus() != null ? order.getStatus() : "Pending"); // Sử dụng trạng thái từ Order object hoặc mặc định
             int orderRows = orderPs.executeUpdate();
 
             if (orderRows > 0) {
                 // Lấy OrderID tự động tạo
                 ResultSet generatedKeys = orderPs.getGeneratedKeys();
                 if (generatedKeys.next()) {
-                    int orderId = generatedKeys.getInt(1); // Lấy giá trị OrderID từ khóa tự tăng
+                    orderId = generatedKeys.getInt(1); // Lấy giá trị OrderID từ khóa tự tăng
 
-                    // Thêm bản ghi vào bảng `orderdetails`
+                    // Thêm bản ghi vào bảng `orderdetails` cho từng sản phẩm
                     PreparedStatement detailPs = conn.prepareStatement(insertOrderDetailSQL);
-                    detailPs.setInt(1, orderId);
-                    detailPs.setInt(2, orderDetail.getProductId());
-                    detailPs.setInt(3, order.getUserId());
-                    detailPs.setInt(4, orderDetail.getTotalQuantity());
-                    detailPs.setDouble(5, orderDetail.getTotalPrice());
+                    for (OrderDetail orderDetail : orderDetailsList) {
+                        detailPs.setInt(1, orderId);
+                        detailPs.setInt(2, orderDetail.getProductId());
+                        detailPs.setInt(3, order.getUserId()); // Sử dụng UserID từ Order chính
+                        detailPs.setInt(4, orderDetail.getTotalQuantity());
+                        detailPs.setDouble(5, orderDetail.getTotalPrice());
+                        detailPs.addBatch(); // Thêm vào batch để thực hiện hàng loạt
+                    }
+                    
+                    int[] detailRows = detailPs.executeBatch(); // Thực hiện thêm bản ghi chi tiết hàng loạt
 
-                    int detailRows = detailPs.executeUpdate(); // Thực hiện thêm bản ghi chi tiết
+                    // Kiểm tra tất cả bản ghi chi tiết được thêm thành công (tùy chọn, có thể kiểm tra kích thước mảng detailRows)
+                    boolean allDetailsInserted = true;
+                     for(int rowCount : detailRows) {
+                         if(rowCount <= 0) {
+                             allDetailsInserted = false;
+                             break;
+                         }
+                     }
 
-                    // Kiểm tra bản ghi được thêm thành công
-                    if (detailRows > 0) {
-                        System.out.println("Them Order VNPAY Thanh Cong");
+                    if (allDetailsInserted) {
+                        System.out.println("Them Order Thanh Cong voi " + detailRows.length + " chi tiet.");
                         conn.commit(); // Cam kết giao dịch
-                        return orderId;
+                        return orderId; // Trả về OrderID của đơn hàng mới
                     }
                 }
             }
 
             conn.rollback(); // Nếu lỗi, rollback giao dịch
-        } catch (Exception e) {
+        } catch (SQLException e) {
             try {
                 conn.rollback(); // Rollback nếu có lỗi xảy ra
             } catch (SQLException rollbackEx) {
@@ -164,7 +177,7 @@ public class OrderDao {
                 ex.printStackTrace();
             }
         }
-        return 0;
+        return 0; // Trả về 0 nếu có lỗi hoặc không chèn được đơn hàng/chi tiết
     }
 
     public boolean checkUserID(int userID){

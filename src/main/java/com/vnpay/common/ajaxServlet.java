@@ -1,10 +1,10 @@
-
 package com.vnpay.common;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dao.OrderDao;
 import dao.UserInfDao;
+import dao.ProductsDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -43,7 +43,6 @@ public class ajaxServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserInf userAddress = new UserInf();
 
-
         double amount = 0;
         // Đọc body JSON từ request
         StringBuilder sb = new StringBuilder();
@@ -56,134 +55,101 @@ public class ajaxServlet extends HttpServlet {
         try {
             // Parse JSON
             JSONObject jsonRequest = new JSONObject(sb.toString());
-             amount = jsonRequest.getLong("amount");
+             amount = jsonRequest.getDouble("amount");
 
             // (Tùy bạn xử lý thêm ở đây)
             System.out.println("Received payment amount: " + amount);
 
-
         } catch (Exception e) {
-        e.printStackTrace();
+            e.printStackTrace();
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"Invalid JSON or missing amount\"}");
+            return;
         }
         String bankCode = req.getParameter("bankCode");
         HttpSession session = req.getSession();
         Date date = new Date(System.currentTimeMillis());
         User user = (User) session.getAttribute("user");
 
-
         UserInfDao dao_user = new UserInfDao();
         OrderDao dao = new OrderDao();
-        int isSuccess  = 0 ;
+        int orderId = 0;
 
-         int   id = user.getId();
+        if (user == null) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            resp.getWriter().write("{\"error\":\"User not authenticated\"}");
+            return;
+        }
 
+        int userId = user.getId();
 
         Order order = new Order();
-        String action = "";
-
-        order.setUserId(id);
-
-
-        System.out.println(order.getUserId()+"Nguoi dung order");
+        order.setUserId(userId);
         order.setCreate_date(date);
-        Product product = (Product) session.getAttribute("payProduct");
+        order.setStatus("Pending");
 
-
+        Product singleProduct = (Product) session.getAttribute("payProduct");
         Cart cart = (Cart) session.getAttribute("cart");
-        OrderDetail orderDetail = new OrderDetail();
-        if (product != null) {
 
-            orderDetail.setProductId(product.getId());
-            orderDetail.setTotalPrice(amount);
-            orderDetail.setAddress(userAddress.getAddress());
+        List<OrderDetail> orderDetailsList = new ArrayList<>();
+
+        if (singleProduct != null) {
+            // Case: Buy Now (single product)
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setProductId(singleProduct.getId());
+            orderDetail.setTotalQuantity(singleProduct.getQuantity()); // Use quantity from product
+            orderDetail.setTotalPrice(singleProduct.getPrice() * singleProduct.getQuantity()); // Calculate total price for detail line
+            // Address and Date are typically associated with the main Order, not each detail line, but keeping for compatibility if needed elsewhere
+            orderDetail.setAddress(userAddress != null ? userAddress.getAddress() : ""); // Use fetched userAddress
             orderDetail.setDate(new Date(System.currentTimeMillis()));
-            orderDetail.setMethodPay("VNPAY");
 
+            orderDetailsList.add(orderDetail); // Add the single detail to the list
+            session.removeAttribute("payProduct"); // Remove after processing
 
-            orderDetail.setTotalQuantity(product.getQuantity());
-            orderDetail.setTotalPrice(product.getPrice());
+        } else if (cart != null && !cart.getList().isEmpty()) {
+            // Case: Checkout from Cart
+            List<Product> productsInCart = getProducts(cart.getList()); // Convert ProductCart to Product
+            for (Product product : productsInCart) {
+                OrderDetail orderDetail = new OrderDetail();
+                orderDetail.setProductId(product.getId());
+                orderDetail.setTotalQuantity(product.getQuantity()); // Use quantity from Product (converted from ProductCart)
+                orderDetail.setTotalPrice(product.getPrice() * product.getQuantity()); // Calculate total price for detail line
+                orderDetail.setAddress(userAddress != null ? userAddress.getAddress() : ""); // Use fetched userAddress
+                orderDetail.setDate(new Date(System.currentTimeMillis()));
 
-
-             isSuccess = dao.insertOrderWithDetails(order, orderDetail);
-
-
-
-
-            if (isSuccess>0) {
-                action = "success";
-                session.setAttribute("action",action);
-                session.setAttribute("order",order);
-                Date date1 = new Date(System.currentTimeMillis());
-
-                orderDetail.setDate(date1);
-                session.setAttribute("orderDetail",orderDetail);
-                session.setAttribute("productQL", product);
-                session.removeAttribute("payProduct");
-
-            } else {
-//                System.out.println("Mua ngay đó nha"+product.toString());
-//                req.setAttribute("product", product);
-                req.setAttribute("errorMessage", "Khong the chen Order");
-
+                orderDetailsList.add(orderDetail); // Add each detail to the list
             }
+            session.removeAttribute("cart"); // Clear the cart after processing
 
-
-        }
-        if (cart != null ){
-
-            List<ProductCart> productCarts = cart.getList();
-            List<Product> products = getProducts(productCarts);
-
-            if (!products.isEmpty()) {
-                for (Product cproduct : products) {
-                    Order order2 = new Order();
-                    order2.setUserId(id);
-                    order2.setCreate_date(date);
-                    OrderDetail orderDetail2 = new OrderDetail();
-                    orderDetail2.setAddress(userAddress.getAddress());
-                    orderDetail2.setDate(new Date(System.currentTimeMillis()));
-                    orderDetail2.setMethodPay("VNPAY");
-
-                    orderDetail2.setProductId(cproduct.getId());
-                    orderDetail2.setTotalQuantity(cproduct.getQuantity());
-                    orderDetail2.setTotalPrice(cproduct.getPrice());
-
-                    isSuccess = dao.insertOrderWithDetails(order2, orderDetail2);
-                    if (isSuccess>0) {
-                        action = "success";
-                        Date date1 = new Date(System.currentTimeMillis());
-
-                        orderDetail.setDate(date1);
-                        session.setAttribute("order",order2);
-
-                        session.setAttribute("orderDetail",orderDetail2);
-                        session.setAttribute("action",action);
-                        session.setAttribute("cartQL", cart);
-                        req.setAttribute("cart", cart);
-                        session.removeAttribute("cart");
-
-                    } else {
-
-//                session.setAttribute("cartQL", cart);
-                        req.setAttribute("errorMessage", "Khong the chen Order");
-
-                    }
-
-                }
-            }
-
-
+        } else {
+            // Case: No product or items in cart to order
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"No products to order\"}");
+            return; // Stop processing
         }
 
+        // --- Insert Order and Order Details if list is not empty ---
+        if (!orderDetailsList.isEmpty()) {
+            orderId = dao.insertOrderWithDetails(order, orderDetailsList); // Call the updated method with the list
 
+            if (orderId <= 0) {
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                resp.getWriter().write("{\"error\":\"Failed to insert order into database\"}");
+                return;
+            }
+            order.setId(orderId);
 
+        } else {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\":\"No order details generated\"}");
+            return;
+        }
 
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
 
-        
-        String vnp_TxnRef = isSuccess+"";
+        String vnp_TxnRef = String.valueOf(orderId);
         String vnp_IpAddr = Config.getIpAddress(req);
 
         String vnp_TmnCode = Config.vnp_TmnCode;
@@ -194,7 +160,7 @@ public class ajaxServlet extends HttpServlet {
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
         vnp_Params.put("vnp_Amount", String.valueOf(Totalamount));
         vnp_Params.put("vnp_CurrCode", "VND");
-        
+
         if (bankCode != null && !bankCode.isEmpty()) {
             vnp_Params.put("vnp_BankCode", bankCode);
         }
@@ -208,18 +174,19 @@ public class ajaxServlet extends HttpServlet {
         } else {
             vnp_Params.put("vnp_Locale", "vn");
         }
-        vnp_Params.put("vnp_ReturnUrl", Config.vnp_ReturnUrl);
+        String vnp_ReturnUrl = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath() + Config.vnp_ReturnUrl;
+        vnp_Params.put("vnp_ReturnUrl", vnp_ReturnUrl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String vnp_CreateDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
-        
+
         cld.add(Calendar.MINUTE, 15);
         String vnp_ExpireDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
-        
+
         List fieldNames = new ArrayList(vnp_Params.keySet());
         Collections.sort(fieldNames);
         StringBuilder hashData = new StringBuilder();
@@ -229,11 +196,9 @@ public class ajaxServlet extends HttpServlet {
             String fieldName = (String) itr.next();
             String fieldValue = (String) vnp_Params.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                //Build hash data
                 hashData.append(fieldName);
                 hashData.append('=');
                 hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
-                //Build query
                 query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString()));
                 query.append('=');
                 query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
@@ -248,23 +213,28 @@ public class ajaxServlet extends HttpServlet {
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
         String paymentUrl = Config.vnp_PayUrl + "?" + queryUrl;
         System.out.println(paymentUrl);
-        resp.sendRedirect(paymentUrl);
 
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        PrintWriter out = resp.getWriter();
+        JsonObject jsonResponse = new JsonObject();
+        jsonResponse.addProperty("code", "00");
+        jsonResponse.addProperty("message", "success");
+        jsonResponse.addProperty("data", paymentUrl);
+        out.print(jsonResponse.toString());
+        out.flush();
     }
+
     public List<Product> getProducts(List<ProductCart> list) {
-
         List<Product> products = new ArrayList<>();
+        ProductsDao productsDao = new ProductsDao();
         for (ProductCart cart : list) {
-            Product product = new Product();
-            product.setId(cart.getId());
-            product.setName(cart.getName());
-            product.setPrice(cart.getPrice());
-            product.setQuantity(cart.getCount());
-
-            products.add(product);
-
+            Product product = productsDao.getProductById(cart.getId());
+            if(product != null) {
+                product.setQuantity(cart.getCount());
+                products.add(product);
+            }
         }
         return products;
-
     }
 }

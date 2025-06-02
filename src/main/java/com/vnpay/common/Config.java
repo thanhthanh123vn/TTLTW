@@ -1,4 +1,3 @@
-
 package com.vnpay.common;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +22,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class Config {
 
-    public static String vnp_PayUrl = " https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+    public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     public static String vnp_ReturnUrl = "https://ttltw.onrender.com/vnpayReturn";
 
     public static String vnp_TmnCode = "5GVTIL87";

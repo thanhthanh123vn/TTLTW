@@ -4,6 +4,8 @@ import ShipperFee.APIGHTK;
 import ShipperFee.GHTKOrderResponse;
 import ShipperFee.NoiGui;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import dao.OrderDao;
 import dao.ProductsDao;
 import dao.UserInfDao;
@@ -23,9 +25,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet("/ManagerProduct")
 public class ManagerProduct extends HttpServlet {
@@ -38,137 +42,147 @@ public class ManagerProduct extends HttpServlet {
 
         Date date = new Date(System.currentTimeMillis());
         User user = (User) req.getSession().getAttribute("user");
-        UserInf userAddress = (UserInf) session.getAttribute("UserAddress");
-        int id  ;
+        UserInf userAddress = (UserInf) session.getAttribute("userAddress");
+        int userId  ;
 
-
-
-
-         id = user.getId();
-        Order order = new Order();
-
-        order.setUserId(id);
-        System.out.println(order.getUserId()+"Nguoi dung order");
-        order.setCreate_date(date);
-        Product product = (Product) session.getAttribute("payProduct");
-
-
-        Cart cart = (Cart) session.getAttribute("cart");
-        OrderDetail orderDetail = new OrderDetail();
-        if (product != null) {
-
-        orderDetail.setProductId(product.getId());
-        orderDetail.setAddress(userAddress.getAddress());
-        orderDetail.setDate(new Date(System.currentTimeMillis()));
-        orderDetail.setMethodPay("COD");
-
-
-        orderDetail.setTotalQuantity(product.getQuantity());
-        orderDetail.setTotalPrice(product.getPrice());
-
-
-            int isSuccess = dao.insertOrderWithDetails(order, orderDetail);
-
-            System.out.println(isSuccess+"Order");
-
-            if (isSuccess>0) {
-                action = "success";
-
-
-                    // Tạo đơn hàng GHTK
-                    String getTrackingNumber = createOrder(userAddress, product);
-                    String actionProduct = getOrderStatus(getTrackingNumber);
-                    // Parse response và lưu mã vận đơn
-                    // Tiếp tục xử lý đơn hàng như bình thường
-
-                session.setAttribute("action",action);
-                session.setAttribute("actionProduct",actionProduct);
-                session.setAttribute("order",order);
-                Date date1 = new Date(System.currentTimeMillis());
-
-                orderDetail.setDate(date1);
-                session.setAttribute("orderDetail",orderDetail);
-                session.setAttribute("productQL", product);
-                session.removeAttribute("payProduct");
-                req.getRequestDispatcher("index/qldonhang.jsp").forward(req, resp);
-            } else {
-//                System.out.println("Mua ngay đó nha"+product.toString());
-//                req.setAttribute("product", product);
-                req.setAttribute("errorMessage", "Khong the chen Order");
-                req.getRequestDispatcher("index/qldonhang.jsp").forward(req, resp);
-            }
-
-
+        // Check if user and address are available
+        if (user == null) {
+            // Handle case where user is not logged in
+            resp.sendRedirect("login.jsp"); // Redirect to login page
+            return;
         }
-        if (cart != null ){
+        if (userAddress == null) {
+            // Handle case where user address is not available
+            req.setAttribute("errorMessage", "Thông tin địa chỉ người dùng không có sẵn.");
+            req.getRequestDispatcher("index.jsp").forward(req, resp); // Or another appropriate page
+            return;
+        }
 
-            List<ProductCart> productCarts = cart.getList();
-            List<Product> products = getProducts(productCarts);
+        userId = user.getId();
 
-            if (!products.isEmpty()) {
-                for (Product cproduct : products) {
-                    Order order2 = new Order();
-                    order2.setUserId(id);
-                    order2.setCreate_date(date);
-                    OrderDetail orderDetail2 = new OrderDetail();
-                    orderDetail2.setAddress(userAddress.getAddress());
-                    orderDetail2.setDate(new Date(System.currentTimeMillis()));
-                    orderDetail2.setMethodPay("COD");
-                    orderDetail2.setProductId(cproduct.getId());
-                    orderDetail2.setTotalQuantity(cproduct.getQuantity());
-                    orderDetail2.setTotalPrice(cproduct.getPrice());
+        // --- Order processing logic ---
 
-                    int isSuccess = dao.insertOrderWithDetails(order2, orderDetail2);
-                    if (isSuccess>0) {
-                        String getTrackingNumber = createOrder(userAddress, product);
-                        String actionProduct = getOrderStatus(getTrackingNumber);
+        Product singleProduct = (Product) session.getAttribute("payProduct");
+        Cart cart = (Cart) session.getAttribute("cart");
 
-                        session.setAttribute("action",action);
-                        session.setAttribute("actionProduct",actionProduct);
-                        action = "success";
-                        Date date1 = new Date(System.currentTimeMillis());
+        List<Product> productsToOrder = new ArrayList<>();
+        double totalOrderPrice = 0; // Calculate total price for the GHTK order value
 
-                        orderDetail.setDate(date1);
-                        session.setAttribute("order",order2);
+        if (singleProduct != null) {
+            // Case: Buy Now (single product)
+            productsToOrder.add(singleProduct);
+            totalOrderPrice = singleProduct.getPrice();
 
-                        session.setAttribute("orderDetail",orderDetail2);
-                        session.setAttribute("action",action);
-                        session.setAttribute("cartQL", cart);
-                        req.setAttribute("cart", cart);
-                        session.removeAttribute("cart");
-                        req.getRequestDispatcher("index/qldonhang.jsp").forward(req, resp);
-                    } else {
-
-//                session.setAttribute("cartQL", cart);
-                        req.setAttribute("errorMessage", "Khong the chen Order");
-                        req.getRequestDispatcher("index/qldonhang.jsp").forward(req, resp);
-                    }
-
-                }
+            session.removeAttribute("payProduct"); // Remove the single product after processing
+        } else if (cart != null && !cart.getList().isEmpty()) {
+            // Case: Checkout from Cart
+            productsToOrder = getProducts(cart.getList());
+            for(Product p : productsToOrder) {
+                totalOrderPrice += p.getPrice() * p.getQuantity(); // Calculate total based on price and quantity
             }
 
+            session.removeAttribute("cart");
+            // Clear the cart after creating the order
 
+        } else {
+            // Case: No product or items in cart to order
+            req.setAttribute("errorMessage", "Không có sản phẩm nào để đặt hàng.");
+            req.getRequestDispatcher("index.jsp").forward(req, resp); // Or another appropriate page
+            return;
+        }
+
+        // --- Proceed with order creation if there are products ---
+        if (!productsToOrder.isEmpty()) {
+            // Create a single Order object for the entire list of products
+            Order order = new Order();
+            order.setUserId(userId);
+            order.setCreate_date(date);
+
+
+            // Create OrderDetail objects for each product
+            List<OrderDetail> orderDetails = new ArrayList<>();
+            for (Product p : productsToOrder) {
+                OrderDetail od = new OrderDetail();
+                od.setProductId(p.getId());
+                od.setAddress(userAddress.getAddress()); // Assuming same address for all items in one order
+                od.setDate(new Date(System.currentTimeMillis()));
+                od.setMethodPay("COD"); // Assuming same method for all items
+                od.setTotalQuantity(p.getQuantity());
+                od.setTotalPrice(p.getPrice() * p.getQuantity()); // Total price for this order detail line
+                orderDetails.add(od);
+            }
+
+            // Insert the single order with multiple details
+            // You need to modify your OrderDao.insertOrderWithDetails to accept a List<OrderDetail>
+            int orderId = dao.insertOrderWithDetails(order, orderDetails); // Assuming insertOrderWithDetails is updated
+
+            if (orderId > 0) {
+                action = "success";
+                try {
+                    // Create GHTK order for the list of products
+                    String getTrackingNumber = createOrder(userAddress, productsToOrder, totalOrderPrice); // Pass the list and total price
+                    // You might want to store the tracking number in your database associated with the order
+
+                    // Optionally get order status (though it will likely be "picking" initially)
+                    // String actionProduct = getOrderStatus(getTrackingNumber);
+                    // session.setAttribute("actionProduct", actionProduct); // Store status if needed
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    req.setAttribute("errorMessage", "Lỗi khi tạo đơn hàng GHTK: " + e.getMessage());
+                    // Consider marking your internal order as pending or failed due to GHTK error
+                }
+
+
+
+
+                // Trong ManagerProduct.java, phần xử lý order thành công
+                if (orderId > 0) {
+                    System.out.println("Order thanh cong");
+                    action = "success";
+                    try {
+
+                        // Set các thuộc tính session cần thiết
+                        session.setAttribute("action", action);
+                        session.setAttribute("order", order);
+                        session.setAttribute("orderDetails", orderDetails);
+                        session.setAttribute("productsToOrder", productsToOrder);
+                        String getTrackingNumber = createOrder(userAddress, productsToOrder, totalOrderPrice);
+                        session.setAttribute("trackingNumber", getTrackingNumber);
+
+                        // Forward to the order management page
+                        req.getRequestDispatcher("index/qldonhang.jsp").forward(req, resp);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        req.setAttribute("errorMessage", "Lỗi khi tạo đơn hàng GHTK: " + e.getMessage());
+                    }
+                }
+                // Forward to the order management page
+                req.getRequestDispatcher("index/qldonhang.jsp").forward(req, resp);
+
+            } else {
+                req.setAttribute("errorMessage", "Không thể tạo đơn hàng trong cơ sở dữ liệu.");
+                req.getRequestDispatcher("index.jsp").forward(req, resp); // Or appropriate error page
+            }
         }
     }
 
+    // Helper method to convert List<ProductCart> to List<Product>
     public List<Product> getProducts(List<ProductCart> list) {
-
         List<Product> products = new ArrayList<>();
         for (ProductCart cart : list) {
-            Product product = new Product();
-            product.setId(cart.getId());
-            product.setName(cart.getName());
-            product.setPrice(cart.getPrice());
-            product.setQuantity(cart.getCount());
-
-            products.add(product);
-
+            Product product = new ProductsDao().getProductById(cart.getId()); // Fetch full product details if needed
+            if (product != null) {
+                product.setQuantity(cart.getCount()); // Set the quantity from the cart
+                products.add(product);
+            }
         }
         return products;
-
     }
+
+    // Method to get order status from GHTK
     public static String getOrderStatus(String maVanDon) throws IOException {
-        String apiUrl = "https://services.ghtk.vn/services/shipment/v2/" + maVanDon;
+        String apiUrl = "https://services.giaohangtietkiem.vn/services/shipment/v2/" + maVanDon; // Use dev URL for sandbox
 
 
         URL url = new URL(apiUrl);
@@ -177,7 +191,7 @@ public class ManagerProduct extends HttpServlet {
         conn.setRequestProperty("Token", APIGHTK.API_GHTK);
 
         BufferedReader in = new BufferedReader(new InputStreamReader(
-                conn.getResponseCode() == 200 ? conn.getInputStream() : conn.getErrorStream()));
+                conn.getResponseCode() == 200 ? conn.getInputStream() : conn.getErrorStream(), StandardCharsets.UTF_8));
         String inputLine;
         StringBuilder response = new StringBuilder();
 
@@ -188,62 +202,84 @@ public class ManagerProduct extends HttpServlet {
 
         return response.toString(); // JSON response
     }
-    public static String createOrder(UserInf userAddress, Product product) throws IOException {
-        String apiUrl = "https://services.ghtk.vn/services/shipment/order";
 
+    // Modified createOrder method to accept a list of products and total price
+    public static String createOrder(UserInf userAddress, List<Product> products, double totalOrderPrice) throws IOException {
+        String apiUrl = "https://services.giaohangtietkiem.vn/services/shipment/order"; // Use dev URL for sandbox
 
-        // Parse địa chỉ người nhận
-        String[] addressParts = userAddress.getAddress().split(",");
-        String province = addressParts[addressParts.length - 1].trim();
-        String district = addressParts[addressParts.length - 2].trim();
-
-        // Tạo JSON cho đơn hàng
-        String jsonInput = String.format("""
-    {
-        "order": {
-            "id": "DH%s",
-            "pick_name": "%s",
-            "pick_address": "%s",
-            "pick_province": "%s",
-            "pick_district": "%s",
-            "pick_tel": "%s",
-            "name": "%s",
-            "address": "%s",
-            "province": "%s",
-            "district": "%s",
-            "tel": "%s",
-            "hamlet": "Khác",
-            "is_freeship": "0",
-            "pick_money": %f,
-            "note": "Giao giờ hành chính",
-            "value": %f,
-            "weight_option": "gram",
-            "products": [
-                {
-                    "name": "%s",
-                    "weight": 1000,
-                    "quantity": %d
-                }
-            ]
+        if (products == null || products.isEmpty()) {
+            throw new IllegalArgumentException("Product list cannot be null or empty.");
         }
-    }
-    """,
-                System.currentTimeMillis(),
-                NoiGui.PICK_NAME,
-                NoiGui.PICK_ADDRESS,
-                NoiGui.PICK_PROVINCE,
-                NoiGui.PICK_DISTRICTS,
-                NoiGui.PICK_TEL,
-                userAddress.getUserName(),
-                userAddress.getAddress(),
-                province,
-                district,
-                userAddress.getPhone(),
-                product.getPrice(),
-                product.getPrice(),
-                product.getName(),
-                product.getQuantity()
-        );
+
+        // Parse địa chỉ người nhận - Assuming address is in format "Detail, Ward/Commune, District, Province"
+        String[] addressParts = userAddress.getAddress().split(",");
+        String detailAddress = "";
+        String ward = "";
+        String district = "";
+        String province = "";
+
+        if (addressParts.length >= 4) {
+            province = addressParts[addressParts.length - 1].trim();
+            district = addressParts[addressParts.length - 2].trim();
+            ward = addressParts[addressParts.length - 3].trim();
+            // Reconstruct detail address
+            StringBuilder detailBuilder = new StringBuilder();
+            for (int i = 0; i < addressParts.length - 3; i++) {
+                detailBuilder.append(addressParts[i].trim());
+                if (i < addressParts.length - 4) {
+                    detailBuilder.append(", ");
+                }
+            }
+            detailAddress = detailBuilder.toString();
+
+        } else {
+            // Handle unexpected address format, perhaps log a warning or set defaults
+            detailAddress = userAddress.getAddress().trim();
+            // You might need to attempt to parse province/district from a separate field or external service
+        }
+
+
+        // Build products JSON array
+        Gson gson = new Gson();
+        JsonArray productsJsonArray = new JsonArray();
+        for (Product p : products) {
+            JsonObject productJson = new JsonObject();
+            productJson.addProperty("name", p.getName());
+            productJson.addProperty("weight", 1000); // Assuming a default weight per product, adjust if needed
+            productJson.addProperty("quantity", p.getQuantity());
+            productsJsonArray.add(productJson);
+        }
+
+
+        // Create the main order JSON object
+        JsonObject orderJson = new JsonObject();
+        orderJson.addProperty("id", "DH" + System.currentTimeMillis()); // Generate a unique order ID
+        orderJson.addProperty("pick_name", NoiGui.PICK_NAME);
+        orderJson.addProperty("pick_address", NoiGui.PICK_ADDRESS);
+        orderJson.addProperty("pick_province", NoiGui.PICK_PROVINCE);
+        orderJson.addProperty("pick_district", NoiGui.PICK_DISTRICTS);
+        orderJson.addProperty("pick_tel", NoiGui.PICK_TEL);
+
+        orderJson.addProperty("name", userAddress.getUserName());
+        orderJson.addProperty("address", detailAddress); // Use the parsed detail address
+        orderJson.addProperty("province", province);
+        orderJson.addProperty("district", district);
+        orderJson.addProperty("ward", ward); // GHTK often requires ward
+        orderJson.addProperty("tel", userAddress.getPhone());
+        orderJson.addProperty("hamlet", "Khác"); // Default hamlet
+        orderJson.addProperty("is_freeship", "0"); // Set based on your logic
+        orderJson.addProperty("pick_money", totalOrderPrice); // Amount collected on delivery
+        orderJson.addProperty("note", "Giao giờ hành chính");
+        orderJson.addProperty("value", totalOrderPrice); // Value of the order for insurance
+
+        orderJson.add("products", productsJsonArray); // Add the products array
+
+        JsonObject requestPayload = new JsonObject();
+        requestPayload.add("order", orderJson);
+
+
+        String jsonInput = gson.toJson(requestPayload);
+
 
         // Gọi API GHTK
         URL url = new URL(apiUrl);
@@ -253,10 +289,11 @@ public class ManagerProduct extends HttpServlet {
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setDoOutput(true);
 
-        conn.getOutputStream().write(jsonInput.getBytes("UTF-8"));
+        conn.getOutputStream().write(jsonInput.getBytes(StandardCharsets.UTF_8)); // Use UTF-8 for sending
+
 
         BufferedReader in = new BufferedReader(new InputStreamReader(
-                conn.getResponseCode() == 200 ? conn.getInputStream() : conn.getErrorStream()));
+                conn.getResponseCode() == 200 ? conn.getInputStream() : conn.getErrorStream(), StandardCharsets.UTF_8)); // Use UTF-8 for reading
         String inputLine;
         StringBuilder response = new StringBuilder();
         while ((inputLine = in.readLine()) != null) {
@@ -265,15 +302,15 @@ public class ManagerProduct extends HttpServlet {
         in.close();
 
         // Parse response JSON
-        Gson gson = new Gson();
         GHTKOrderResponse ghtkResponse = gson.fromJson(response.toString(), GHTKOrderResponse.class);
 
         if (ghtkResponse.isSuccess()) {
-            return ghtkResponse.getTrackingNumber(); // Trả về mã vận đơn
+            // You might want to return the full response or the tracking ID and order value
+            return ghtkResponse.getTrackingNumber(); // Trả về mã vận đơn hoặc thông tin cần thiết
         } else {
-            throw new IOException("GHTK API Error: " + ghtkResponse.getMessage());
+            // Log the error response from GHTK for debugging
+            System.err.println("GHTK API Error Response: " + response.toString());
+            throw new IOException("GHTK API Error: " + ghtkResponse.getMessage() + " (Error Code: " + ghtkResponse.getMessage() + ")");
         }
     }
-
-
 }

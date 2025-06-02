@@ -55,7 +55,7 @@ function loginUser() {
 			// Mảng chứa dữ liệu các mục trong menu
 			const menuItems = [
 				{ href: "index/inforUser.jsp", className: "account-user account", iconClass: "fas fa-user", text: "Tài khoản của bạn" },
-				{ href: "index/Wishlist.jsp", className: "account-user orders-product", iconClass: "fas fa-box", text: "Quản lý đơn hàng" },
+				{ href: "index/qldonhang.jsp", className: "account-user orders-product", iconClass: "fas fa-box", text: "Quản lý đơn hàng" },
 				{ href: "", className: "account-user product-like", iconClass: "fas fa-heart", text: "Sản phẩm yêu thích" },
 				{ href: "index/addressbook.jsp", className: "account-user address", iconClass: "fas fa-map-marker-alt", text: "Địa chỉ giao hàng" },
 				{ href: "#", className: "account-user logout-account", iconClass: "fas fa-sign-out-alt", text: "Thoát" }
